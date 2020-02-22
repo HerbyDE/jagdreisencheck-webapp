@@ -1,0 +1,45 @@
+{% load i18n travelling_tags inquiries sekizai_tags %}
+
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>
+        <a href="{% url 'travelling:show_trip' object.trip.company.slug object.trip.country.code|slugify object.trip.region|slugify %}" style="text-decoration: underline">
+            {{ object.trip.region }} <small><i class="fa fa-external-link"></i> </small>
+        </a>
+    </td>
+    <td>{{ object.trip.country.name }}</td>
+    <td>
+        <a href="{% if company.has_lead_contract %}
+                    {%  url 'inquiries:inquiry_list' object.trip.company.slug object.trip.country.code|slugify object.trip.region|slugify %}"
+                 {% else %}
+                    #" data-target="#inquiryInformation" data-toggle="modal"
+                 {% endif %}>
+            <span class="badge badge-{% if object.inquiries > 0 %}darkblue{% else %}light{% endif %}">
+                {{ object.inquiries }} {% trans 'new inquiries' %}
+            </span>
+        </a>
+    </td>
+    <td>
+        {% if object.trip.overall_rating == None %}
+            {% trans 'No ratings' %}
+        {% else %}
+            {{ object.trip.overall_rating|floatformat }}
+        {% endif %}
+    </td>
+    <td>
+        {% change_inquiry_state_of_trip trip=object.trip %}
+    </td>
+    <td>
+        {% comment %}<button class="btn btn-outline-darkblue" data-toggle="tooltip"
+                title="{% trans 'Invite your customers' %}"
+                data-content="{% trans 'Invite your customers to rate this trip and gain reputation.' %}">
+            <i class="fa fa-envelope"></i>
+        </button>{% endcomment %}
+        <a href="{% url 'travelling:modify_trip' object.trip.company.slug object.trip.country.code|slugify object.trip.region|slugify %}" class="btn btn-darkblue" style="margin: 0;" data-content="{% trans 'Settings' %}" data-toggle="tooltip">
+          <i class="fa fa-cog"></i>
+        </a>
+        <a href="{% url 'pricing:price_list_overview' object.trip.company.slug object.trip.country.code|slugify object.trip.region|slugify %}" class="btn btn-outline-darkblue" data-content="{% trans 'Price lists' %}" data-toggle="tooltip">
+          <i class="fas fa-euro-sign"></i>
+        </a>
+    </td>
+</tr>

@@ -1,0 +1,17 @@
+{% load i18n slideshow %}
+<div class="card">
+    <div class="card-body" style="width: 100%;">
+        <h3>{% trans 'General' %}</h3>
+        <hr/>
+        <p>{% if object.description %}{{ object.description|safe }}{% else %}{{ object.company.name }}
+            {% trans 'does not provide any detailed information yet.' %}
+            <br>
+            {% blocktrans %}If you happen to know the operator you can send an E-Mail and inform them
+                about their trips being placed on Jagdreisencheck. With that you give them the opportunity
+                to fill in more details and thus increase the transparency.{% endblocktrans %}
+        {% endif %}</p>
+    </div>
+</div>
+
+{% show_slideshow "travelling.trip" object.pk %}
+

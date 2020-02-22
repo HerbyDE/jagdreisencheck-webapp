@@ -1,0 +1,65 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3>{% trans 'Moderate Trips' %}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>{% trans 'Region' %}</th>
+                                <th>{% trans 'Country' %}</th>
+                                <th>{% trans 'Operator' %}</th>
+                                <th>{% trans 'Creator' %}</th>
+                                <th>{% trans 'Link' %}</th>
+                                <th>{% trans 'Actions' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for trip in trips %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ trip.region }}</td>
+                                    <td>{{ trip.country.name }}</td>
+                                    <td>{{ trip.company.name }}</td>
+                                    <td>
+                                        <a href="{% if trip.created_by %}{% url 'accounts:user_profile' pk=trip.created_by.pk %}{% else %}#{% endif %}">
+                                            {{ trip.created_by.email }} ({% if trip.created_by.is_company %}{% trans 'Corporate' %}{% else %}{% trans 'Hunter' %}{% endif %})
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'travelling:show_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}">
+                                           {% trans 'Link' %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                       <a href="{% url 'travelling:delete_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}" class="button" style="background: darkred; color: white;">
+                                           {% trans 'Delete Trip' context "admin" %}
+                                       </a>
+                                        <a href="{% url 'travelling:approve_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}" class="button" style="background: green; color: white;">
+                                           {% trans 'Approve Trip' %}
+                                       </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td>
+                                        {% trans 'Currently there are no trips to be approved.' %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'email/base/email-base.html' %}
+{% load i18n %}
+
+{% block headline %}
+    {% blocktrans %}
+        A trip shall be deleted!
+    {% endblocktrans %}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {% blocktrans with name=profile.company_name.slug date=date host=request.get_host country=trip.country.code|slugify region_slug=trip.region|slugify %}
+            {{ name }} requests to delete the trip available here: https://{{ host }}/portal/{{ name }}/{{ country }}/{{ region_slug }}/detail/.
+            Date: {{ date }}
+        {% endblocktrans %}
+    </p>
+{% endblock %}

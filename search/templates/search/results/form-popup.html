@@ -1,0 +1,25 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-classes %}{% endblock %}
+{% block modal-id %}searchPopup{% endblock %}
+{% block modal-label %}{% endblock %}
+{% block modal-title %}{% trans 'Search' %}{% endblock %}
+
+
+{% block modal-body %}
+<form class="row" action="{% url 'search:retrieve_search_results' %}" method="get">
+    <div class="col-xs-12 col-md-3">
+        {% include 'base/components/fields.html' with field=form.country field_options=countries country=country %}
+    </div>
+    <div class="col-xs-12 col-md-3">
+        {% include 'base/components/fields.html' with field=form.game game=game %}
+    </div>
+    <div class="col-xs-12 col-md-3">
+        {% include 'base/components/fields.html' with field=form.company company=company %}
+    </div>
+    <div class="col-xs-12 col-md-3">
+        <button type="submit" class="btn btn-darkblue btn-block">{% trans 'Search' %}</button>
+    </div>
+</form>
+{% endblock %}

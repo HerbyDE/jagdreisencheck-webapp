@@ -1,0 +1,23 @@
+{% load i18n %}
+
+
+{% blocktrans with name=user.get_full_name email=user.email region=trip.region country=trip.country %}
+    Hello there,
+    {{ name }} is asking for trophy prices when going on your trip to {{ region }}, {{ country }} . You can get in touch via e-mail:
+    {{ email }}.
+    You can also manage this inquiry on Jagdreisencheck.de.
+    If you have any questions regarding this service please contact us via brieftaube@jagdreisencheck.de.
+
+    Yours,
+
+    The Jagdreisencheck Team
+
+
+    Legal note: This is not a subscription service. It has informative character keeping you up-to-date how users
+    interact with your offerings on Jagdreisencheck. This service is fully compliant with the GDPR.
+{% endblocktrans %}
+
+{% blocktrans with company=trip.company.name %}
+    This e-mail is intended for representatives of {{ company }} only. If you have received this email by accident
+    please delete it and contact brieftaube@jagdreisencheck.de.
+{% endblocktrans %}

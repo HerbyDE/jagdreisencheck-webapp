@@ -1,0 +1,46 @@
+/*
+Title: Trip overview pages
+Description: Sourcefile for the web app's trip overview page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-default-page";
+@import "cms-page-with-image-headline";
+@import "components/forms/base";
+@import "components/bs-select";
+@import "components/trip-thumbnail";
+@import "components/pagination";
+@import "components/owl-theme";
+
+
+// 2. CUSTOM STYLES
+.form {
+  padding-top: 5px;
+  width: 100%;
+  display: none;
+
+  @include media-breakpoint-up(lg) {
+    display: inline-flex;
+  }
+
+  .form-group {
+    margin: 0;
+  }
+
+}
+
+.mobile-search {
+  padding-top: 5px;
+}

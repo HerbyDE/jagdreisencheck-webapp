@@ -1,0 +1,102 @@
+{% load staticfiles i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <!-- CSS -->
+
+</head>
+<body>
+    <div class="container-fluid headline">
+        <div class="row">
+            <img src="https://jagdreisencheck.s3.amazonaws.com/static/assets/images/logos/jagdreisencheck_lg.png" alt="Jagdreisencheck" height="55"/>
+        </div>
+    </div>
+    <div class="container" style="margin: auto 15px auto 15px">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="email-title">{{ email.title }}</h3>
+                <hr/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p>
+                    {% if user.is_company %}
+                        {% trans 'Hello Team of' %} {{ user.get_short_name }},
+                    {% else %}
+                        {% trans 'Hello' %} {{ user.get_short_name }},
+                    {% endif %}
+                </p>
+                <p>
+                    {{ email.body|safe }}
+                </p>
+                <p>
+                    {% trans 'Yours' %},
+                    <br/>
+                    {% trans 'Your Jagdreisencheck Team' %}
+                </p>
+
+            </div>
+        </div>
+    </div>
+    <footer class="container-fluid">
+        <div class="row">
+            <div class="col-12" align="center">
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <a href="https://jagdreisencheck.de/">
+                            {% trans 'Jagdreisencheck.de' %}
+                        </a>
+                    </li>
+                    <li class="list-inline-item dot">
+                        &middot;
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="https://jagdreisencheck.de{% if user %}{% url 'mailing:unsubscribe' %}?list={{ email.target.get_slug }}&email={{ user.email }}{% endif %}" target="_blank">
+                            {% trans 'Unsubscribe' %}
+                        </a>
+                    </li>
+                    <li class="list-inline-item dot">
+                        &middot;
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="https://jagdreisencheck.de/flat/imprint/" target="_blank">
+                            {% trans 'Imprint' %}
+                        </a>
+                    </li>
+                    <li class="list-inline-item dot">
+                        &middot;
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="https://jagdreisencheck.de/{% if user %}{% url 'accounts:user_profile' user.pk %}{% endif %}" target="_blank">
+                            {% trans 'Your Account' %}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+    <style>
+        ul {
+            list-style: none;
+        }
+        .headline {
+            padding: 5px 10px;
+            background: lightgrey;
+        }
+        .list-inline {
+            display: inline-flex;
+            list-style: none;
+        }
+        .list-inline-item {
+            padding: 10px 5px;
+            list-style: none;
+        }
+
+
+    </style>
+</body>
+</html>

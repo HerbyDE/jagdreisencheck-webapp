@@ -1,0 +1,26 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}editQuestion{{ question.pk }}{% endblock %}
+
+
+{% block modal-label %}{% endblock %}
+
+
+{% block modal-title %}{% trans 'Edit Question' %}{% endblock %}
+
+
+{% block modal-body %}
+    <form action="{% url 'faq:edit_question' question.pk %}" method="post">
+        {% csrf_token %}
+        {% include 'base/components/fields.html' with field=qe_form.name custom_value=question.name enabled=True %}
+        <input type="hidden" name="redirect" value="{{ request.path }}#faq"/>
+        <input type="hidden" name="instance" value="{{ question.pk }}"/>
+        <button type="submit" class="btn btn-darkblue">{% trans 'Update' %}</button>
+    </form>
+{% endblock %}
+
+
+{% block modal-footer %}
+
+{% endblock %}

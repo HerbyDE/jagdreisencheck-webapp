@@ -1,0 +1,86 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n sekizai_tags %}
+
+{% block modal-label %}{% endblock %}
+
+
+{% block modal-id %}modal-{{ object.pk }}{% endblock %}
+
+
+{% block modal-classes %}{% endblock %}
+
+
+{% block modal-title %}
+    {% blocktrans with user=object.user.get_full_name rating=object.overall_rating|floatformat %}
+        Reply to {{ user }} who gave a rating of {{ rating }}
+    {% endblocktrans %}
+{% endblock %}
+
+
+{% block modal-body %}
+    <div class="row">
+        <div class="col-12">
+            <button class="btn btn-darkblue" type="button" data-toggle="collapse" data-target="#originalMessage-{{ object.user.get_full_name|slugify }}" aria-expanded="false" aria-controls="originalMessage">
+                <i class="fa fa-chevron-down"></i>
+                {% blocktrans with user=object.user.get_short_name %}
+                    View {{ user }}'s review text
+                {% endblocktrans %}
+            </button>
+            <div class="collapse multi-collapse" id="originalMessage-{{ object.user.get_full_name|slugify }}">
+                <div class="card card-body">
+                {{ object.description }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if reply_to_rating_form.errors or reply_to_rating_form.non_field_errors %}
+        <div class="row">
+            <div class="col-12">
+                <h4>{% trans 'Errors' %}</h4>
+                <hr/>
+                {% for f_err in reply_to_rating_form.errors %}
+                    {% for field in reply_to_rating_form %}
+                        {% if f_err == field.name %}
+                            <p><span style="font-weight: bold">{{ field.label }}:</span> {{ field.errors|join:", " }}</p>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+                {% for error in reply_to_rating_form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    <form class="form" action="{% url 'travelling:reply_to_rating' %}" method="post" data-rating="{{ object.pk }}">
+        <div class="row">
+           <div class="col-12" style="float: left !important;">
+                {% csrf_token %}
+                {% include 'base/components/fields.html' with field=reply_to_rating_form.text identifier=object.pk value=value %}
+                <input type="hidden" name="rating" value="{{ object.pk }}">
+                <input type="hidden" name="trip" value="{{ object.trip.pk }}">
+           </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% blocktrans with user=request.user.get_full_name email=profile.contact_email %}
+                    You are replying as {{ user }} ({{ email }}). The author of the rating will be able to contact you via
+                    your e-mail.
+                {% endblocktrans %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+                <p style="margin-top: 10px;">
+                    <span class="required-indicator">*</span> {% trans 'marks required inputs.' %}
+                </p>
+            </div>
+            <div class="col-xs-12 col-lg-6" style="float: right;">
+                <button type="submit" class="btn btn-darkblue">{% trans 'Submit' %}</button>
+            </div>
+        </div>
+     </form>
+
+{% endblock %}
+
+
+{% block modal-footer %}{% endblock %}

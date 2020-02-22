@@ -1,0 +1,225 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n staticfiles sekizai_tags countries travelling_tags accounts_tags %}
+
+{% block title %}{% trans 'Trip Search' %}{% endblock %}
+{% block headline-img-source %}{% static 'images/background/hunting_in_company_2.jpg' %}{% endblock %}
+
+{% block headline-content-containerized %}
+  <h1>{% trans 'Trip Search' %}</h1>
+  <h2>
+    {% trans 'Your potential next trips' %}
+    {% if country or company or game %}
+      {% if country %}{% trans 'to' %} {{ country }}{% endif %}
+      {% if company %}{% trans 'with' %} {{ company.name }}{% endif %}
+      {% if game %}{% trans 'on' %} {{ game.name }}{% endif %}
+    {% else %}
+      {% trans 'all around the globe' %}
+    {% endif %}
+  </h2>
+{% endblock %}
+
+{% block headline-nav %}
+  {% if not request.user_agent.is_mobile %}
+    <form class="form row d-xs-none d-lg-flex" action="{% url 'search:retrieve_search_results' %}" method="get">
+      <div class="col-xs-12 col-md-3">
+        {% include 'base/components/fields.html' with field=form.country field_options=countries custom_value=country_key %}
+      </div>
+      <div class="col-xs-12 col-md-3">
+        {% include 'base/components/fields.html' with field=form.game custom_value=game %}
+      </div>
+      <div class="col-xs-12 col-md-3">
+        {% include 'base/components/fields.html' with field=form.company custom_value=company %}
+      </div>
+      <div class="col-xs-12 col-md-3">
+        <button type="submit" class="btn btn-darkblue btn-block">{% trans 'Search' %}</button>
+      </div>
+    </form>
+    <div class="mobile-search">
+      <button class="btn btn-block btn-darkblue d-xs-block d-lg-none" data-toggle="modal" data-target="#searchPopup">{% trans 'Search' %}</button>
+    </div>
+
+  {% else %}
+    <button class="btn btn-block btn-darkblue" data-toggle="modal" data-target="#searchPopup">{% trans 'Search' %}</button>
+  {% endif %}
+
+{% endblock %}
+
+{% block main-content %}
+  <div class="container">
+    <h3>{% blocktrans count cc=objects.paginator.count %}Found {{ cc }} trip{% plural %}Found {{ cc }} trips{% endblocktrans %}.</h3>
+    <hr/>
+
+    <div class="row">
+      {% for object in objects %}
+
+        <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+          {% include 'travelling/components/trip-thumbnail.html' %}
+        </div>
+
+      {% empty %}
+        <div class="col-12">
+          <h3>{% blocktrans %}Unfortunately we couldn't find a trip that matches your query.{% endblocktrans %}</h3>
+          <p>
+            {% blocktrans %}If you intended to rate the trip you were searching for please click on the link below and create the trip. This will take about 1 Minute and will be great information for your fellow hunters.{% endblocktrans %}
+          </p>
+
+          <p>
+            <a href="{% url 'travelling:create_trip'%}" class="btn btn-highlight">{% trans 'Create a trip' %}</a>&#160;&#160;&#160;
+            {% if similar_company or similar_game or similar_country %}{% trans 'or' context "small" %} <span style="font-weight: 900;">{% trans 'have a look at similar offers below!' %}</span>{% endif %}
+          </p>
+
+
+          {% if similar_company and not request.user.is_company %}
+            <div style="height: 30px;"></div>
+            <h3>{% blocktrans with company=company.name %}Similar trips offered by {{ company }}{% endblocktrans %}</h3>
+            <hr/>
+            <div class="owl-carousel">
+              {% for object in similar_company %}
+                <div class="item">
+                  {% include 'travelling/components/trip-thumbnail.html' %}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% if similar_game and not request.user.is_company %}
+          <div style="height: 30px;"></div>
+          <h3>{% blocktrans with game=game.name %}Similar hunts on {{ game }}{% endblocktrans %}</h3>
+          <hr/>
+          <div class="owl-carousel">
+            {% for object in similar_game %}
+              <div class="item">
+                {% include 'travelling/components/trip-thumbnail.html' %}
+              </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if similar_country and not request.user.is_company %}
+          <div style="height: 30px;"></div>
+          <h3>{% blocktrans with country=country %}Similar trips to {{ country }}{% endblocktrans %}</h3>
+          <hr/>
+          <div class="owl-carousel">
+            {% for object in similar_country %}
+              <div class="item">
+                {% include 'travelling/components/trip-thumbnail.html' %}
+              </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        {% if objects.has_other_pages %}
+          <hr/>
+          <nav aria-label="search result navigation" style="margin: 0;">
+            <ul class="pagination justify-content-center" style="margin-bottom: 10px;">
+              <li class="page-item {% if not objects.has_previous %}disabled{% endif %}">
+                <a class="page-link navigator"
+                {% spaceless %}
+                  href="?page={% if objects.previous_page_number >= 1 %}{{ objects.previous_page_number }}{% endif %}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" tabindex="-1">
+                {% endspaceless %}
+                  <i class="fa fa-chevron-left"></i>
+                  {% trans 'Previous' %}
+                </a>
+              </li>
+              {% if objects.paginator.page_range|length > 5 %}
+
+                {% if not objects.number <= 3 %}
+                  <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+
+                {% for i in objects.paginator.page_range %}
+                  {% if objects.number <= i|add:"2" and objects.number >= i|add:"-2" and not objects.number == i %}
+                    <li class="page-item">
+                      {% spaceless %}
+                        <a href="?page={{ i }}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" class="page-link">{{ i }}</a>
+                      {% endspaceless %}
+                    </li>
+                  {% elif objects.number == i %}
+                    <li class="page-item active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% endif %}
+
+                {% endfor %}
+
+                {% if not objects.number >= objects.paginator.page_range|length|add:"-2" %}
+                  <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+
+              {% else %}
+                {% for i in objects.paginator.page_range %}
+                  {% if objects.number == i %}
+                    <li class="page-item active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item">
+                  {% spaceless %}
+                    <a href="?page={{ i }}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" class="page-link">{{ i }}</a>
+                  {% endspaceless %}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+
+              <li class="page-item {% if not objects.has_next %}disabled{% endif %}">
+                <a class="page-link navigator" {% spaceless %}
+                  href="?page={% if objects.next_page_number <= objects.paginator.num_pages %}{{ objects.next_page_number }}{% endif %}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" tabindex="-1">
+                  {% endspaceless %}
+                    {% trans 'Next' %}
+                    <i class="fa fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+        {% else %}
+          <div style="height: 30px"></div>
+        {% endif %}
+        <p style="text-align: center">{% blocktrans count cc=objects.paginator.count %}Found {{ cc }} trip{% plural %}Found {{ cc }} trips{% endblocktrans %}.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+  {% include 'search/results/form-popup.html' %}
+
+  {% addtoblock "css" %}
+    <link type="text/css" rel="stylesheet" href="{% static 'styles/new-styles/trip-overview-pages.css' %}"/>
+    <style>
+      .jrc-navbar {
+        background: transparent;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+      }
+    </style>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/owl.carousel.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script>
+      $(".owl-carousel").owlCarousel({
+          nav: true,
+          navText: ['<i class="fa fa-chevron-left"></i>', '<i class="fa fa-chevron-right"></i>'],
+          items: 3,
+          responsive: {
+              0: {items: 1},
+              768: {items: 2},
+              1200: {items: 3},
+
+          },
+          rewind: true,
+          autoplay: true,
+          pauseOnHover: true,
+          autoplayHoverPause:true
+      });
+    </script>
+  {% endaddtoblock %}
+
+{% endblock %}

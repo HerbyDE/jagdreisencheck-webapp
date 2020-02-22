@@ -1,0 +1,18 @@
+{% load travelling_tags sekizai_tags staticfiles %}
+
+<div class="progress-bar-container">
+    <span class="progress">
+        <span class="progress-bar" role="progressbar" aria-valuenow="{{ field }}" aria-valuemin="0" aria-valuemax="5" data-width="{{ field|get_percent:5 }}" data-init="false"></span>
+    </span>
+    <span class="text"><i class="icon icon-rating-img"></i> {{ field|floatformat }}/5</span>
+</div>
+
+
+{% addtoblock 'css' %}
+    <link type="text/css" rel="stylesheet" href="{% static 'styles/scss/components/animated-elements.css' %}"/>
+{% endaddtoblock %}
+
+{% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/circle-progress.min.js' %}"></script>
+    <script src="{% static 'scripts/components/animated-elements.min.js' %}"></script>
+{% endaddtoblock %}

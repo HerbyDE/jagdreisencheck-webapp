@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<tr>
+  <td>
+    {% include 'base/components/fields.html' with field=other_form.text %}
+    <span class="d-none">
+      {% include 'base/components/fields.html' with field=other_form.other_text %}
+    </span>
+  </td>
+  <td style="white-space: nowrap">
+    {{ other_form.cost }}
+  </td>
+  <td>
+    {% include 'base/components/fields.html' with field=other_form.billing_range %}
+    <span class="d-none">
+      {% include 'base/components/fields.html' with field=other_form.other_billing_range %}
+    </span>
+  </td>
+  <td>
+    {% include 'base/components/fields.html' with field=other_form.minRange %}
+  </td>
+  <td>
+    {% include 'base/components/fields.html' with field=other_form.maxRange %}
+  </td>
+  <td>
+    <br style="margin-top: 6px"/>
+    {% csrf_token %}
+    <input type="hidden" name="form" value="other"/>
+    <input type="submit" class="btn btn-darkblue" style="float: right" value="{% trans 'Save' %}"/>
+  </td>
+</tr>

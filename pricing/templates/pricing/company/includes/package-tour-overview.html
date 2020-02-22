@@ -1,0 +1,68 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-label %}{% endblock %}
+{% block modal-classes %}{% endblock %}
+{% block modal-id %}package-tours-{{ forloop.counter }}{% endblock %}
+{% block modal-title %}{% endblock %}
+
+
+{% block modal-body %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h3>{% blocktrans with region=object.trip.region country=object.trip.country.name %}Package tours to {{ region }}, {{ country }}{% endblocktrans %}</h3>
+        <hr/>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>{% trans 'Valid from' %}</th>
+                <th>{% trans 'Valid until' %}</th>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans '# of prices' %}</th>
+                <th>{% trans 'Actions' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for offer in object.price_list.all %}
+               <tr>
+                <td>{{ offer.validityFrom|date:"d. M Y" }}</td>
+                <td>{{ offer.validityTo }}</td>
+                <td>{{ offer.name }}</td>
+                <td>{% if offer.is_active %}{% trans 'Active' %}{% else %}{% trans 'Inactive' %}{% endif %}</td>
+                <td>{{ offer.ptour.all.count }}</td>
+                <td>
+                  <a href="{% url 'pricing:update_package_tour' trip.company.slug trip.country.code|slugify trip.region|slugify object.pk offer.pk %}" class="btn btn-darkblue" data-toggle="tooltip" data-content="{% trans 'Settings' %}">
+                    <i class="fa fa-cogs"></i>
+                  </a>
+                  &#160;
+                  <a href="{% url 'pricing:remove_package_tour' offer.pk %}" class="btn btn-outline-darkblue" data-toggle="tooltip" data-content="{% trans 'Remove offer' %}">
+                    <i class="fa fa-times"></i>
+                  </a>
+                </td>
+               </tr>
+              {% empty %}
+                <td>{% trans 'No package tours yet.' %}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              {% endfor %}
+            </tbody>
+          </table>
+          <a href="{% url 'pricing:new_package_tour' trip.company.slug trip.country.code|slugify trip.region|slugify object.pk %}" class="btn btn-darkblue">
+            <i class="fa fa-plus"></i>
+            {% trans 'Add package tour' %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block modal-footer %}{% endblock %}

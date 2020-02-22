@@ -1,0 +1,127 @@
+{% extends 'base/structure/default-page.html' %}
+{% load cms_tags staticfiles sekizai_tags i18n %}
+
+
+{% block title %}
+    {% trans 'Manage Slideshow' %}
+{% endblock %}
+
+
+{% block main-content %}
+    <div class="container nav-padding">
+        <div class="row">
+            <form class="col-xs-12 col-lg-6 offset-lg-3" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-12">
+                    <h1>{% trans 'Manage Slideshow' %}</h1>
+                    <h2>{% blocktrans with location=object.region country=object.country.name %}Your trip to {{ location }}, {{ country }}{% endblocktrans %}</h2>
+                    <p>
+                      {% blocktrans %}
+                          Here you may add up to ten images that provide impressions of the hunting experience. However,
+                          please note that you must not upload images that display unethical poses, a lot of blood or anything
+                          that may seem inappropriate to non-hunter visitors. Please keep in mind that this is also a way of
+                          managing your public relations. If there ara questions please send us an e-mail to
+                          <a href="mailto:brieftaube@jagdreisencheck.de?subject=Slideshow">brieftaube@jagdreisencheck.de</a>.
+                      {% endblocktrans %}
+                    </p>
+                    <hr/>
+                    </div>
+                </div>
+                {% if showform.errors or imageform.errors or showform.non_field_errors or imageform.non_field_errors and imageform.errors %}
+                    <div class="card align-content-center justify-content-center error-container" style="border-color: red">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12" style="margin-top: 10px;">
+                                    <h4>{% trans 'Errors' %}</h4>
+                                    <hr/>
+                                    {% for f_err, data in showform.errors.items %}
+                                        {% for field in showform %}
+                                            {% if f_err == field.name %}
+                                                <p><span style="font-weight: bold">{{ field.label }}:</span> {{ field.errors|join:", " }}</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if f_err == 'duplicate' %}
+                                            <p><span style="font-weight: bold">{% trans 'Duplicate' %}:</span> {{ data }}</p>
+                                        {% endif %}
+                                        {% if f_err == 'image' %}
+                                            <p><span style="font-weight: bold">{% trans 'Images' %}:</span> {{ data }}</p>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% for f_err in imageform.errors %}
+                                        {% for field in imageform %}
+                                            {% if f_err == field.name %}
+                                                <p><span style="font-weight: bold">{{ field.label }}:</span> {{ field.errors|join:", " }}</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {{ showform.non_field_errors }}
+                                    {{ imageform.non_field_errors }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% csrf_token %}
+                <input name="target_model" value="{{ model }}" type="hidden" />
+                <input name="identifier" value="{{ identifier }}" type="hidden" />
+                <div class="row">
+                    <div class="col-12">
+                        {% include 'base/components/fields.html' with field=showform.name %}
+                    </div>
+                </div>
+                <br/>
+                <div class="images">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>
+                                {% trans 'Images' %}
+                            </h4>
+                            <hr/>
+                        </div>
+                    </div>
+                </div>
+                {{ imageform.management_form }}
+                {% for form in imageform %}
+                    <div class="row">
+                        <div class="hidden-xs hidden-sm hidden-md visible-lg visible-xl visible-xxl col-lg-1">
+                            <p style="padding-top: 50%">
+                                {{ forloop.counter }}
+                            </p>
+                        </div>
+                        <div class="col-xs-12 col-lg-6">
+                            {% include 'base/components/fields.html' with field=form.image custom_name_ext=True clearing_input=form.clear_image %}
+                        </div>
+                        <div class="col-xs-12 col-lg-5">
+                            {% include 'base/components/fields.html' with field=form.caption custom_name_ext=True disable_quill=True %}
+                        </div>
+                        {% include 'base/components/fields.html' with field=form.id custom_name_ext=True %}
+                    </div>
+                    <hr/>
+                {% endfor %}
+
+                <div class="row">
+                    <div class="col-6" align="left">
+                        <a href="{{ request.GET.next }}" class="btn btn-secondary">
+                            <i class="fa fa-angle-left"></i>
+                            {% trans 'Return to trip' %}
+                        </a>
+                    </div>
+                    <div class="col-6" align="right">
+                        <button type="submit" class="btn btn-darkblue">
+                            <i class="fa fa-save"></i>
+                            {% trans 'Save Slideshow' %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/create-a-trip-page.css' %}">
+  {% endaddtoblock %}
+
+
+{% endblock %}
+
+

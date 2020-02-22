@@ -1,0 +1,14 @@
+{% load i18n %}
+
+
+<div class="step" id="general">
+  <h3>{% trans 'Further details on your inquiry' %}</h3>
+  <hr/>
+
+  {% include 'base/components/fields.html' with field=form.inquiry %}
+  <br/>
+  {% include 'base/components/fields.html' with field=form.consent_to_be_contacted %}
+
+  {% include 'base/components/forms/form-navigation.html' with final_step=True inquiry=True %}
+
+</div>

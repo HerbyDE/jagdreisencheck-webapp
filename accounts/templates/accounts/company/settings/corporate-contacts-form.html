@@ -1,0 +1,67 @@
+{% load i18n accounts_tags %}
+
+<div class="container">
+
+  <h3 class="card-title">{% trans 'Contact Settings' %}</h3>
+
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.phone %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.contact_email %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.main_lang_of_conversation %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.business_hours_days %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.business_hours_start %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.business_hours_end %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.business_hours_break_start %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_contact_form.business_hours_break_end %}
+    </div>
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=profile_contact_form.address %}
+    </div>
+
+    <div class="col-xs-12 col-lg-4">
+      {% include 'base/components/fields.html' with field=profile_contact_form.zip_code %}
+    </div>
+    <div class="col-xs-12 col-lg-8">
+      {% include 'base/components/fields.html' with field=profile_contact_form.city %}
+    </div>
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=profile_contact_form.country %}
+    </div>
+
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-xs-12 col-lg-6">
+      <p style="margin-top: 10px;"><span style="color: red;">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6">
+
+      <button class="btn btn-darkblue" type="submit" style="float: right">
+        <i class="fa fa-save"></i>
+        {% trans 'Save' %}
+      </button>
+    </div>
+  </div>
+
+</div>

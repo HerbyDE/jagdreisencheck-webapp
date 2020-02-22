@@ -1,0 +1,151 @@
+{% load cms_tags menu_tags sekizai_tags staticfiles i18n analytical google_analytics meta %}
+{% page_attribute "title" as title %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+
+    <title>
+      {% if post.title or show.title %}
+        {{ post.title }}{{ show.title }}
+      {% elif category %}
+        {{ category }}
+      {% elif title %}
+        {{ title }}
+      {% else %}
+        {% block title %}{% endblock %}
+      {% endif %} | {% trans 'Jagdreisencheck' %}
+    </title>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    {% autoescape off %}
+    {% if meta.description %}
+      {% meta 'description' meta.description %}
+    {% else %}
+      <meta name="description" content="{% spaceless %}{% page_attribute "page_description" %} {% block meta-description %}{% endblock %} {% block meta-description-page %}{% endblock %}{% endspaceless %}"/>
+    {% endif %}
+    {% if meta.description %}
+      {% meta_list 'keywords' meta.keywords %}
+    {% else %}
+      <meta name="keywords" content="{% spaceless %}{% page_attribute "page_keywords" %}{% block meta-keywords %}{% endblock meta-keywords %}{% endspaceless %}"/>
+    {% endif %}
+    {% endautoescape %}
+
+
+    {% render_block 'meta' %}
+
+    {% if not debug and not is_testsystem %}
+      {% spaceless %}
+      <script nonce="{{ request.csp_nonce }}">
+        (function(w,d,s,l,i){
+          w[l]=w[l]||[];
+          w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+          let f = d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!=='dataLayer'?'&l='+l:'';
+          j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-N5CDTDX');
+      </script>
+      {% endspaceless %}
+    {% endif %}
+
+    {% analytical_head_top %}
+
+    <!-- Favicon -->
+    <link rel="icon" href="{% static 'logos/favicon-xs.png' %}"/>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/brands.css" integrity="sha384-BKw0P+CQz9xmby+uplDwp82Py8x1xtYPK3ORn/ZSoe6Dk3ETP59WCDnX+fI1XCKK" crossorigin="anonymous">
+
+    {% render_block "css" %}
+
+  </head>
+
+  <body class="body">
+    {% cms_toolbar %}
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N5CDTDX" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+
+    {% analytical_body_top %}
+    <!-- Navigation -->
+    <nav class="jrc-navbar" id="probootstrap-navbar" style="top: auto;">
+      <div class="container-fluid topline">
+        <div class="row">
+          {% block topnav %}{% endblock %}
+        </div>
+      </div>
+      <div class="container">
+        {% block navigation %}{% endblock %}
+      </div>
+    </nav>
+
+    {% block messages %}{% endblock %}
+
+
+    <!-- Content -->
+    {% block content %}{% endblock %}
+
+    {% include 'base/components/cookie-banner/cookie-banner-GDPR.html' %}
+
+    <!-- Footer -->
+    {% block footer %}{% endblock %}
+
+    <!-- Scripts -->
+    {% analytical_body_bottom %}
+    <script src="{% static 'scripts/jquery-3.2.1.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/popper.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/bootstrap.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/jquery.ihavecookies.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/cookies.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+
+    {% spaceless %}
+    <script type="text/javascript" nonce="{{ request.csp_nonce }}">
+      window.addEventListener('load', function(){
+        let allimages= document.getElementsByTagName('img');
+        for (var i=0; i<allimages.length; i++) {
+          if (allimages[i].getAttribute('data-src')) {
+            allimages[i].setAttribute('src', allimages[i].getAttribute('data-src'));
+          }
+        }
+      }, false);
+
+      let images = $("img");
+
+      images.each(function () {
+        if($(this).data("src") === "") {
+          $(this).remove();
+        }
+      });
+    </script>
+    {% endspaceless %}
+
+    {% if not debug and not user.is_staff and not user.is_superuser %}
+      {% spaceless %}
+        <script src="{% static 'scripts/components/performance.min.js' %}" nonce="{{ request.csp_nonce }}" class="performance-script"></script>
+        <script id="hotjarTracking" nonce="{{ request.csp_nonce }}" class="performance-script">
+          (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:1083610,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');
+            r.async=1;
+            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+            a.appendChild(r);
+          })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        </script>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-134862671-1" nonce="{{ request.csp_nonce }}" class="performance-script"></script>
+        <script nonce="{{ request.csp_nonce }}" class="performance-script">
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-134862671-1');
+        </script>
+      {% endspaceless %}
+    {% endif %}
+
+    {% render_block "js" %}
+
+    <script src="{% static 'scripts/base.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  </body>
+</html>

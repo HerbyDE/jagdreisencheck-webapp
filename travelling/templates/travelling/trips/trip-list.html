@@ -1,0 +1,23 @@
+{% load i18n sekizai_tags %}
+
+<div class="mt-2"></div>
+{% for object in objects %}
+
+    {% if forloop.first %}
+        <div class="row">
+    {% endif %}
+<div class="col-xs-12 col-md-4" style="margin-bottom: 15px;">
+    {% include 'travelling/components/trip-thumbnail.html' %}
+</div>
+{% if forloop.counter|divisibleby:3 and not forloop.last %}
+    </div>
+    <div class="row">
+        {% elif forloop.last %}
+    </div>
+{% endif %}
+{% empty %}
+    <h3>{% trans 'Huh! Looks like there are no trips yet.' %}</h3>
+    <p>{% trans 'If you intended to rate a trip you can create one' %} <a
+            href="{% url 'travelling:create_trip' %}">{% trans 'here' %}</a>.</p>
+
+{% endfor %}

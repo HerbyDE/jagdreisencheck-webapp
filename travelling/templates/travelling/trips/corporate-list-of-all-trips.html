@@ -1,0 +1,67 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{% trans 'List of all trips' %}{% endblock %}
+
+{% block headline-img-source %}{% static 'assets/../../../../jagdreisencheck/static/images/background/Middle_European_Landscape.jpg' %}{% endblock %}
+
+{% block headline-content-containerized %}
+<div class="row">
+    <div class="col-12">
+
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+  <div class="container nav-padding">
+    <h1>{% trans 'List of all trips' %}</h1>
+    <hr/>
+
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>{% trans 'Region / Teritory' %}</th>
+                    <th>{% trans 'Country' %}</th>
+                    <th>{% trans 'Inquiries' %}</th>
+                    <th>{% trans 'Rating Score' %}</th>
+                    <th>{% trans 'Inquiry Status' %}</th>
+                    <th>{% trans 'Actions' %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for object in objects %}
+                    {% include 'travelling/components/corporate-list-thumbnail.html' %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+        <p class="mt-3" style="text-align: center">
+          <a href="{% url 'travelling:create_trip' %}" class="btn btn-highlight">{% trans 'Add a trip' %}</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+    {% if not company.has_lead_contract %}{% include 'accounts/company/cockpit/lead-contract-modal.html' %}{% endif %}
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/corporate-trip-list.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}

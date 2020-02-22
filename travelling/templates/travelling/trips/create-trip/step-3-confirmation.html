@@ -1,0 +1,38 @@
+{% load i18n cms_tags sekizai_tags recaptcha3 %}
+
+<div class="step" id="createTripStep3">
+  <h3>
+    {% if request.user.is_company %}
+      {% trans 'Only one step to publish you trip offer' %}
+    {% else %}
+      {% trans 'Almost ready to rate' %}
+    {% endif %}
+  </h3>
+  <hr/>
+
+  <p>
+    {% if not request.user.is_company %}
+      {% blocktrans with user_name=request.user.first_name %}
+        Thank you {{ user_name }} for contributing and helping your fellow hunters making better decisions.
+      {% endblocktrans %}
+    {% else %}
+      {% blocktrans with user_name=request.user.first_name %}
+        Thank you {{ user_name }} for publishing your trip. Your trip will now be available to your customers for rating.
+        Please be aware that we have to take a look at the travel offer before it will become available in our search engine.
+        If you have any questions or suggestions do not hesitate to write us an e-mail to
+        <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>
+      {% endblocktrans %}
+    {% endif %}
+  </p>
+
+  {{ form.recaptcha }}
+
+  {% include 'base/components/forms/form-navigation.html' with final_step=True %}
+
+</div>
+
+
+{% addtoblock 'css' %}
+    {% recaptcha_init %}
+    {% recaptcha_ready action_name='user_registration' %}
+{% endaddtoblock %}

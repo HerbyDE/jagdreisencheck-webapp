@@ -1,0 +1,119 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n sekizai_tags staticfiles jrc_seotools %}
+
+
+
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block meta-description-page %}{% spaceless %}{% get_country_meta_info country "meta_description" as country_descr %}{{ country_descr|escape }}{% endspaceless %}{% endblock %}
+
+{% if country_kws %}
+  {% block meta-keywords %}{% spaceless %}{% get_country_meta_info country "keywords" as country_kws %}{{ country_kws|safe }}{% endspaceless %}{% endblock %}
+{% endif %}
+
+
+{% block content %}
+
+  <div class="container nav-padding">
+    <h1>{{ headline }}</h1>
+    <small><a href=".."><i class="fa fa-chevron-left"></i> {% trans 'See all trips on Jagdreisencheck' %}</a></small>
+    <hr/>
+
+    <div class="row">
+      {% for object in objects %}
+
+        <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+          {% include 'travelling/components/trip-thumbnail.html' %}
+        </div>
+
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        {% if objects.has_other_pages %}
+          <hr/>
+          <nav aria-label="search result navigation" style="margin: 0;">
+            <ul class="pagination justify-content-center" style="margin-bottom: 10px;">
+              <li class="page-item {% if not objects.has_previous %}disabled{% endif %}">
+                <a class="page-link navigator"
+                {% spaceless %}
+                  href="?page={% if objects.previous_page_number >= 1 %}{{ objects.previous_page_number }}{% endif %}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" tabindex="-1">
+                {% endspaceless %}
+                  <i class="fa fa-chevron-left"></i>
+                  {% trans 'Previous' %}
+                </a>
+              </li>
+              {% if objects.paginator.page_range|length > 5 %}
+
+                {% if not objects.number <= 3 %}
+                  <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+
+                {% for i in objects.paginator.page_range %}
+                  {% if objects.number <= i|add:"2" and objects.number >= i|add:"-2" and not objects.number == i %}
+                    <li class="page-item">
+                      {% spaceless %}
+                        <a href="?page={{ i }}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" class="page-link">{{ i }}</a>
+                      {% endspaceless %}
+                    </li>
+                  {% elif objects.number == i %}
+                    <li class="page-item active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% endif %}
+
+                {% endfor %}
+
+                {% if not objects.number >= objects.paginator.page_range|length|add:"-2" %}
+                  <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+
+              {% else %}
+                {% for i in objects.paginator.page_range %}
+                  {% if objects.number == i %}
+                    <li class="page-item active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item">
+                  {% spaceless %}
+                    <a href="?page={{ i }}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" class="page-link">{{ i }}</a>
+                  {% endspaceless %}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+
+              <li class="page-item {% if not objects.has_next %}disabled{% endif %}">
+                <a class="page-link navigator" {% spaceless %}
+                  href="?page={% if objects.next_page_number <= objects.paginator.num_pages %}{{ objects.next_page_number }}{% endif %}{% if querystrings.country %}&country={{ querystrings.country }}{% endif %}{% if querystrings.game %}&game={{ querystrings.game }}{% endif %}{% if querystrings.company %}&company={{ querystrings.company }}{% endif %}" tabindex="-1">
+                  {% endspaceless %}
+                    {% trans 'Next' %}
+                    <i class="fa fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+        {% else %}
+          <div style="height: 30px"></div>
+        {% endif %}
+        <p style="text-align: center">{% blocktrans count cc=objects.paginator.count %}Found {{ cc }} trip{% plural %}Found {{ cc }} trips{% endblocktrans %}.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        {% get_country_descriptor country %}
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock "css" %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/trip-overview-pages-without-headline.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

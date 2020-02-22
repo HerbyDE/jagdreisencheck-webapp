@@ -1,0 +1,29 @@
+{% load i18n staticfiles cms_tags cms_static i18n sekizai_tags %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="owl-carousel owl-theme">
+                {% for object in model.objects %}
+                    <div class="item">
+                        {% if instance.template %}
+                            {% include instance.template %}
+                        {% else %}
+                            <p>{% trans 'Erroneous Data. Please notify' %} <a href="mailto:info@jagdreisencheck.de">info@jagdreisencheck.de</a>
+                            </p>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div class="item">
+                        <p>{% trans 'There is no data yet.' %}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% addtoblock "js" %}
+    <script src="{% static 'scripts/components/owl.carousel.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/carousel.min.js' %}"></script>
+{% endaddtoblock %}

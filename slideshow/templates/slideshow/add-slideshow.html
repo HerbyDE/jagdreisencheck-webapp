@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% if request.user.is_authenticated and request.user == profile.admin %}
+    <a href="{% url 'slideshow:create_slideshow' %}?model={{ model_str }}&identifier={{ identifier }}&next={{ request.path }}" class="btn btn-darkblue" style="margin: 0; float: right;">
+        {% if slideshow %}
+            {% trans 'Modify slideshow' %}
+        {% else %}
+            {% trans 'Add slideshow' %}
+        {% endif %}
+    </a>
+{% endif %}

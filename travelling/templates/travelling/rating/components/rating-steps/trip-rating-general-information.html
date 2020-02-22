@@ -1,0 +1,50 @@
+{% load i18n %}
+
+<div class="step page-element" id="general">
+  <h3>{% trans 'General Travel Information' %}</h3>
+  <p>{% blocktrans with country=object.country.name company=object.company.name %}Your trip to {{ country }} with {{ company }}{% endblocktrans %}</p>
+  <hr/>
+
+  <div class="row">
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=form.name %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.accommodation_type %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6 ac_quality">
+      {% include 'travelling/rating/rating-field.html' with field=form.accommodation_rating %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.meal_option %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6 ml_quality">
+      {% include 'travelling/rating/rating-field.html' with field=form.meal_quality %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.customer_support %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.support_with_issues %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.alternative_program %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6 ap_quality">
+      {% include 'travelling/rating/rating-field.html' with field=form.quality_alternative_program %}
+    </div>
+
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' with rating=True %}
+
+</div>

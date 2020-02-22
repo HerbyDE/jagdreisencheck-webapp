@@ -1,0 +1,18 @@
+{% load sekizai_tags %}
+
+<div class="row">
+    <div class="col-xs-12 col-lg-6"></div>
+    <div class="col-xs-12 col-lg-6">
+        <div class="g-recaptcha" data-sitekey="6LeSO4EUAAAAAHe-rvZnboRVU_WbKhaivHpx9UXK" data-size="invisible"></div>
+    </div>
+</div>
+
+{% addtoblock 'js' %}
+    <script src='https://www.google.com/recaptcha/api.js' nonce="{{ request.csp_nonce }}"></script>
+    <script src='https://www.google.com/recaptcha/api.js?render=6LeSO4EUAAAAAHe-rvZnboRVU_WbKhaivHpx9UXK' nonce="{{ request.csp_nonce }}"></script>
+    <script>
+        (function ($) {
+            if($(".g-recaptcha").is(":visible")) grecaptcha.execute();
+        })(jQuery)
+    </script>
+{% endaddtoblock %}

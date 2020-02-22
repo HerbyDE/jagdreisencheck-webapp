@@ -1,0 +1,33 @@
+{% load i18n staticfiles %}
+
+<form class="form container" name="login-form" id="loginDropdownForm" action="{% url 'accounts:user_login' %}" method="post">
+  {% csrf_token %}
+
+  <div>
+    <img class="small-logo" data-src="{% static 'logos/logo.png' %}"/>
+    {% trans 'Login' %}
+  </div>
+
+  <p>
+    <small>{% trans 'Login with your credentials' %}</small>
+  </p>
+
+  <label for="username" class="sr-only">E-Mail</label>
+  <input type="text" class="form-control" name="username" id="username" placeholder="{% trans 'E-Mail' %}"/>
+  <label for="password" class="sr-only">Password</label>
+  <input type="password" class="form-control" name="password" id="password" placeholder="{% trans 'Password' %}"/>
+
+  <label class="checkbox-label">
+    <small>{% trans 'Stay Logged-in' %}</small>
+    <input type="checkbox" name="stay-logged-in"/>
+    <span class="indicator"></span>
+  </label>
+  <br/>
+  <input type="hidden" name="next" value="{% if request.GET.next %}{{ request.GET.next }}{% else %}{{ request.path }}{% endif %}">
+  <br/>
+  <div class="btn-group">
+    <a href="{% url 'accounts:reset_password' %}" class="btn btn-block btn-light" style="margin-top: 8px" rel="nofollow">{% trans 'Forgot password' %}</a>
+    <button id="login" type="submit" class="btn btn-block btn-primary">{% trans 'Login' %}</button>
+  </div>
+
+</form>

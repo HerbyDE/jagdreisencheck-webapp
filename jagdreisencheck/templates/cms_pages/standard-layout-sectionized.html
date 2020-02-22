@@ -1,0 +1,22 @@
+{% extends 'base/structure/default-page.html' %}
+{% load cms_tags i18n sekizai_tags staticfiles %}
+
+{% block headline-content-containerized %}
+  <h1>{% placeholder 'Headline H1' %}</h1>
+  <p>{% placeholder 'Headline P' %}</p>
+{% endblock %}
+
+{% block headline-nav %}
+    {% placeholder 'Actions (Search Bar, etc.)' %}
+{% endblock %}
+
+{% block main-content %}
+  <div class="container content-container">
+    {% placeholder 'Content (wrapped in Container)' %}
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/cms-page-with-image-headline.css' %}">
+  {% endaddtoblock %}
+
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n sekizai_tags staticfiles %}
+
+{% block title %}
+  {% trans 'Price lists' %}
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row nav-padding">
+      <p>
+        <a href="{% url 'pricing:price_list_overview' trip.company.slug trip.country.code|slugify trip.region|slugify %}">
+          <i class="fa fa-chevron-left"></i>
+          {% trans 'Back to overview' %}
+        </a>
+      </p>
+      <div class="col-12">
+        <h1>
+          {% blocktrans with region=trip.region country=trip.country.name %}Package offer for your trip to {{ region }}, {{ country }}{% endblocktrans %}
+        </h1>
+
+        <p>
+          <i class="fa fa-info-circle"></i>
+          {% blocktrans %}Here you can edit the package price list for your trip. Please add game and accommodation and you may also add some other costs. If you have further questions on adding prices please contact us via e-mail:{% endblocktrans %}
+          <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>.
+        </p>
+        <hr/>
+
+        {% if list_form.errors or game_form.errors or acco_form.errors or other_form.errors or list_form.non_field_errors or game_form.non_field_errors or acco_form.non_field_errors or other_form.non_field_errors or price_form.errors or price_form.non_field_errors or pack_form.errors or pack_form.non_field_errors %}
+          <div class="row">
+            <div class="col-12">
+              <div class="card errorlist">
+                <div class="card-body">
+                  {% for error in list_form.errors %}
+                    {% include 'base/components/forms/error-handler/form-error.html' %}
+                  {% endfor %}
+                  {{ list_form.non_field_errors }}
+
+                  {% for error in game_form.errors %}
+                    {% include 'base/components/forms/error-handler/form-error.html' %}
+                  {% endfor %}
+                  {{ game_form.non_field_errors }}
+
+                  {% for error in acco_form.errors %}
+                    {% include 'base/components/forms/error-handler/form-error.html' %}
+                  {% endfor %}
+                  {{ acco_form.non_field_errors }}
+
+                  {% for error in other_form.errors %}
+                    {% include 'base/components/forms/error-handler/form-error.html' %}
+                  {% endfor %}
+                  {{ other_form.non_field_errors }}
+
+                  {% for error in price_form.errors %}
+                    {% include 'base/components/forms/error-handler/form-error.html' %}
+                  {% endfor %}
+                  {{ price_form.non_field_errors }}
+
+                  {% for error in pack_form.errors %}
+                    {% include 'base/components/forms/error-handler/form-error.html' %}
+                  {% endfor %}
+                  {{ pack_form.non_field_errors }}
+
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% include 'pricing/company/includes/package-tour-form.html' %}
+
+        {% if package_tour %}
+          {% include 'pricing/company/includes/price-list-form-standard.html' %}
+        {% endif %}
+
+      </div>
+      <p>
+        <a href="{% url 'pricing:price_list_overview' trip.company.slug trip.country.code|slugify trip.region|slugify %}">
+          <i class="fa fa-chevron-left"></i>
+          {% trans 'Back to overview' %}
+        </a>
+      </p>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/price-lists.css' %}">
+  {% endaddtoblock %}
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/forms.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/price-lists.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/datepicker.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script nonce="{{ request.csp_nonce }}">
+      let datepicker = $('input[data-type=date]');
+      datepicker.each(function () {
+        $(this).datepicker({
+          uiLibrary: 'fontawesome',
+          locale: 'de-de',
+          format: 'dd.mm.yyyy',
+        });
+      })
+    </script>
+  {% endaddtoblock %}
+
+
+{% endblock %}

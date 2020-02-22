@@ -1,0 +1,25 @@
+{% load countries i18n l10n travelling_tags %}
+
+<ul class="list-inline">
+    {% for link, fragment, name in crumbs %}
+        {% if forloop.first %}
+            <li class="list-inline-item">
+                <a href="{{ link }}"><i class="fa fa-home"></i></a>
+            </li>
+        {% elif name|length > 2 or forloop.counter > 2 %}
+            <li class="list-inline-item">
+                <i class="fa fa-chevron-right"></i>
+                {% if name == "Search" %}
+                    {% trans 'Search' %}
+                {% elif name == 'Rate' %}
+                    {% trans 'Rate' %}
+                {% elif name|length == 2 %}
+                    {% get_country name as country %}
+                    {{ country.name }}
+                {% else %}
+                    {{ name }}
+                {% endif %}
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

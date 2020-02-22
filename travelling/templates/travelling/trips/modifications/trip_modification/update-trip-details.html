@@ -1,0 +1,190 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n sekizai_tags staticfiles %}
+
+{% block title %}{% trans 'Update trip' %} - {{ object.country.name }}: {{ object.region }}{% endblock %}
+
+{% block headline-img-source %}{% if object.title_pic %}{{ object.title_pic.url }}{% else %}{% static 'images/background/Middle_European_Landscape.jpg' %}{% endif %}{% endblock %}
+
+{% block headline-content-containerized %}
+  <h1>{% trans 'Update trip' %} - {{ object.country.name }}: {{ object.region }} </h1>
+  <p><a href="{% url 'travelling:show_trip' object.company.slug object.country.code|slugify object.region|slugify  %}" class="btn btn-highlight">{% trans 'View Trip' %}</a></p>
+{% endblock %}
+
+
+{% block headline-nav %}
+  <ul class="list-inline on-page-nav">
+    <li class="list-inline-item on-page-nav-element active">
+      {% trans 'Trip details' %}
+    </li>
+  </ul>
+{% endblock %}
+
+
+{% block main-content %}
+
+  <div class="container">
+
+    {% if object.marked_for_deletion %}
+      <div class="row">
+
+        <div class="col-xs-12 col-lg-10 offset-lg-1">
+          <div class="alert alert-darkblue indissmissable">
+            {% url 'travelling:revise_trip_deletion' object.company.slug object.country.code|slugify object.region|slugify as revision_url %}
+            {% blocktrans with url=revision_url %}
+              This trip is marked for deletion. Deletion may take up to 24 hours. For revision please <a href="{{ url }}" style="text-decoration: underline">click here</a>.
+            {% endblocktrans %}
+            </div>
+        </div>
+
+      </div>
+    {% endif %}
+
+    {% if form.errors or form.non_field_errors %}
+      <div class="row">
+        <div class="col-xs-12 col-lg-10 offset-lg-1">
+          <h4>{% trans 'Errors' %}</h4>
+          <hr/>
+
+          {% include 'base/components/forms/error-handler/form-error.html' %}
+          {{ form.non_field_errors }}
+
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-10 offset-lg-1">
+
+        <div class="card">
+          <div class="card-body">
+            <div class="page-element" id="details" style="display: block">
+              <form action="" method="post" class="form container" id="createTripForm" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.country %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.region %}
+                  </div>
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.game %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.available_hunting_types %}
+                  </div>
+
+                  <div class="col-12">
+                    {% include 'base/components/fields.html' with field=form.available_accommodation_types %}
+                  </div>
+
+                  {% comment TODO: Hunter experience. %}
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.hunters_experience %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.hunters_fitness %}
+                  </div>
+                  {% endcomment %}
+
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.hunting_start_time %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.hunting_end_time %}
+                  </div>
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.staff_languages %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.interpreter_at_site %}
+                  </div>
+
+                  <div class="col-xs-12 col-lg-4">
+                    {% include 'base/components/fields.html' with field=form.rifle_rentals %}
+                  </div>
+                  <div class="col-xs-12 col-lg-4">
+                    {% include 'base/components/fields.html' with field=form.hunters_fitness %}
+                  </div>
+                  <div class="col-xs-12 col-lg-4">
+                    {% include 'base/components/fields.html' with field=form.alternative_activities %}
+                  </div>
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.airport_transfer %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.private_parking %}
+                  </div>
+
+                  <div class="col-12">
+                    {% include 'base/components/fields.html' with field=form.description %}
+                  </div>
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.headline_image %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.more_details_pdf %}
+                  </div>
+
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.wireless_coverage %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    {% include 'base/components/fields.html' with field=form.broadband_internet %}
+                  </div>
+
+                </div>
+
+                <br/>
+
+                <div class="row">
+                  <div class="col-xs-12 col-lg-6">
+                    {% if not object.marked_for_deletion %}
+                      <button type="button" class="btn btn-outline-darkblue" data-toggle="modal" data-target="#confirmTripDeletion">
+                        <i class="fa fa-times"></i>
+                        {% trans 'Delete Trip' %}
+                      </button>
+                      {% include 'travelling/trips/modifications/trip_modification/confirm-trip-deletion.html' %}
+                    {% endif %}
+                  </div>
+                  <div class="col-xs-12 col-lg-6">
+                    <button type="submit" class="btn btn-darkblue next-btn" data-target="#uploadInfo" data-toggle="modal" style="float: right">
+                      <i class="fa fa-save"></i>
+                      {% trans 'Save Changes' %}
+                    </button>
+                  </div>
+                </div>
+
+
+              </form>
+
+
+              {% include 'travelling/trips/components/create-game-form.html' %}
+              {% include 'upload/information/image-upload-information.html' %}
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/trip-modification-page.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/forms.min.js' %}"></script>
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'scripts/components/headline.min.js' %}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}

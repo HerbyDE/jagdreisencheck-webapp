@@ -1,0 +1,32 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}confirmTripDeletion{% endblock %}
+
+
+{% block modal-classes %}{% endblock %}
+{% block modal-label %}{% endblock %}
+
+
+{% block modal-title %}
+    {% blocktrans with region=object.region country=object.country.name %}Confirmation to delete your trip to {{ region }}, {{ country }}{% endblocktrans %}
+{% endblock %}
+
+
+{% block modal-body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12" style="padding: 30px 0;">
+                {% blocktrans %}
+                    Please confirm your request to delete the trip. The deletion process may take up to 24 hours.
+                {% endblocktrans %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block modal-footer %}
+  <a href="{% url 'travelling:request_trip_deletion' object.company.slug object.country.code|slugify object.region|slugify %}" class="btn btn-danger">
+    {% trans 'Confirm & Delete' %}
+  </a>
+{% endblock %}
+

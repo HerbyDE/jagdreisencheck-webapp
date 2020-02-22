@@ -1,0 +1,15 @@
+{% extends 'errorhandlers/base.html' %}
+{% load i18n %}
+
+{% block title %}
+  {% trans 'Error 403: Forbidden Request' %}
+{% endblock %}
+
+{% block headline %}
+  {% trans 'Error 403: Forbidden Request' %}
+{% endblock %}
+
+{% block error-message %}
+  {% blocktrans %}You are seeing this because you are not allowed to access this page. If you have questions please contact us:{% endblocktrans %}
+  <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load i18n staticfiles sekizai_tags %}
+
+<div class="col-xs-12 col-lg-8" style="padding: 0;">
+  <section class="owl-carousel" id="blogSlider">
+    {% for post in posts_list %}
+      <div class="item">
+        {% include "djangocms_blog/slider/blog-item.html" with post=post image=True TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
+      </div>
+    {% endfor %}
+  </section>
+</div>
+
+<div class="col-xs-12 col-lg-4 post-thumb-list d-lg-block d-md-none" style="padding: 0;">
+  <ul class="list-unstyled">
+    {% for post in posts_list %}
+      <li>
+        {% include "djangocms_blog/slider/blog-item-thumbnail.html" with post=post image=True TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+
+
+
+
+
+{% addtoblock 'js' %}
+  <script src="{% static 'scripts/components/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'scripts/components/blog-scripts.min.js' %}"></script>
+{% endaddtoblock %}
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+<div class="plugin plugin-blog">
+    <div class="blog-latest-entries">
+    {% for post in posts_list %}
+        {% include "djangocms_blog/includes/blog_item.html" with post=post image="true" TRUNCWORDS_COUNT=TRUNCWORDS_COUNT %}
+    {% empty %}
+    <p class="blog-empty">{% trans "No article found." %}</p>
+    {% endfor %}
+    </div>
+</div>
+{% endcomment %}

@@ -1,0 +1,70 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n staticfiles mailing easy_thumbnails_tags sekizai_tags %}
+
+{% block title %}{% trans 'Console' %}{% endblock %}
+
+{% block content %}
+  <div class="container nav-padding">
+    <div class="row">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{% trans 'Actions' %}</h3>
+            <div class="container">
+              <div class="row">
+                <div class="col-xs-12 col-lg-6">
+                  <ul class="fa-ul">
+                    <li>
+                      <a href="{% url 'accounts:user_profile' object.company_name.slug %}">
+                        <i class="fa fa-chevron-right"></i> {% trans 'Public Company Profile' %}
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{% if object.has_lead_contract %}{% url 'inquiries:inquiry_list' %}" {% else %}#" data-target="#inquiryInformation" data-toggle="modal" {% endif %}>
+                        <i class="fa fa-chevron-right"></i> {% trans 'Travel inquiries' %}
+                        <span class="badge badge-{% if inquiries > 0 %}darkblue{% else %}light{% endif %}">{{ inquiries }} {% if inquiries > 0 %}{% trans 'new' %}{% endif %}</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{% url 'accounts:settings' object.admin.pk %}">
+                        <i class="fa fa-chevron-right"></i> {% trans 'Settings' %}
+                      </a>
+                    </li>
+                    <li style="display: none">
+                      <a href="{% url 'accounts:user_logout' %}">
+                        <i class="fa fa-chevron-right"></i> {% trans 'Logout' %}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-xs-12 col-lg-6">
+                  <ul class="fa-ul">
+                    <li>
+                      <a href="{% url 'travelling:create_trip' %}">
+                        <i class="fa fa-chevron-right"></i> {% trans 'Create a new Trip' %}
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{% url 'accounts:console_trip_list' %}">
+                        <i class="fa fa-chevron-right"></i> {% trans 'List of all your Trips' %}
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% render_loyalty_window request.user %}
+  </div>
+
+  {% include 'accounts/company/cockpit/lead-contract-modal.html' %}
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/console.css' %}"/>
+  {% endaddtoblock %}
+
+
+{% endblock %}

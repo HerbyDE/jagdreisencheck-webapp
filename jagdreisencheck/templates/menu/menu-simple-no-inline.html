@@ -1,0 +1,25 @@
+{% load menu_tags i18n %}
+
+{% for child in children %}
+    <li class="{% if child.selected %} selected active{% endif %}{% if child.ancestor %} ancestor{% endif %}
+               {% if child.sibling %} sibling{% endif %}{% if child.descendant %} descendant{% endif %}
+               {% if child.children %} dropdown{% endif %}" style="padding: 7px 0;">
+        <a href="
+
+                {% if not child.children %}{{ child.attr.redirect_url|default:child.get_absolute_url }}{% else %}#{% endif %}"
+           class="{% if child.children %}dropdown-toggle{% endif %}"
+           {% if child.children %}id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false"{% endif %}>
+            <i class="fa fa-chevron-right fa-li"></i> {{ child.get_menu_title }}
+        </a>
+        {% if child.children %}
+            <div class="dropdown-menu">
+                <a href="{{ child.attr.redirect_url|default:child.get_absolute_url }}"
+                   class="dropdown-item {% if child.selected %} selected{% endif %}">
+                    {{ child.get_menu_title }} - {% trans 'Home' %}
+                </a>
+                {% show_menu 1 2 2 2 'menu/sub-menu.html' %}
+            </div>
+        {% endif %}
+    </li>
+{% endfor %}

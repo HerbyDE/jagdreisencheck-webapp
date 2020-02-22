@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="page-element" id="reviews">
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2>{% trans 'Reviews' %}</h2>
+      <hr/>
+      {% if reviews %}
+      <p>{% blocktrans with user=object.user.first_name %}
+          Here you can see {{ user }}'s ratings.
+      {% endblocktrans %}</p>
+      {% else %}
+      <p>{% blocktrans with user=object.user.first_name %}
+          {{ user }} does not provide any reviews yet. If you know {{ user }} let {{ user }} about your interest in a review.
+      {% endblocktrans %}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% for object in reviews %}
+    {% include 'travelling/rating/trip-rating-post.html' %}
+  {% endfor %}
+</div>

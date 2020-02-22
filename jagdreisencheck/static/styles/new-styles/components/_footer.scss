@@ -1,0 +1,131 @@
+footer {
+  background-color: map-get($theme-colors, 'secondary');
+  margin: 150px 0 0 0;
+  padding: 0;
+  z-index: -100 !important;
+  line-height: 1.2;
+
+  &.blank-footer {
+    margin: 0;
+  }
+
+  > .breadcrumbs {
+    padding-top: 15px;
+    background-color: map-get($theme-colors, 'primary');
+    min-height: 50px;
+    > .container {
+      > .row {
+        > .col-xs-12 {
+          > .list-inline {
+            position: relative;
+            color: white;
+            text-align: left;
+
+            a {
+              color: white;
+
+              &:hover {
+                color: darken($green, 80%)
+              }
+
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+  > .footer-inner {
+
+    p, a, small, span, blockquote {
+      color: $black;
+    }
+
+    > .container {
+      > .row {
+        > .col-xs-12, .col-lg-3 {
+          margin-bottom: 30px;
+          > h3 {
+            border-bottom: 1px solid black;
+          }
+
+          > .signup-form {
+            label {
+              margin: 15px 0 0 0;
+            }
+
+            hr {
+              margin: 3px 0 10px 0;
+              background: $black;
+
+              @include media-breakpoint-down(lg) {
+                display: none;
+              }
+
+            }
+
+          }
+        }
+      }
+    }
+
+    .social-footer {
+
+      a {
+        margin-right: 10px;
+        &:hover {
+          color: $green;
+          text-decoration: none;
+        }
+
+        i {
+          font-size: 1.5rem;
+        }
+
+      }
+    }
+  }
+
+  > .footer-bottom-line {
+    padding: 10px 5px;
+    background-color: map-get($colors, 'gray-dark');
+
+    p, span {
+      color: $white;
+    }
+
+    .list-inline {
+      float: right;
+    }
+
+  }
+
+  .blog-thumb-list {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      li {
+        margin: 5px 0;
+        h4 {
+          font-size: 0.9rem;
+        }
+
+        hr {
+          margin: 3px;
+        }
+
+        p {
+          font-size: 0.75rem;
+          color: $gray-900;
+
+        }
+
+      }
+
+    }
+  }
+
+}

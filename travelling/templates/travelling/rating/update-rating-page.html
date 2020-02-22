@@ -1,0 +1,43 @@
+{% extends 'travelling/rating/trip-rating-base-form.html' %}
+{% load i18n %}
+
+{% block view-heading %}
+  {% blocktrans with company=object.company country=object.country.name region=object.region %}Update your rating for {{ company }}'s trip in {{ region }}, {{ country }}.{% endblocktrans %}
+{% endblock %}
+
+
+{% block form-action %}
+  {% url 'travelling:update_rating' object.company.slug object.country.code|slugify object.region|slugify %}
+{% endblock %}
+
+{% block forms %}
+
+<div class="step page-element" id="final">
+
+  <h3>{% trans 'Tell us your story' %}</h3>
+  <hr/>
+
+  <p>
+    {% blocktrans with request.user.get_short_name as user_name and object.company.name as c_name %}{{ user_name }}, tell us all about your hunting travel experience with {{ c_name }}!<br>You are invited to go into detail.{% endblocktrans %}
+  </p>
+
+  <br/>
+
+  {% with form.description as field %}
+    {% include 'base/components/fields.html' %}
+  {% endwith %}
+
+  <br/>
+
+  <div class="row form-navigation">
+    <div class="col-xs-12 col-lg-6">
+      <p><span class="required-indicator">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6 navigator-btn-group">
+      <button class="btn btn-darkblue" type="submit"><i class="fa fa-plus"></i> {% trans 'Update rating' %}</button>
+      <button class="btn btn-default prev-btn" type="button"><i class="fa fa-chevron-left"></i> {% trans 'Previous' %}</button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

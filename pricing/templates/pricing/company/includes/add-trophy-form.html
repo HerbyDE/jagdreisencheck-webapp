@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<tr>
+  <td>
+    {% include 'base/components/fields.html' with field=game_form.game %}
+  </td>
+  <td>
+    {% include 'base/components/fields.html' with field=game_form.kind %}
+  </td>
+  <td style="white-space: nowrap">
+    {{ game_form.cost }}
+  </td>
+  <td>
+    {% include 'base/components/fields.html' with field=game_form.billing_range %}
+    <span class="d-none">
+      {% include 'base/components/fields.html' with field=game_form.otherRange %}
+    </span>
+  </td>
+  <td style="white-space: nowrap">
+    {% include 'base/components/fields.html' with field=game_form.minRange %}
+  </td>
+  <td style="white-space: nowrap">
+    {% include 'base/components/fields.html' with field=game_form.maxRange %}
+  </td>
+  <td>
+    <br style="margin-top: 6px"/>
+    {% csrf_token %}
+    <input type="hidden" name="form" value="game"/>
+    <input type="submit" class="btn btn-darkblue" style="float: right" value="{% trans 'Save' %}"/>
+  </td>
+</tr>

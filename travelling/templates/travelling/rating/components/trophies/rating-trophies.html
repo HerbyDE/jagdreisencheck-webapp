@@ -1,0 +1,80 @@
+{% load i18n %}
+
+<div class="step page-element" id="trophies">
+    <div class="row">
+        <div class="col-12">
+            <h3>{% trans 'Trophies' %}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <p>{% blocktrans with user_name=request.user.get_short_name %}
+                {{ user_name }}, here you can add trophies you collected during your hunting trip. They are not part of
+                the rating
+                algorithm yet. Please indicate either the weight, the length or the CIC points. You can delete
+                trophies at any time. If you have any questions feel free to contact us at brieftaube@jagdreisencheck.de
+                <br/>
+                You can skip this step if you like.
+            {% endblocktrans %}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{% trans 'Game' %}</th>
+                        <th>{% trans 'Weight' %}</th>
+                        <th>{% trans 'Length' %}</th>
+                        <th>{% trans 'CIC Pt.' %}</th>
+                        <th>{% trans 'Actions' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody id="trophy-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-lg-3">
+            <div class="form-group">
+                <label class="control-label" for="id_rating_game">{% trans 'Game' %}</label>
+                <select type="select" name="game_input" id="id_rating_game" class="form-control selectpicker"
+                        data-live-search="true">
+                    <option>-----</option>
+                    {% for choice in object.game.all %}
+                        <option value="{{ choice.pk }}"
+                                {% if choice.pk == field.value %}selected="selected"{% endif %}>{{ choice.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-3">
+            {% with tform.weight as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-xs-12 col-lg-2">
+            {% with tform.length as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-xs-12 col-lg-2">
+            {% with tform.cic_pt as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-xs-12 col-lg-2" style="padding-top: 23px;">
+            <button type="button" class="btn btn-darkblue" id="trophy-submit"><i class="fa fa-check"></i></button>
+        </div>
+        {{ form.trophies }}
+    </div>
+    <div class="row">
+        <div class="col-xs-12" align="right">
+            <button type="button" class="btn btn-secondary prev-btn">{% trans 'Previous Step' %}</button>
+            <button type="button" class="btn btn-darkblue next-btn">{% trans 'Next' %}</button>
+        </div>
+    </div>
+</div>

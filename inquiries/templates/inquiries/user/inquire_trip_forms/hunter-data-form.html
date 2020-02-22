@@ -1,0 +1,57 @@
+{% load i18n %}
+
+<div class="row hunter-data" style="margin-bottom: 30px">
+
+  <div class="col-12">
+    <div class="row">
+      <div class="col-xs-12 col-lg-2" style="white-space: nowrap">
+        <h4 style="margin: 3px 0">{% trans 'Hunter' %} #{{ forloop.counter }} - </h4>
+      </div>
+      <div class="col-xs-12 col-lg-10">
+        {% if forloop.first %}
+          {% include 'base/components/fields.html' with field=hunter_form.name custom_value=request.user.get_full_name inline=Ture %}
+        {% else %}
+          {% include 'base/components/fields.html' with field=hunter_form.name inline=Ture %}
+        {% endif %}
+      </div>
+    </div>
+    <hr style="margin: 5px 0"/>
+  </div>
+
+  {{ hunter_form.id }}
+  {{ hunter_form.inquiry }}
+
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=hunter_form.game field_options=trip.game.all %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {{ hunter_form.budget }}
+  </div>
+
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=hunter_form.license_since %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=hunter_form.shooting_experience %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=hunter_form.physical_fitness %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=hunter_form.age %}
+  </div>
+  {% if not forloop.first and update_view %}
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=hunter_form.DELETE %}
+    </div>
+  {% elif not forloop.first %}
+    <div class="col-12">
+      <button type="button" class="btn btn-outline-darkblue delete-hunter" data-href="{% url 'inquiries:inquire_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}" data-forms="{{ hunter_data.forms|length }}" data-idx="{{ forloop.counter }}">
+        {% trans 'Remove hunter' %}
+      </button>
+    </div>
+  {% endif %}
+  <div class="col-12">
+    <hr/>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+/*
+Title: Error handler styles
+Description: Sourcefile for the web app's error styles.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "../../../bootstrap/variables";
+// @import "components/search-bar";
+
+
+// 2. CUSTOM STYLES
+.errorlist {
+  border-color: $color-red-error;
+
+  .card-title {
+    color: $color-red-error;
+  }
+
+  p {
+    b {color: $color-red-error;}
+  }
+
+}

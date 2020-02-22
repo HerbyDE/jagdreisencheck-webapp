@@ -1,0 +1,293 @@
+/*
+Title: Navigation of the web application.
+ */
+
+@import "forms/checkbox";
+
+
+// navbar
+
+.jrc-navbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: 0;
+  z-index: 100;
+  width: 100%;
+  font-family: $font-family-sans-serif;
+
+  &.toggled {
+    background: $white;
+  }
+
+  .topline {
+    background-color: $gray-800;
+    > .row {
+      .col-xs-12 {
+        ul.list-inline {
+          margin: 0;
+          float: right;
+          li.list-inline-item {
+            padding: 3px 25px;
+            > a {
+              color: white;
+              &:hover {
+                color: theme-color('primary') !important;
+              }
+            }
+
+            @include media-breakpoint-down(sm) {
+              padding: 3px 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .navbar {
+    margin: 0;
+    padding: 8px 0;
+  }
+
+  .navbar-brand {
+    margin: 0;
+    padding: 0;
+    > img {
+      max-height: 70px;
+      width: 90px;
+    }
+  }
+
+  .navbar-toggler {
+    border: none;
+    font-size: 1.65rem;
+    color: white;
+  }
+
+  .nav-item {
+    line-height: 1;
+    color: white;
+    padding-top: 6px;
+
+    .nav-link {
+      font-size: 15px;
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      color: inherit !important;
+      text-decoration: none !important;
+
+      @include media-breakpoint-down(md) {
+        padding-top: .5rem;
+        padding-bottom: .5rem;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      @include media-breakpoint-down(sm) {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+
+    &.active {
+      color: $green;
+    }
+
+    &.selected {
+      color: $green;
+    }
+
+    &:hover {
+      color: $green;
+    }
+
+
+  }
+
+  .profile {
+    margin-top: -12px;
+    .dropdown {
+      margin-top: 10px;
+      .dropdown-menu {
+        position: absolute;
+        top: 47px;
+        right: 0;
+        bottom: auto;
+        left: auto;
+        border-radius: 0.1rem;
+        border-color: $gray-400;
+
+        > .dropdown-item {
+          padding-top: 10px;
+          padding-bottom: 10px;
+
+          .form {
+            display: block;
+          }
+
+          &.no-hover {
+            background: $white !important;
+          }
+
+          &:hover {
+            color: $white;
+            background: $green;
+          }
+        }
+
+        @include media-breakpoint-down(md) {
+          position: relative;
+          background: $white;
+          top: auto;
+          right: auto;
+          bottom: auto;
+          left: auto;
+        }
+
+      }
+
+    }
+  }
+
+  .navbar-collapse {
+    @include media-breakpoint-down(md) {
+      position: fixed;
+      top: 85px;
+      right: 0;
+      bottom: auto;
+      left: 0;
+      background: $white;
+
+      .nav-item {
+        color: $gray-700;
+
+        &.active, .selected {
+          color: $green;
+        }
+
+        &:hover {
+          color: $green;
+        }
+
+      }
+    }
+  }
+
+  .navbar-nav {
+    // padding: 0 2.5rem 1rem 2.5rem;
+
+    @include media-breakpoint-between(sm,md) {
+      padding: 0 5.5rem 1rem 5.5rem;
+    }
+
+    @include media-breakpoint-down(xs) {
+      padding: 0 2.5rem 1rem 2.5rem;
+    }
+
+    @include media-breakpoint-down(md) {
+      -webkit-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+      box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    }
+
+  }
+
+  #loginDropdown {
+
+    @include media-breakpoint-up(lg) {
+      color: $white;
+    }
+
+  }
+
+  &.scrolled {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: auto;
+    background: $white;
+    -webkit-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+    .navbar-toggler {
+      color: $gray-700;
+    }
+
+    .nav-item {
+      color: $gray-700;
+      &.active, .selected {color: $green;}
+      &:hover {color: $green;}
+
+    }
+
+    #loginDropdown {
+      color: $darkblue;
+
+      &:hover {
+        color: $white;
+      }
+
+    }
+
+  }
+}
+
+.login-menu {
+  top: 57px;
+  right: 0;
+  left: auto;
+
+  .dropdown-item {
+    &:focus {
+      background: none;
+    }
+    &:hover {
+      background: none;
+    }
+  }
+
+}
+
+#loginDropdownForm {
+
+  .small-logo {
+    height: 50px;
+    max-height: none;
+    width: auto;
+    max-width: none;
+  }
+
+  .checkbox-label {
+    float: left;
+  }
+
+  input {
+    margin: 5px 0;
+  }
+
+}
+
+.messages {
+  position: fixed;
+  top: 90px;
+  right: 15px;
+  bottom: auto;
+  left: auto;
+  z-index: 110;
+  max-width: 350px;
+
+  button {
+    margin: -6px 0 0 10px;
+  }
+
+  .alert-success {
+    border: 2px solid #325e32;
+  }
+
+  .alert-danger {
+    border: 2px solid #721c24;
+  }
+
+}

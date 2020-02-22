@@ -1,0 +1,93 @@
+/*
+Title: Error Pages of Jagdreisencheck
+Description: Sourcefile for the web app's error pages.
+Author: Herbert Woisetschläger
+Date: 20.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "base";
+@import "cms-default-page";
+
+
+// 2. CUSTOM STYLES
+.nav-padding {
+  padding-top: 70px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.error-container {
+  height: 100vh;
+  width: 100vw;
+  max-height: none;
+  max-width: none;
+  overflow: hidden !important;
+
+  > img {
+    position: absolute;
+    top: -75px;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: 100vw;
+    height: auto;
+    max-height: none;
+    z-index: -1;
+
+    @include media-breakpoint-down(lg) {
+      width: auto;
+      max-width: none;
+      height: 100vh;
+      margin-top: 75px;
+      margin-left: 50%;
+      -webkit-transform: translate(-50%, 0);
+      -moz-transform: translate(-50%, 0);
+      -ms-transform: translate(-50%, 0);
+      -o-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+    }
+
+  }
+
+  > .overlay {
+    margin-top: -50px;
+    padding-top: 200px;
+    height: 100vh;
+    background: transparentize($gray-700, 0.33);
+    z-index: 2;
+
+    h1 {
+      color: $white;
+      font-weight: 900;
+    }
+
+    p {
+      margin-left: 50%;
+      -webkit-transform: translate(-50%, 0);
+      -moz-transform: translate(-50%, 0);
+      -ms-transform: translate(-50%, 0);
+      -o-transform: translate(-50%, 0);
+      transform: translate(-50%, 0);
+      text-align: center;
+      max-width: 400px;
+      color: $white;
+    }
+
+  }
+
+}
+
+footer {
+  margin-top: 0;
+}

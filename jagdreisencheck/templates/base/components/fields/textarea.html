@@ -1,0 +1,34 @@
+{% load i18n staticfiles sekizai_tags %}
+
+
+{% spaceless %}
+    <div class="form-group">
+        {% if not field.field.widget.attrs.no_label %}
+            <label class="control-label" for="{{ field.id_for_label }}">
+                {{ field.label }}{% if field.field.required == True %} <span class="required-indicator">*</span>{% endif %}
+            </label>
+            {% if field.field.widget.attrs.warning %}
+                <br/>
+                <small><i class="fa fa-exclamation-circle" style="color: red; margin-left: 10px;"></i> {{ field.field.widget.attrs.warning|safe }}</small>
+            {% endif %}
+        {% endif %}
+        <textarea name="{% if custom_name_ext %}form-{{ forloop.counter0 }}-{% elif form.prefix %}{{ form.prefix }}-{% endif %}{{ field.name }}"
+                  class="form-control {% if not disable_quill %}quill-original{% endif %}"
+                  id="{{ field.id_for_label }}{% if identifier %}{{ identifier }}Original{% endif %}"
+                  {% if field.field.required %}required{% endif %}
+                  {% if field.field.max_length %}maxlength="{{ field.field.max_length }}"{% endif %}
+                  {% if field.field.widget.attrs.disabled %}disabled="disabled"{% endif %} rows="{% if field.field.widget.attrs.rows %}{% else %}12{% endif %}"
+                >{% spaceless %}
+                {% if value %}{{ value }}{% elif field.value %}{{ field.value }}{% endif %}
+            {% endspaceless %}</textarea>
+        <p class="quill-editor" {% if identifier %}id="{{ field.id_for_label }}{{ identifier }}"{% endif %}></p>
+    </div>
+
+    {% if request.user.is_company and not disable_quill %}
+        {% addtoblock 'js' %}
+            <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+            <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+            <script src="{% static 'scripts/components/customQuill.min.js' %}"></script>
+        {% endaddtoblock %}
+    {% endif %}
+{% endspaceless %}

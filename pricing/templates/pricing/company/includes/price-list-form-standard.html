@@ -1,0 +1,136 @@
+{% load i18n %}
+
+<hr class="mb-4"/>
+
+<h2>{% trans 'Game prices' %}</h2>
+<p>
+  <i class="fa fa-info-circle"></i>
+  {% trans 'Please delete a position and add a new one in case you want to update it. We are working on a more convenient method.' %}
+</p>
+<form action="" method="post" id="addTrophyForm">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>{% trans 'Game' %}</th>
+          <th>{% trans 'Kind / Gender' %}</th>
+          <th>{% trans 'Price' %}</th>
+          <th>{% trans 'Billing range' %}</th>
+          <th>{% trans 'Range minimum' %}</th>
+          <th>{% trans 'Range maximum' %}</th>
+          <th>{% trans 'Actions' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in game_prices %}
+          <tr>
+            <td>{{ object.game }}</td>
+            <td>{{ object.get_kind_display }}</td>
+            <td>{{ object.price.cost }}</td>
+            <td>{% if object.billing_range == "O" %}{{ object.otherRange }}{% else %}{{ object.get_billing_range_display }}{% endif %}</td>
+            <td>{{ object.minRange }}</td>
+            <td>{{ object.maxRange }}</td>
+            <td><a href="{% url 'pricing:remove_game_price' object.pk %}" class="btn btn-outline-darkblue"><i class="fa fa-times"></i></a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td>{% trans 'No game prices yet.' %}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        {% endfor %}
+
+        {% include 'pricing/company/includes/add-trophy-form.html' %}
+      </tbody>
+    </table>
+  </div>
+</form>
+<hr class="mb-4"/>
+
+<h2 class="mt-3">{% trans 'Accommodation prices' %}</h2>
+<p>
+  <i class="fa fa-info-circle"></i>
+  {% trans 'Please delete a position and add a new one in case you want to update it. We are working on a more convenient method.' %}
+</p>
+<form action="" method="post">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>{% trans 'Accommodation' %}</th>
+          <th>{% trans 'Price' %}</th>
+          <th>{% trans 'Billing period' %}</th>
+          <th>{% trans 'Actions' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in accommodation_prices %}
+          <tr>
+            <td>{{ object.get_accommodation_display }}</td>
+            <td>{{ object.price.cost }}</td>
+            <td>{{ object.get_period_display }}</td>
+            <td><a href="{% url 'pricing:remove_accommodation_price' object.pk %}" class="btn btn-outline-darkblue"><i class="fa fa-times"></i></a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td>{% trans 'No accommodation prices yet.' %}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        {% endfor %}
+
+        {% include 'pricing/company/includes/add-accommodation-form.html' %}
+      </tbody>
+    </table>
+  </div>
+</form>
+<hr class="mb-4"/>
+
+<h2 class="mt-3">{% trans 'Other prices' %}</h2>
+<p>
+  <i class="fa fa-info-circle"></i>
+  {% trans 'Please delete a position and add a new one in case you want to update it. We are working on a more convenient method.' %}
+</p>
+<form action="" method="post">
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>{% trans 'Title' %}</th>
+          <th>{% trans 'Price' %}</th>
+          <th>{% trans 'Billing range' %}</th>
+          <th>{% trans 'Range minimum' %}</th>
+          <th>{% trans 'Range maximum' %}</th>
+          <th>{% trans 'Actions' %}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for object in other_prices %}
+          <tr>
+            <td>{{ object.text }}</td>
+            <td>{{ object.price.cost }}</td>
+            <td>{{ object.billing_range }}</td>
+            <td>{% if object.minRange %}{{ object.minRange }}{% else %}-{% endif %}</td>
+            <td>{% if object.maxRange %}{{ object.maxRange }}{% else %}-{% endif %}</td>
+            <td><a href="{% url 'pricing:remove_other_price' object.pk %}" class="btn btn-outline-darkblue"><i class="fa fa-times"></i></a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td>{% trans 'No other prices yet.' %}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        {% endfor %}
+
+        {% include 'pricing/company/includes/add-other-price-form.html' %}
+      </tbody>
+    </table>
+  </div>
+</form>

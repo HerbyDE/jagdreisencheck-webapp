@@ -1,0 +1,29 @@
+{% extends 'base/structure/base.html' %}
+{% load cms_tags staticfiles sekizai_tags i18n %}
+
+{% block content %}
+  <div class="headline">
+    <div class="headline-image">
+      <img alt="{% trans 'Jagdreisencheck' %}" data-src="{% block headline-img-source %}{% endblock %}"/>
+      {% placeholder 'Background Image' %}
+    </div>
+    <div class="headline-content">
+      {% block headline-content-containerized %}{% endblock %}
+    </div>
+  </div>
+  <div class="headline-nav">
+    <div class="inner">
+      {% block headline-nav %}{% endblock %}
+    </div>
+  </div>
+
+
+  {% block main-content %}{% endblock %}
+
+  {{ block.super }}
+
+  {% addtoblock "js" %}
+      <script src="{% static 'scripts/components/headline.min.js' %}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}

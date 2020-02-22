@@ -1,0 +1,117 @@
+{% load i18n staticfiles travelling_tags easy_thumbnails_tags sekizai_tags jrc_seotools %}
+{% get_placeholder_image object.country forloop.counter as placeholder_image %}
+
+<div class="card trip-thumbnail">
+  <div class="card-body">
+
+    <div class="image-wrapper">
+      <a href="{% url 'travelling:show_trip' object.company.slug object.country.code|slugify object.region|slugify %}" class="image">
+        <img src="
+        {% spaceless %}
+        {% if object.headline_image %}
+          {% comment %}{% thumbnail object.headline_image 400x320 crop %}{% endcomment %}
+          {{ object.headline_image.url }}
+        {% elif placeholder_image %}
+          {{ placeholder_image.url }}
+        {% else %}
+          {% static 'images/placeholder/No_Photo.png' %}
+        {% endif %}
+        {% endspaceless %}" alt="{{ object.country.name }}: {{ object.region }}"/>
+      </a>
+    </div>
+
+    <div class="title-wrapper">
+      <div class="row">
+        <div class="col-2">
+          <div class="image-wrapper">
+            <img src="{% spaceless %}
+              {% if object.company.logo %}
+                {{ object.company.logo.url }}
+                {% comment %}{% thumbnail object.company.logo 90x90 crop %}{% endcomment %}
+              {% else %}
+                {% static 'images/placeholder/white_placeholder.png' %}
+              {% endif %}
+              {% endspaceless %}" alt="{{ object.company.name }}"/>
+          </div>
+        </div>
+        <div class="col-8">
+          <h4 class="card-title">{{ object.country.name }}: {{ object.region }}</h4>
+        </div>
+        <div class="col-2">
+          <div class="rating-wrapper">
+            <i class="icon icon-rating-img"></i>
+            {% if object.overall_rating > 0 %}{{ object.overall_rating|floatformat }}/5{% else %}{% trans 'N/A' %}{% endif %}
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="company-wrapper">
+      <i class="fa fa-chevron-right"></i> {% trans 'Operator' %}:
+      {% if object.company.has_profile %}<a href="{% url 'accounts:user_profile' pk=object.company.slug %}">{% endif %}
+        {{ object.company.name }}
+      {% if object.company.has_profile %}</a>{% endif %}
+    </div>
+
+    <div class="content-wrapper">
+      <div class="row expansible">
+        <div class="col-1">
+          <ul class="list-unstyled">
+            <li>
+              <i class="fa fa-paw"></i>
+              {% for game in object.game.all %}
+                {% if forloop.counter <= 2 %}
+                  {{ game }}{% if not forloop.last %}, {% endif %}
+                {% endif %}
+                {% if forloop.counter > 2 and forloop.last %}
+                  {% trans 'and more' %}
+                {% endif %}
+              {% endfor %}
+            </li>
+            <li>
+              &#160;<i class="icon icon-perch"></i>
+              {{ object.get_available_hunting_types_display|join:", " }}
+            </li>
+            <li>
+              <i class="fa fa-home"></i>
+              {% if object.get_available_accommodation_types_display|length > 2 %}
+                {% for acc in object.get_available_accommodation_types_display %}
+                  {% if forloop.counter < 2 %}
+                    {{ acc }},
+                  {% elif forloop.last %}
+                    {% trans 'and more' %}
+                  {% endif %}
+                {% endfor %}
+              {% else %}
+                {{ object.get_available_accommodation_types_display|join:", " }}
+              {% endif %}
+            </li>
+            <li>
+              <i class="fa fa-calendar"></i>
+              {{ object.get_hunting_start_time_display }} - {{ object.get_hunting_end_time_display }}
+            </li>
+          </ul>
+          <i class="fa fa-chevron-right"></i>
+        </div>
+        <div class="col-10">
+          <p>
+            {% spaceless %}
+              {% if object.slogan %}
+                {{ object.slogan|safe|truncatechars_html:50 }}
+              {% elif object.description and not object.slogan %}
+                {{ object.description|truncatechars_html:130|striptags }}
+              {% else %}
+                {% trans 'No description yet.' %}
+              {% endif %}
+            {% endspaceless %}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <a href="{% url 'travelling:show_trip' object.company.slug object.country.code|slugify object.region|slugify %}" class="btn btn-darkblue">
+      {% trans 'View Trip' %}
+    </a>
+  </div>
+</div>

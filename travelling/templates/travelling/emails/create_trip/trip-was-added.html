@@ -1,0 +1,35 @@
+{% extends 'email/base/email-base.html' %}
+{% load staticfiles i18n %}
+
+{% block headline %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {% trans 'Hello Team of' %} {{ company.company_name.name }},
+    </p>
+    <p>
+        {% blocktrans with region=trip.region country=trip.country.name %}
+            A trip to {{ region }}, {{ country }} has been added to your profile. Please check if this trip is
+            correct and add further details in your console. <br/>
+            Please notify us (brieftaube@jagdreisencheck.de) if this is a duplicate. We will then merge the ratings with those of your existing trip.
+
+        {% endblocktrans %}
+    </p>
+    <hr/>
+    <span>{% trans 'The trip can be viewed here' %}:</span>
+    <a href="{{ request.get_host }}{% url 'travelling:show_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}">
+        {{ request.get_host }}{% url 'travelling:show_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}
+    </a>
+    <br/>
+    <small>{% trans 'Hint: If the link does not work please copy the link into your browser.' %}</small>
+    <hr/>
+    <span>{% trans 'You may access your console here' %}:</span>
+    <a href="{{ request.get_host }}{% url 'accounts:console' %}">
+        {{ request.get_host }}{% url 'accounts:console' %}
+    </a>
+    <br/>
+    <small>{% trans 'Hint: If the link does not work please copy the link into your browser.' %}</small>
+    <hr/>
+{% endblock %}

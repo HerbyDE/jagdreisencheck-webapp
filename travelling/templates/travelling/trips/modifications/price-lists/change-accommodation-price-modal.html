@@ -1,0 +1,35 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}price-modal-{{ forloop.counter }}{% endblock %}
+
+{% block modal-title %}
+    {% blocktrans with element=element.type %}Change the data of {{ element }}{% endblocktrans %}
+{% endblock %}
+{% block modal-body %}
+    <form action="{% url 'travelling:update_acc_price' element.pk %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.acc_type %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.calc_base %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.price_hunter %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.price_non_hunter %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" align="right">
+                <button type="submit" class="btn btn-darkblue">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'email/base/email-base.html' %}
+{% load i18n %}
+
+{% block headline %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {% blocktrans with company=trip.company.name country=trip.country.name region=trip.region score=rating.overall_rating|floatformat %}
+            Your trip to {{ region }}, {{ country }} has been rated with a total score of {{ score }}.<br/>
+            You can view the rating and reply to it by clicking on the link below:
+        {% endblocktrans %}
+    </p>
+    <hr/>
+    <a href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/{{ trip.company.slug }}/{{ trip.country.code|slugify }}/{{ trip.region|slugify }}#rating-{{ user_slug }}-{{ rating_pk }}">
+        {% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/{{ trip.company.slug }}/{{ trip.country.code|slugify }}/{{ trip.region|slugify }}#rating-{{ rating.user.fist_name|slugify }}-{{ rating.pk }}
+    </a>
+    <br/>
+    <small>{% trans 'Hint: If the link does not work please copy the link into your browser.' %}</small>
+    <hr/>
+
+    <p>
+        {% blocktrans %}
+            Should you require assistance please contact us:
+        {% endblocktrans %}
+        <a href="mailto: brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>
+    </p>
+
+{% endblock %}
+
+

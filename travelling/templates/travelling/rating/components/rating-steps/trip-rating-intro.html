@@ -1,0 +1,53 @@
+{% load i18n cms_tags %}
+
+<div class="step page-element" id="intro">
+  {% if update_view %}
+    <h3>
+      {% block view-heading %}
+        {% blocktrans with company=object.company country=object.country.name region=object.region %}Rate {{ company }}'s trip to {{ region }}, {{ country }}.{% endblocktrans %}
+      {% endblock %}
+    </h3>
+    <hr/>
+    <p>{% blocktrans with user_name=request.user.get_short_name %}
+      Before you revise your rating please be sure that your changes are objective. Significant changes
+      in the rating score are not possible. This function is majorly offered to change the detailed text
+      description.<br/><br/>
+      The process for updating your review is the same as initially rating a trip. Please go through all
+      steps and check if the displayed data is correct.<br/><br/>
+      By updating you agree to our <a href="/flat/tos/" style="text-decoration: underline">Terms of Service</a>.
+    {% endblocktrans %}</p>
+  {% else %}
+    <h3>{% trans 'Before you get started' %}</h3>
+    <hr/>
+    <p>{% blocktrans with user_name=request.user.get_short_name %}
+      Our goal is to support sustainable hunting practice. By that we encourage companies to engage in
+      protecting
+      our wildlife. Therefore, if you have encountered personal difficulties please avoid including personal
+      opinion on ecologic topics of the rating.
+      Even though you might have come back without a trophy remember that we hunt free-ranging and nobody can
+      assure that you
+      always collect a trophy.
+      This behavior results in companies beeding and selling wildlife just to be killed - which is definitely
+      not in our interest.<br/>
+      By rating you agree to our <a href="/flat/tos/">Terms of Service</a>.
+      <br><br/>Thank you for rating, {{ user_name }}!<br/><br/>
+      Your Jagdreisencheck Team
+    {% endblocktrans %}</p>
+  {% endif %}
+
+  <br/>
+  {% with form.agree_to_rules_of_contribution as field %}
+    {% include 'base/components/fields.html' %}
+  {% endwith %}
+
+  <div class="row mt-3">
+    <div class="col-6">
+      <a href="{% url 'travelling:show_trip' object.company.name|slugify object.country.code|slugify object.region|slugify %}"
+         class="btn btn-default prev-btn" type="button">{% trans 'Back to trip' %}</a>
+    </div>
+    <div class="col-6">
+      <button class="btn btn-darkblue next-btn" type="button" style="float: right">{% trans 'Next' %}</button>
+    </div>
+  </div>
+
+</div>

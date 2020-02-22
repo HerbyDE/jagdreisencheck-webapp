@@ -1,0 +1,29 @@
+/*
+Title: Trip modification page
+Description: Sourcefile for the web app's trip modification page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-page-with-image-headline";
+@import "components/headline-nav";
+@import "components/forms/base";
+@import "components/forms/errors";
+@import "components/bs-select";
+@import "components/trip-thumbnail";
+@import "components/pagination";
+@import "components/owl-theme";
+
+
+// 2. CUSTOM STYLES

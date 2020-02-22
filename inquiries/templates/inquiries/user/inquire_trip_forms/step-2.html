@@ -1,0 +1,32 @@
+{% load i18n sekizai_tags staticfiles %}
+
+
+<div class="step" id="HunterData">
+
+  <h3>{% trans 'Information on travelling hunters' %}</h3>
+  <p>{% blocktrans %}Please tick the "Delete" box or leave the form empty if you have added too many forms. If you have any questions please send us an e-mail to <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>.{% endblocktrans %}</p>
+  <hr/>
+
+  {{ hunter_data.management_form }}
+
+  {% for hunter_form in hunter_data.forms %}
+
+    {% include 'inquiries/user/inquire_trip_forms/hunter-data-form.html' with form=hunter_form %}
+
+  {% endfor %}
+
+  <div class="add-hunter mb-2">
+    <button type="button" data-href="{% url 'inquiries:inquire_trip' trip.company.slug trip.country.code|slugify trip.region|slugify %}" data-forms="{{ hunter_data.forms|length }}" id="AddHunterForm" class="btn btn-darkblue btn-sm">
+      <i class="fa fa-plus"></i>
+      {% trans 'Add another Hunter' %}
+    </button>
+  </div>
+
+
+  {% include 'base/components/forms/form-navigation.html' %}
+
+</div>
+
+{% addtoblock 'js' %}
+  <script src="{% static 'scripts/components/inquiry-scripts.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+{% endaddtoblock %}

@@ -1,0 +1,43 @@
+{% load i18n cms_tags %}
+
+<div class="step" id="createTripStep1">
+  <h3>{% trans 'Trip arrangement' %}</h3>
+  <hr/>
+
+  {% include 'base/components/fields.html' with field=form.company %}
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.country %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.region %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.game %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.available_hunting_types %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.hunting_start_time %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.hunting_end_time %}
+    </div>
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' %}
+
+
+
+</div>

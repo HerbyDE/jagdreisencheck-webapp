@@ -1,0 +1,23 @@
+{% extends 'base/structure/base.html' %}
+{% load cms_tags i18n sekizai_tags staticfiles %}
+
+{% block content %}
+
+  <div class="container nav-padding">
+
+    <div class="row">
+      <div class="col-12">
+        <h1>{% placeholder 'Headline H1' %}</h1>
+        {% comment %}<h2>{% placeholder 'Headline H2' %}</h2>{% endcomment %}
+      </div>
+    </div>
+
+    {% placeholder 'Content (wrapped in Container)' %}
+
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/cms-default-page.css' %}">
+  {% endaddtoblock %}
+
+{% endblock %}

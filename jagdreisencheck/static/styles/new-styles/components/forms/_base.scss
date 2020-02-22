@@ -1,0 +1,117 @@
+/*
+Title: Forms Base
+Description: Sourcefile for the web app's form styles.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "../../../bootstrap/variables";
+@import "../../../bootstrap/functions";
+@import "../../../bootstrap/mixins";
+
+
+// 2. CUSTOM STYLES
+.step {
+  display: none;
+
+  &:first-of-type {
+    display: block;
+  }
+}
+
+.required-indicator {
+  color: $color-red-error;
+}
+
+.fa-info-circle {
+  color: $darkblue;
+}
+
+.navigator-btn-group {
+
+  .prev-btn, .next-btn, .btn-darkblue {
+    font-size: 0.85rem;
+    float: right;
+
+    @include media-breakpoint-up(lg) {
+      font-size: $font-size-base;
+    }
+  }
+}
+
+.bootstrap-select {
+  min-width: 200px;
+}
+
+.input-group {
+  min-width: 200px;
+
+  .form-control {
+    min-width: 50px;
+  }
+
+  .bootstrap-select {
+    min-width: 10px;
+  }
+}
+
+.control-label {
+  font-size: $font-size-base * 0.9;
+  text-align: left;
+  font-weight: $font-weight-base;
+}
+
+.form-control {
+  min-width: 120px;
+}
+
+textarea {
+  min-height: 300px;
+}
+
+
+.add-btn {
+  position: relative;
+  margin: -10px 0 10px 0;
+  padding: 2px 3px;
+  float: right;
+  font-size: 0.7rem;
+}
+
+.custom-file {
+  cursor: pointer;
+  .custom-file-label {
+    white-space: nowrap;
+    float: right;
+    overflow: hidden;
+    font-size: $font-size-base * 0.85;
+  }
+
+  .custom-file-input {
+    cursor: pointer;
+
+  }
+
+}
+
+.current-path {
+  text-align: left;
+  > span {
+    font-size: $font-size-base * 0.5;
+  }
+
+  > a {
+    font-size: $font-size-base * 0.5;
+  }
+}

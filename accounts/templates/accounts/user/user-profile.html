@@ -1,0 +1,81 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{{ object.user.get_full_name }}{% endblock %}
+{% block headline-img-source %}{% static 'images/background/Hilly_Landscape.jpg' %}{% endblock %}
+
+{% block headline-content-containerized %}
+    <div class="row">
+        <div class="col-12" align="left">
+            <h1>{{ object.user.get_full_name }}</h1>
+            <p style="color: white;">{% trans 'Country of residence:' %} {{ object.user.country_of_residence.name }},
+                {% if object.hunting_license %}
+                    {% blocktrans with aj=object.years_as_active_hunter %}
+                        Holds a hunting license since {{ aj }}.
+                    {% endblocktrans %}
+                {% else %}
+                    {% trans 'No hunter.' %}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block headline-nav %}
+    <ul class="list-inline on-page-nav">
+        <li class="list-inline-item on-page-nav-element active" id="general-nav">{% trans 'General' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="reviews-nav">{% trans 'Reviews' %} <span
+                class="badge badge-light">{{ ratings.count }}</span></li>
+        <li class="list-inline-item on-page-nav-element" id="more-nav">{% trans 'More Details' %}</li>
+    </ul>
+    {% if request.user == object.user %}
+    <div class="btn-container">
+        <div class="add-rating-absolute user">
+            <br/>
+            <a href="{% url 'accounts:settings' request.user.pk %}#public_profile" class="btn btn-highlight">{% trans 'Edit profile (only visible for you)' %}</a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block main-content %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-md-5 col-lg-4 d-sm-none d-md-block fixed-on-scroll">
+        {% include 'accounts/user/profile-segments/profile-overview.html' %}
+      </div>
+      <div class="col-12 d-sm-block d-md-none mb-3">
+        <button class="btn btn-darkblue btn-block" data-toggle="collapse" data-target="#overview">
+          {% trans 'About' %} {{ object.user.first_name }}
+          <i class="fa fa-chevron-down"></i>
+        </button>
+        <div id="overview" class="collapse">
+          {% include 'accounts/user/profile-segments/profile-overview.html' %}
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-7 col-lg-8">
+
+        {% include 'accounts/user/profile-segments/general.html' %}
+
+        {% include 'accounts/user/profile-segments/reviews.html' %}
+
+        {% include 'accounts/user/profile-segments/more.html' %}
+
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/user-profile.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

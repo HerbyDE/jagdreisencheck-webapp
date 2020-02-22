@@ -1,0 +1,36 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}signUpChoice{% endblock %}
+
+{% block modal-label %}{% endblock %}
+
+{% block modal-classes %}{% endblock %}
+
+{% block modal-title %}
+  {% trans 'Register as Company or User' %}
+{% endblock %}
+
+{% block modal-body %}
+
+  <div class="choice-container">
+
+    <div class="company">
+      <i class="fa fa-industry"></i>
+      <br/><br/>
+      <a href="{% url 'accounts:register_company' %}{% for k, v in request.GET.items %}{% if forloop.first %}?{% else %}&{% endif %}{{ k }}={{ v }}{% endfor %}" class="btn btn-outline-darkblue" rel="nofollow">{% trans 'I want to offer trips' %}</a>
+    </div>
+
+    <div class="hunter">
+      <i class="fa fa-user"></i>
+      <br/><br/>
+      <a href="{% url 'accounts:register_user' %}{% for k, v in request.GET.items %}{% if forloop.first %}?{% else %}&{% endif %}{{ k }}={{ v }}{% endfor %}" class="btn btn-darkblue" rel="nofollow">{% trans "I'm searching for trips" %}</a>
+    </div>
+
+
+
+  </div>
+
+
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{{ object.company_name }}{% endblock %}
+
+{% block headline-img-source %}{% if object.title_pic %}{{ object.title_pic.url }}{% endif %}{% endblock %}
+
+{% block headline-content-containerized %}
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-2">
+      <div class="circle">
+        <img class="img-circle" src="{% if object.company_name.logo %}{{ object.company_name.logo.url }}{% else %}{% static 'images/placeholder/No_Photo.png' %}{% endif %}" alt="{{ object.company.name }}"/>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-lg-10">
+      <h1>{{ object.company_name }}</h1>
+      <p>{% trans 'The company has' %} {{ trips.count }} {% trans 'trips listed.' %}</p>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block headline-nav %}
+    <ul class="list-inline on-page-nav">
+        <li class="list-inline-item on-page-nav-element active" id="general-nav">{% trans 'General' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="trip-nav">{% trans 'Travel Offerings' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="more-nav">{% trans 'More Details' %}</li>
+    </ul>
+    {% if request.user == object.admin %}
+    <div class="action-btn-container">
+        <div class="inner" align="center">
+            <a id="modifyTrip" href="{% url 'accounts:settings' request.user.pk %}#profile" class="btn btn-highlight">{% trans 'Edit profile' %}</a>
+        </div>
+    </div>
+    {% include 'base/components/image_modifications.html' %}
+    {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
+
+{% block main-content %}
+
+  <div class="container">
+    <div class="row">
+
+      <div class="col-xs-12 col-lg-4 d-sm-none d-md-block mb-3 fixed-on-scroll">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{% trans 'About' %} {{ object.company_name.name }}</h5>
+
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <td>{% trans 'Offered Trips' %}</td>
+                    <td>{{ trips.count }}</td>
+                  </tr>
+                  <tr>
+                    <td>{% trans 'Average rating of trips' %}</td>
+                    <td>{% if quick_facts.avg_company_rating > 0 %}{{ quick_facts.avg_company_rating|floatformat }}{% else %}-{% endif %}</td>
+                  </tr>
+                  <tr>
+                  <td>{% trans 'Date Joined' %}</td>
+                  <td>{{ object.date_joined|date:"d.m.y" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 d-sm-block d-md-none mb-3">
+        <button class="btn btn-darkblue btn-block" data-toggle="collapse" data-target="#overview">
+          {% trans 'About' %} {{ object.company_name.name }}
+          <i class="fa fa-chevron-down"></i>
+        </button>
+        <div id="overview" class="collapse">
+          <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{% trans 'About' %} {{ object.company_name.name }}</h5>
+
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <tbody>
+                <tr>
+                  <td>{% trans 'Offered Trips' %}</td>
+                  <td>{{ trips.count }}</td>
+                </tr>
+                <tr>
+                  <td>{% trans 'Average rating of trips' %}</td>
+                  <td>{% if quick_facts.avg_company_rating > 0 %}{{ quick_facts.avg_company_rating|floatformat }}{% else %}-{% endif %}</td>
+                </tr>
+                <tr>
+                <td>{% trans 'Date Joined' %}</td>
+                <td>{{ object.date_joined|date:"d.m.y" }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-lg-8">
+
+        {% include 'accounts/company/profile-page/general-information.html' %}
+        {% include 'accounts/company/profile-page/travel-offers.html' %}
+        {% include 'accounts/company/profile-page/additional-details.html' %}
+
+      </div>
+
+    </div>
+  </div>
+
+
+    {% addtoblock 'css' %}
+      <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/company-profile.css' %}"/>
+    {% endaddtoblock %}
+
+    {% addtoblock "js" %}
+        <script src="{% static 'scripts/components/headline.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    {% endaddtoblock %}
+
+{% endblock %}

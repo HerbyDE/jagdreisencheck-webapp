@@ -1,0 +1,56 @@
+{% load i18n easy_thumbnails_tags %}
+
+<div class="container nav-padding">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mt-3">{{ category.name }}</h1>
+      <h2>{% blocktrans count entries=category.blog_posts.all.count %}{{ entries }} entry found{% plural %}{{ entries }} entries found{% endblocktrans %}</h2>
+      <hr/>
+    </div>
+  </div>
+
+  {% for entry in category.blog_posts.all %}
+    <div class="row">
+      <div class="col-xs-12 col-lg-1 podcast-numerator">
+        #{{ forloop.counter }}
+        <span><a href="{{ entry.get_absolute_url }}" class="podcast-numerator">- {{ entry.title }}</a></span>
+      </div>
+
+      <div class="col-xs-12 col-lg-11">
+        <div class="row">
+          <div class="col-xs-12 col-lg-4">
+            <div class="podcast-image" style="background-image: url('{% thumbnail entry.main_image 300x300 crop %}');">
+              <a href="{{ entry.get_absolute_url }}" class="btn btn-darkblue">
+                <i class="fa fa-book"></i>
+                {% trans 'Read article' %}
+              </a>
+            </div>
+          </div>
+          <div class="col-xs-12 col-lg-8 podcast-description visible">
+            <h4><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h4>
+            <h5>{{ entry.subtitle }}</h5>
+            <div class="meta">
+              <i class="fa fa-clock"></i> <time>{{ entry.date_published|date:"d. M Y" }}</time>
+              <br/>
+              <i class="fa fa-user"></i> <span class="user">{% trans 'by' context "small" %} {{ entry.author.get_short_name }}</span>
+              <br/>
+              <p>
+                {{ entry.abstract|truncatechars:140 }}
+                <br/>
+                <a href="{{ entry.get_absolute_url }}">{% trans 'More details' %}</a>
+              </p>
+              <p style="text-align: left;">{% trans 'Feedback to' %}: <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <br/>
+  {% empty %}
+    <h5>{% trans "There will be articles soon. Stay tuned!" %}</h5>
+  {% endfor %}
+
+
+</div>
+

@@ -1,0 +1,88 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}addGamePriceElement{% endblock %}
+
+{% block modal-title %}{% trans 'Add a new Element to the price table' %}{% endblock %}
+
+{% block modal-body %}
+    <form id="CreateGamePriceTableElement" class="form container"
+          action="#" method="post">
+        {% csrf_token %}
+        <div class="row mt-2">
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.game as field %}
+                    <div class="fieldset">
+                        <div class="field">
+                            <div class="form-group">
+                                <label class="control-label" for="{{ field.id_for_label }}">
+                                    {{ field.label }}
+                                            {% if field.field.required == True or field.field.widget.attrs.required == True %}
+                                                <span class="required-indicator">*</span>{% endif %}</label>
+                                <select type="{{ field.field.widget.input_type }}" name="{{ field.name }}"
+                                        id="{{ field.id_for_label }}"
+                                        class="form-control selectpicker"
+                                        {% if field.field.required or field.field.widget.attrs.required == True %}required{% endif %}
+                                        {% if field.field.widget.attrs.multiple %}multiple{% endif %}
+                                        {% if field.field.widget.choices|length > 10 %}data-live-search="true"{% endif %}
+                                        {% if field.field.widget.attrs.disabled %}disabled="disabled"{% endif %}>
+                                    <option value="">------</option>
+                                    {% for choice in object.game.all %}
+                                        <option value="{{ choice.pk }}">{{ choice.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <small>{% trans 'Game can be configured in trip details.' %}</small>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.type as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.base_range as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.calc_base as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.trophy_costs as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.wounded_costs as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.private_notes as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% with game_price_form.public_notes as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row mt-2" align="right">
+            <div class="col-12">
+                <button type="submit" class="btn btn-darkblue">{% trans 'Submit' %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

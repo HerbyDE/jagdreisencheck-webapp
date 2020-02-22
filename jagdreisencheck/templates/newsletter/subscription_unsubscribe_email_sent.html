@@ -1,0 +1,36 @@
+{% extends "base/structure/base.html" %}
+
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{% trans 'Confirmation sent' %}{% endblock title %}
+
+{% block content %}
+  <div class="container nav-padding">
+    <div class="row">
+      <div class="col-xs-12 col-lg-6 offset-lg-3">
+        <div class="card">
+          <div class="card-body">
+
+            <h1 class="card-title">{% trans 'Confirmation sent' %}</h1>
+
+            <p>
+              <i class="fa fa-exclamation-circle"></i>
+              {% trans "Your unsubscription request has successfully been received. An email has been sent to you with a link you need to follow in order to confirm your unsubscription." %}
+            </p>
+            <div class="align-center">
+              <a href="/" class="btn btn-outline-darkblue">{% trans 'Back' %}</a>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/newsletter.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

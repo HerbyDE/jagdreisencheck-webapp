@@ -1,0 +1,7 @@
+{% load cms_tags %}
+
+<div class="row" style="{% if instance.margin_top %}margin-top: {{ instance.margin_top }};{% endif %} {% if instance.margin_bottom %}margin-bottom: {{ instance.margin_bottom }};{% endif %}">
+    {% for plugin in instance.child_plugin_instances %}
+        {% render_plugin plugin %}
+    {% endfor %}
+</div>

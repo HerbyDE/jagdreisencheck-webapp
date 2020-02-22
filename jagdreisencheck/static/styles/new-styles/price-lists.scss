@@ -1,0 +1,48 @@
+/*
+Title: Price List Modification Page of Jagdreisencheck
+Description: Sourcefile for the web app's price list modification page.
+Author: Herbert Woisetschläger
+Date: 30.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "base";
+@import "cms-default-page";
+@import "components/forms/base";
+@import "components/forms/errors";
+@import "components/forms/datepicker";
+
+
+// 2. CUSTOM STYLES
+
+.control-label {
+  white-space: nowrap;
+}
+
+.active-submit-combo {
+  display: inline-flex;
+  float: right;
+
+  .field {
+    margin-right: 10px;
+    justify-self: center;
+
+    > label {
+      margin-top: 5px;
+    }
+  }
+}
+
+th {
+  white-space: nowrap;
+}

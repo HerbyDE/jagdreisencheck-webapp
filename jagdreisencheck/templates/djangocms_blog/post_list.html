@@ -1,0 +1,69 @@
+{% extends 'base/structure/base.html' %}
+{% load cms_tags staticfiles sekizai_tags i18n easy_thumbnails_tags %}
+
+{% block content %}
+  {% if category %}
+    {% include 'djangocms_blog/includes/category-filter.html' %}
+  {% elif author %}
+    {% include 'djangocms_blog/includes/author-filter.html' %}
+  {% elif tagged_entries %}
+    {% include 'djangocms_blog/includes/tag-filter.html' %}
+  {% else %}
+    <div class="row nav-padding">
+      {% placeholder "Blog Article Slider" %}
+    </div>
+    {{ tag }}
+
+    <div class="container">
+      {% placeholder "Content-Containerized" %}
+    </div>
+  {% endif %}
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/blog.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'scripts/components/blog-scripts.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}
+
+{% block topnav %}
+  <div class="col-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12" style="float: right;">
+          <ul class="list-inline">
+
+            <li class="list-inline-item">
+              <a href="{% url 'newsletter_subscribe_request' 'jagdpost' %}">
+                <i class="fa fa-envelope-square"></i>
+                {% trans 'Newsletter' %}
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="https://www.facebook.com/Jagdreisencheck-193771768189829/">
+                <i class="fab fa-facebook"></i>
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="https://linkedin.com/company/jagdreisencheck/">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="{% url 'djangocms_blog:posts-latest-feed' %}">
+                <i class="fa fa-rss-square"></i>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base/structure/blank-base.html' %}
+{% load i18n staticfiles easy_thumbnails_tags sekizai_tags %}
+
+
+{% block title %}{% trans 'Login' %}{% endblock %}
+
+{% block navigation %} {% endblock %}
+
+{% block content %}
+<div class="img-container">
+  <img src="{% static "images/background/hunting_in_company_2.jpg" %}" alt="{% trans 'Jagdreisencheck' %}"/>
+  <div class="overlay">
+    <div class="login-widget fixed-top">
+      <div class="container">
+        {% if messages %}
+        <div class="row mb-1">
+          <div class="col-xs-12 col-lg-4 col-lg-offset-4">
+            <i class="fa fa-exclamation-circle" style="color: red"></i>
+            {% for msg in messages %}
+              <small style="color: red">{{ msg }}</small>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+        <div class="row">
+          <div class="col-xs-12 col-lg-4">
+            <a href="{% url "accounts:register" %}{% for k, v in request.GET.items %}{% if forloop.first %}?{% else %}&{% endif %}{{ k }}={{ v }}{% endfor %}" class="btn btn-block btn-highlight">{% trans 'Why should I sign up?' %}</a>
+          </div>
+          <div class="col-12">
+            <p class="text">{% trans 'or' %}</p>
+          </div>
+          <div class="col-xs-12 col-lg-4 col-lg-offset-4">
+            {% include 'accounts/login/login-form.html' %}
+          </div>
+          <div class="col-12 mt-3">
+            <p class="text">
+              <a href="/" class="home"><i class="fa fa-home"></i> {% trans 'Home' %}</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/login-page.css' %}"/>
+  {% endaddtoblock %}
+
+
+
+{% endblock %}

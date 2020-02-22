@@ -1,0 +1,18 @@
+{% extends 'email/base/email-base.html' %}
+{% load i18n staticfiles %}
+
+
+{% block headline %}
+    {% blocktrans with user=user.get_short_name %}Thank you {{ user }}!{% endblocktrans %}
+{% endblock %}
+
+{% block body %}
+    <p>
+        {% blocktrans %}
+            We're delighted that you have shared the Jagdreisencheck platform with your friends. One of them has
+            now signed up to our platform and therefore you are receiving this e-mail with our exclusive checklist for you upcoming hunting trips.
+            <br/>
+            We wish you all the best for your next hunting trips and please do not forget to rate them on Jagdreisencheck!
+        {% endblocktrans %}
+    </p>
+{% endblock %}

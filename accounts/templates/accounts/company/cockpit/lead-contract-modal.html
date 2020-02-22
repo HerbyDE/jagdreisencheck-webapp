@@ -1,0 +1,30 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}inquiryInformation{% endblock %}
+
+{% block modal-title %}
+    {% trans 'Information about Inquiries' %}
+{% endblock %}
+
+{% block modal-body %}
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-12">
+                <p>{% blocktrans %}
+                    We are happy that you are interested in inquiries that potential customers send you. In order to
+                    gain access we need to have a contract as providing customer data to you is a very sensitive topic.
+                    Also, Jagdreisencheck pays its bills with this feature.
+                    For further information and how a cooperation might look like please get in touch with us.
+                {% endblocktrans %}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block modal-footer %}
+     <a href="mailto:brieftaube@jagdreisencheck.de?subject={% trans 'I am interested in buying inquiries' %}"
+           class="btn btn-darkblue" style="float: right">
+            {% trans 'Get in touch with us' %}
+        </a>
+{% endblock %}

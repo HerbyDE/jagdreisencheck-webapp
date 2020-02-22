@@ -1,0 +1,16 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}uploadInfo{% endblock %}
+
+{% block modal-title %}
+  {% trans 'Information' %}
+{% endblock %}
+
+{% block modal-body %}
+  {% blocktrans with user=request.user.first_name %}
+    Dear {{ user }},<br/>
+    Thank you for updating your profile. Please note that it might take a while to upload pictures and documents. This
+    window will close automatically as soon as saving ahs finished.
+  {% endblocktrans %}
+{% endblock %}

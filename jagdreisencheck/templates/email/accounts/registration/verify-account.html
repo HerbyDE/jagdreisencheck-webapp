@@ -1,0 +1,25 @@
+{% extends 'email/base/email-base.html' %}
+{% load i18n %}
+
+
+{% block headline %}
+    {% trans 'Please verify your Account' %}
+{% endblock %}
+
+{% block body %}
+    <p>{% blocktrans with user=user.get_short_name %}
+        Dear {{ user }},
+    {% endblocktrans %}</p>
+    <p>{% blocktrans %}
+        To activate your account please click on the link below:
+    {% endblocktrans %}</p>
+    <hr/>
+    <a href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/accounts/verify?email={{ user.email }}&token={{ token }}" target="_blank">
+        {% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/accounts/verify?email={{ user.email }}&token={{ token }}
+    </a>
+    <br/>
+    <small>{% trans 'Hint: If the link does not work please copy the link into your browser.' %}</small>
+    <hr/>
+
+
+{% endblock %}

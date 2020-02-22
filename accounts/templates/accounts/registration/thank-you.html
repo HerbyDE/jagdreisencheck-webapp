@@ -1,0 +1,47 @@
+{% extends 'accounts/registration/base.html' %}
+{% load i18n sekizai_tags %}
+
+{% block title %}{% trans 'Thank You!' %}{% endblock %}
+
+{% block registration-body %}
+
+  <div class="row thank-you">
+    <div class="col-xs-12 col-lg-8 offset-lg-2">
+      <div class="card">
+        <div class="card-body">
+
+          <h3>{% trans 'Welcome aboard!' %}</h3>
+          <hr/>
+
+          <div class="center">
+            <i class="far fa-smile"></i>
+            <h4>{% trans 'Success!' context "registration_completed" %}</h4>
+
+            {% if corporate %}
+              <p>{% blocktrans %}
+                You will receive an e-mail from our racing pigeon shortly!
+                It will include a link to a tutorial what you can do with Jagdreisencheck.
+                Please confirm your e-mail via the link in the e-mail.
+                <br/>
+                <br/>
+                Your Jagdreisencheck Team
+              {% endblocktrans %}</p>
+            {% else %}
+              <p>{% blocktrans %}
+                You will receive an e-mail from our racing pigeon shortly!
+                Please confirm your e-mail via the link in the e-mail.
+                <br/>
+                <br/>
+                Your Jagdreisencheck Team
+              {% endblocktrans %}</p>
+            {% endif %}
+
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

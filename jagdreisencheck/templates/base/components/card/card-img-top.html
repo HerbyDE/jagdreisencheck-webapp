@@ -1,0 +1,33 @@
+{% extends 'base/components/card/card-base.html' %}
+{% load staticfiles travelling_tags i18n %}
+
+{% block card-class %}card-img-top{% endblock %}
+
+{% block card-header %}
+    <div class="card-img-wrapper">
+        {% if object.company.slug %}
+            <a href="{% url 'travelling:show_trip' object.company.slug object.country.code|slugify object.region|slugify %}" class="card-img-top-wrapper">
+        {% else %}
+            <div class="card-img-top-wrapper">
+        {% endif %}
+
+        <img data-src="{% block card-top-img-path %}{% endblock %}" class="card-img-top">
+
+        {% if object.company.slug %}
+            </a>
+        {% else %}
+            </div>
+        {% endif %}
+
+        {% block card-top-bar %}{% endblock %}
+        <div class="card-bar row">
+            {% block card-bar %}{% endblock %}
+        </div>
+        <div class="card-sub-bar row">
+            <div class="col-12">
+                {% block card-sub-bar %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

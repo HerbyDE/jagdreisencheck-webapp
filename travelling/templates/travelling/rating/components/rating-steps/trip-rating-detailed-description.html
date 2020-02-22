@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<div class="step page-element" id="final">
+
+  <h3>{% trans 'Tell us your story' %}</h3>
+  <p>{% blocktrans with country=object.country.name company=object.company.name %}Your trip to {{ country }} with {{ company }}{% endblocktrans %}</p>
+  <hr/>
+  <p>{% blocktrans with request.user.get_short_name as user_name and object.company.name as c_name %}
+      {{ user_name }}, tell us all about your hunting travel experience with {{ c_name }}!
+      <br>You are invited to go into detail.
+  {% endblocktrans %}</p>
+
+  <br/>
+
+  <div class="row">
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=form.description %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.price_utility %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.nps_indication %}
+    </div>
+
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' with rating=True final_step=True %}
+
+</div>

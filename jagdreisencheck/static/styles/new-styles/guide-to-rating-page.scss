@@ -1,0 +1,35 @@
+/*
+Title: Rating Guide Page
+Description: Sourcefile for the web app's rating guide page.
+Author: Herbert Woisetschläger
+Date: 22.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-default-page";
+@import "components/forms/errors";
+@import "components/forms/base";
+
+// 2. CUSTOM STYLES
+
+.jrc-navbar {
+  #loginDropdown {
+    color: $darkblue;
+    &:hover {
+      color: $white;
+    }
+    &:focus {
+      color: $white;
+    }
+  }
+}

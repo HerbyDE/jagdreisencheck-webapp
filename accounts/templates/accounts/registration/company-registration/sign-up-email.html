@@ -1,0 +1,28 @@
+{% extends 'email/base.html' %}
+{% load i18n %}
+
+{% block mail-body %}
+
+  {% blocktrans with user=user.get_short_name %}
+    Dear Team of {{ user }}!<br/>
+    We're happy to see you joining Jagdreisencheck. Please click on the button below to activate your account and get started.
+    When clicking on the button you will be redirected to our website and receive a short introduction on how to use our platform.
+    Should you have any questions, then just reply to this email!
+    <br/>
+    <br/>
+    Sincerely,
+    <br/>
+    Your Jagdreisencheck Team
+  {% endblocktrans %}
+
+
+  <br/>
+  <br/>
+  <br/>
+  <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ link }}" style="padding: 10px 15px; background: #ffc914; border-radius: 3px; color: black; text-decoration: none">{% trans 'Activate Account' %}</a>
+  <br/>
+  <br/>
+  <hr style="color: #61b561;border: 1px solid #61b561;"/>
+  <small>{% trans 'Please copy this link to your browser if the button above does not work:' %} <br/> {% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ link }}</small>
+
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'base/components/headline/image-headline.html' %}
+
+{% block main-content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-lg-8">{% block feed %}{% endblock %}</div>
+            <div class="d-none d-lg-block col-lg-4">{% block sidebar %}{% endblock %}</div>
+        </div>
+    </div>
+{% endblock %}

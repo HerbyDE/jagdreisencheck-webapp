@@ -1,0 +1,51 @@
+{% extends "base/structure/base.html" %}
+
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{% trans 'Update your subscription to our' %} {{ newsletter.title }}{% endblock title %}
+
+{% block content %}
+  <div class="container nav-padding">
+    <div class="row">
+      <div class="col-xs-12 col-lg-6 offset-lg-3">
+        <div class="card">
+          <div class="card-body">
+
+            <h1 class="card-title">{% trans 'Update your subscription to our' %} {{ newsletter.title }}</h1>
+
+            {% if form.errors %}
+              <i class="fa fa-exclamation-circle" style="color: red;"></i>
+              {% for field, error in form.errors.items %}
+                <p style="color: red;">{{ error.as_text }}</p>
+              {% endfor %}
+            {% endif %}
+
+            <form action="" method="post">
+              {% csrf_token %}
+
+              {% include 'base/components/fields.html' with field=form.email_field %}
+
+              <br/>
+              <div class="row form-navigation">
+                <div class="col-xs-12 col-lg-6">
+                  <p><span class="required-indicator">*</span> {% trans 'marks required inputs.' %}</p>
+                </div>
+                <div class="col-xs-12 col-lg-6 navigator-btn-group">
+                  <button class="btn btn-darkblue" type="submit"><i class="fa fa-plus"></i> {% trans 'Update' %}</button>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/newsletter.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

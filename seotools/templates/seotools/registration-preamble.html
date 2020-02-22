@@ -1,0 +1,52 @@
+{% extends 'accounts/registration/base.html' %}
+{% load i18n sekizai_tags staticfiles %}
+
+
+{% block title %}
+  {% trans 'Register' %}
+{% endblock %}
+
+
+{% block registration-body %}
+
+  <div class="row">
+    <div class="col-12">
+      <div id="registrationCarousel" class="owl-carousel">
+        {% for object in objects %}
+          {% include 'seotools/includes/preamble-slide.html' %}
+        {% empty %}
+          <p>{% trans 'Content coming soon.' %}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12" style="text-align: center">
+      <button class="btn btn-highlight btn-lg" data-toggle="modal" data-target="#signUpChoice">{% trans 'Sign Up' %}</button>
+      {% include 'seotools/includes/registration-choice-modal.html' %}
+    </div>
+  </div>
+
+
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/owl.carousel.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script nonce="{{ request.csp_nonce }}">
+      {% spaceless %}
+      $("#registrationCarousel").owlCarousel({
+        autoplay: false,
+        loop: true,
+        pauseOnHover: true,
+        items: 1,
+        navText: ["<i class='fa fa-chevron-left'></i>","<i class='fa fa-chevron-right'></i>"],
+        center:true,
+        nav: true,
+        dots: false,
+
+      });
+      {% endspaceless %}
+    </script>
+  {% endaddtoblock %}
+
+{% endblock %}

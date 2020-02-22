@@ -1,0 +1,87 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}price-modal-{{ forloop.counter }}{% endblock %}
+
+{% block modal-title %}
+    {% blocktrans with element=element.type %}Change the data of {{ element }}{% endblocktrans %}
+{% endblock %}
+{% block modal-body %}
+    <form action="{% url 'travelling:update_game_price' element.pk %}" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+                {% include 'base/components/fields.html' with field=update_form.game field_options=object.game.all val=game.grouper %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.type custom_value=element.type enabled=True %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                <div class="fieldset">
+                    <div class="field">
+                        <div class="form-group">
+                            <label for="{{ update_form.range.id_for_label }}" class="control-label">{{ update_form.range.label }} <span class="required-indicator">*</span></label>
+                            <div class="input-group">
+                                {% with update_form.range as field %}
+                                    <input type="text" name="{{ field.name }}" {% if element.range %}value="{{ element.range }}"{% endif %} id="{{ field.id_for_label }}"
+                                   {% if field.placeholder %}
+                                       placeholder="{{ field.placeholder }}"
+                                   {% elif field.field.widget.attrs.placeholder %}
+                                       placeholder="{{ field.field.widget.attrs.placeholder }}"
+                                   {% elif field.field.widget.attrs.no_label %}
+                                       placeholder="{{ field.label }}"
+                                   {% endif %}
+                                   class="form-control" {% if field.field.required %}required{% endif %}
+                                   {% if field.field.max_length %}maxlength="{{ field.field.max_length }}"{% endif %}/>
+                                {% endwith %}
+                                <div class="input-group-append" style="min-width: 110px;">
+                                    {% with update_form.calculation as field %}
+                                        <select type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}"
+                                                class="form-control selectpicker show-tick" required>
+                                            {% if field.field.widget.attrs.no_label %}
+                                                <option class="option-label" value="">{{ field.label }}</option>
+                                            {% endif %}
+
+                                            {% for choice in field.field.widget.choices %}
+                                                {% if not choice.1 == '---------' %}
+                                                    <option value="{{ choice.0 }}"
+                                                            {% if choice.0 == field.value %}selected{% endif %}
+                                                            {% if choice.0 in field.value %}selected{% endif %}
+                                                            {% if choice.0 == company.pk %}
+                                                                selected
+                                                            {% elif choice.0 ==  game.pk %}
+                                                                selected
+                                                            {% elif choice.1 == country %}
+                                                                selected
+                                                            {% endif %}>
+                                                        {{ choice.1 }}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    {% endwith %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.trophy_costs custom_value=element.trophy_costs %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% include 'base/components/fields.html' with field=update_form.wounded_costs custom_value=element.wounded_costs %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12" align="right">
+                <button type="submit" class="btn btn-darkblue">{% trans 'Save' %}</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

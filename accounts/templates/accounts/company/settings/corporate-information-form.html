@@ -1,0 +1,49 @@
+{% load i18n accounts_tags %}
+
+<div class="container">
+
+  <h3 class="card-title">{% trans 'Profile Settings' %}</h3>
+  <p>{% blocktrans %}
+    Here you can describe what your company stands for and what you excel in.
+    Please upload your logo and a background image in order to be more memorable for your potential customers.
+  {% endblocktrans %}</p>
+
+  <div class="row">
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=profile_info_form.operator_type disabled=True %}
+    </div>
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=profile_info_form.description %}
+    </div>
+
+    <div class="col-xs-12 col-lg-4">
+      {% include 'base/components/fields.html' with field=profile_info_form.homepage %}
+    </div>
+    <div class="col-xs-12 col-lg-4">
+      {% include 'base/components/fields.html' with field=profile_logo_form.logo %}
+    </div>
+    <div class="col-xs-12 col-lg-4">
+      {% include 'base/components/fields.html' with field=profile_info_form.title_pic %}
+    </div>
+
+
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-xs-12 col-lg-6">
+      <p style="margin-top: 10px;"><span style="color: red;">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <button type="submit" class="btn btn-darkblue" data-target="#uploadInfo" data-toggle="modal" style="float: right">
+        <i class="fa fa-save"></i>
+        {% trans 'Save' %}
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+{% include 'upload/information/image-upload-information.html' %}

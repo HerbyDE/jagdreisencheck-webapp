@@ -1,0 +1,48 @@
+
+// Initialize the blog entry slider
+$("#blogSlider").owlCarousel({
+    items: 1,
+    loop: true,
+    pauseOnHover: true,
+    autoplay: true,
+    nav: true,
+    navText: ["<i class='fa fa-chevron-left'></i>","<i class='fa fa-chevron-right'></i>"],
+    dots: false,
+});
+
+$(".article-thumbnail[data-slide='1']").addClass("active");
+
+(function () {
+    var thumbs = $(".article-thumbnail.active");
+
+    if(thumbs.length > 1) {
+        thumbs.each(function (idx) {
+            if(idx > 0) $(this).removeClass("active");
+        })
+    }
+
+
+})(jQuery);
+
+
+$(document).on('changed.owl.carousel', ".owl-carousel", function() {
+
+    var $idx = $(this).find(".owl-item.active").find("article").data("slide") +1 || 2;
+    var thumbs = $(".article-thumbnail");
+
+    if($idx > thumbs.length) $idx = 1;
+
+    thumbs.removeClass("active");
+    $(".article-thumbnail[data-slide="+$idx+"]").addClass("active");
+
+});
+
+$(document).on("click", ".article-thumbnail", function () {
+   var $idx = $(this).data("slide");
+
+   $(".owl-carousel").trigger("to.owl.carousel", [$idx - 1, 0.00001]);
+   $(".article-thumbnail").removeClass("active");
+   $(this).addClass("active");
+
+
+});

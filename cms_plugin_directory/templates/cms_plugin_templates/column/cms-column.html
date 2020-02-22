@@ -1,0 +1,7 @@
+{% load cms_tags %}
+
+<div class="col-xs-12 col-lg-{{ instance.width }}">
+    {% for plugin in instance.child_plugin_instances %}
+        {% render_plugin plugin %}
+    {% endfor %}
+</div>

@@ -1,0 +1,26 @@
+{% extends 'base/components/card/card-img-top-blank-headline.html' %}
+{% load staticfiles thumbnail %}
+
+{% block card-class %}blog-intro-card{% endblock %}
+
+{% block card-header %}
+    <div class="card-header">
+        <h4 class="card-title">{{ instance.headline }}</h4>
+    </div>
+{% endblock %}
+
+{% block card-body %}
+     <div class="blog-img">
+        {% if instance.image %}
+            <img class="card-mid-img" data-src="{{ instance.image.url }}">
+        {% else %}
+            <img class="card-mid-img" data-src="{% static 'assets/../../../../jagdreisencheck/static/images/background/Middle_European_Landscape.jpg' %}">
+        {% endif %}
+        {% if instance.body %}{{ instance.body|safe }}{% endif %}
+    </div>
+{% endblock %}
+
+{% block card-footer %}
+    <a href="{{ instance.link }}"
+       class="btn btn-{{ instance.btn_type }} {% if instance.btn_block %}btn-block{% endif %}">{{ instance.link_text }}</a>
+{% endblock %}

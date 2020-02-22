@@ -1,0 +1,31 @@
+{% load staticfiles i18n sekizai_tags %}
+
+
+<form class="container" id="search" action="{% url 'search:retrieve_search_results' %}" data-results-url="{% url 'search:prefetch_trips' %}" method="GET">
+  <div class="row inline-search">
+    <div class="col-xs-12 col-lg-3">
+      {% include "base/components/fields.html" with field=data.form.country field_options=data.countries %}
+    </div>
+    <div class="col-xs-12 col-lg-3">
+      {% include "base/components/fields.html" with field=data.form.game %}
+    </div>
+    <div class="col-xs-12 col-lg-3">
+      {% include "base/components/fields.html" with field=data.form.company %}
+    </div>
+    <div class="col-xs-12 col-lg-3">
+      <button type="submit" class="btn btn-block btn-darkblue" data-results-translation="{% trans 'Results' %}" data-search-translation="{% trans 'Search' %}">
+        <i class="fa fa-chevron-right"></i> {{ data.trip_count }} {% trans 'Results' %}
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <small class="info">{% trans "You do not to need make a choice for any of the selectors." %}</small>
+    </div>
+  </div>
+</form>
+
+{% addtoblock "js" %}
+  <script src="{% static 'scripts/components/bootstrap-select.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script src="{% static 'scripts/components/search-scripts.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+{% endaddtoblock %}

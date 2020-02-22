@@ -1,0 +1,29 @@
+{% load i18n %}
+
+<div class="step" id="createTripStep0">
+  <p>
+    {% if not request.user.is_company %}
+      {% blocktrans with user=request.user.first_name %}
+        Hello {{ user }},<br/>
+        Thank you for contributing to the Jagdreisencheck community!<br/>
+        Adding a trip helps your fellow hunters to make better decisions as they can access a greater variety of
+        travel opportunities.<br/>
+        By creating a trip you agree to our <a href="/flat/tos/" style="text-decoration: underline" target="_blank">Terms of Service</a>.
+      {% endblocktrans %}
+    {% else %}
+      {% blocktrans with user=request.user.first_name %}
+        Hello {{ user }},<br/>
+        Thank you for adding a trip!<br/>
+        Should you require assistance or have feedback for us please get in touch with us via
+        <a href="mailto:brieftaube@jagdreisencheck.de" style="text-decoration: underline">brieftaube@jagdreisencheck.de</a><br/>
+        By creating a trip you agree to our <a href="/flat/tos/" style="text-decoration: underline" target="_blank">Terms of Service</a>.
+      {% endblocktrans %}
+    {% endif %}
+  </p>
+  <br/>
+
+  {% include 'base/components/fields.html' with field=form.consent_to_travel_rules %}
+
+  {% include 'base/components/forms/form-navigation.html' with first_step=True %}
+
+</div>

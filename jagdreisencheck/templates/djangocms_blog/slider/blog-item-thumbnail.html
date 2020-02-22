@@ -1,0 +1,19 @@
+{% load i18n easy_thumbnails_tags cms_tags %}
+
+<div class="article-thumbnail" data-slide="{{ forloop.counter }}">
+  {% if image and post.main_image %}
+    <div class="img-wrapper">
+      {% thumbnail post.main_image 130x90 upscale=post.thumbnail_options.upscale subject_location=post.main_image.subject_location as thumb %}
+      <img src="{{ thumb.url }}" alt="{{ post.main_image.default_alt_text }}"/>
+    </div>
+  {% endif %}
+  <div class="text-content">
+    <h5>
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    </h5>
+    {% if post.subtitle %}
+      <h6>{{ post.subtitle }}</h6>
+    {% endif %}
+    <i class="fa fa-clock"></i> <time>{{ post.date_published|date:"d.m.Y" }}</time>
+  </div>
+</div>

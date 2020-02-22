@@ -1,0 +1,53 @@
+{% load i18n sekizai_tags staticfiles %}
+
+<div class="container podcast-slider">
+  <div class="row">
+    <div class="col-12">
+      <h2>{% trans 'Jagdreisencheck Podcasts' %}</h2>
+      <hr/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="owl-carousel" id="podcastSlider">
+        {% for show in show_list %}
+          {% include 'podcasting/plugins/includes/show-list-thumbnail.html' %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% addtoblock 'js' %}
+  <script src="{% static 'scripts/components/owl.carousel.min.js' %}"></script>
+  <script>
+      {% spaceless %}
+    $("#podcastSlider").owlCarousel({
+      autoplay: true,
+      loop: true,
+      pauseOnHover: true,
+      items: 3,
+      navText: ["<i class='fa fa-chevron-left'></i>","<i class='fa fa-chevron-right'></i>"],
+      center:true,
+      {% if show_list|length > 3 %}
+        nav: false,
+        dots: false,
+      {% else %}
+        nav: true,
+        dots: true,
+      {% endif %}
+      responsive : {
+        0: {
+            items: 1,
+        },
+        768: {
+            items: 2,
+        },
+        1100: {
+            items: 3,
+        },
+      }
+    });
+      {% endspaceless %}
+  </script>
+{% endaddtoblock %}

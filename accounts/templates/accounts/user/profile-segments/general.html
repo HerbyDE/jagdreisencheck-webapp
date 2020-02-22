@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<div class="page-element" id="general">
+  <div class="card">
+    <div class="card-body" style="width: 100%;">
+      <h2 style="width: 100%">{% trans 'General' %}</h2>
+      <hr/>
+      <p>{% if object.info %}{{ object.info }}{% else %}{{ object.user.first_name }}
+          {% trans 'does not provide any detailed information yet.' %}{% endif %}</p>
+    </div>
+  </div>
+</div>

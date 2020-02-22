@@ -1,0 +1,15 @@
+{% load i18n staticfiles sekizai_tags %}
+
+
+{% spaceless %}
+    <label class="checkbox-label">{{ field.label }}{% if field.field.widget.attrs.required == True %} <span class="required-indicator">*</span>{% endif %}
+        <input type="{{ field.field.widget.input_type }}" name="{% if custom_name_ext %}form-{{ forloop.counter0 }}-{% elif form.prefix %}{{ form.prefix }}-{% endif %}{{ field.name }}"
+               {% if field.value %}checked{% endif %}
+               id="{{ field.id_for_label }}" {% if field.field.widget.attrs.required %}required{% endif %}
+               {% if field.field.widget.attrs.disabled %}disabled="disabled"{% endif %}/>
+        <div class="indicator"></div>
+        {% if field.help_text %}
+            <span><i class="fa fa-info-circle" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{{ field.help_text|safe }}"></i></span>
+        {% endif %}
+    </label>
+{% endspaceless %}

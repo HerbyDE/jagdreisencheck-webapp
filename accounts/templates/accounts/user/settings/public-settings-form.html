@@ -1,0 +1,53 @@
+{% load i18n accounts_tags %}
+
+<div class="container">
+
+  <h3 class="card-title">{% trans 'Public Profile Settings' %}</h3>
+  <hr/>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.gender %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.birth_date %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.hunting_license %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.years_as_active_hunter %}
+    </div>
+  </div>
+
+  {% include 'base/components/fields.html' with field=profile_form.countries_visited_for_hunting %}
+
+  {% include 'base/components/fields.html' with field=profile_form.info %}
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.profile_pic %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.title_pic %}
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-xs-12 col-lg-6">
+      <p style="margin-top: 10px;"><span style="color: red;">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <button class="btn btn-darkblue" type="submit" style="float: right" data-target="#uploadInfo" data-toggle="modal">
+        <i class="fa fa-save"></i>
+        {% trans 'Save' %}
+      </button>
+    </div>
+  </div>
+
+</div>
+
+{% include 'upload/information/image-upload-information.html' %}

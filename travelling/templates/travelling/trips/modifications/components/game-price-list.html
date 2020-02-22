@@ -1,0 +1,43 @@
+{% load i18n %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-hover price-list" id="gamePriceList">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>{% trans 'Game' %}</th>
+                    <th>{% trans 'Gender' %}</th>
+                    <th>{% trans 'Calculation base' %}</th>
+                    <th>{% trans 'Range' %}</th>
+                    <th>{% trans 'Cost' %}</th>
+                    <th>{% trans 'Costs wounded but not found' %}</th>
+                    <th>{% trans 'Public comment' %}</th>
+                    <th>{% trans 'Private comment' %}</th>
+                    <th><i class="fa fa-cogs"></i></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for element in game_price_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ element.game.name }}</td>
+                        <td>{{ element.type }}</td>
+                        <td>{{ element.get_calc_base_display }}</td>
+                        <td>{{ element.base_range }}</td>
+                        <td>{{ element.trophy_costs }}</td>
+                        <td>{{ element.wounded_costs }}</td>
+                        <td>{{ element.public_notes|safe }}</td>
+                        <td>{{ element.private_notes|safe }}</td>
+                        {# TODO: Manage Price Table entries. #}
+                        <td><a href="#" class="btn btn-outline-darkblue"><i class="fa fa-cog"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row mt-3">
+        {% include 'travelling/trips/components/create-game-price-element-base.html' %}
+    </div>
+</div>

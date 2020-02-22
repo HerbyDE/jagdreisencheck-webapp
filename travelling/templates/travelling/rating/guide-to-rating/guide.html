@@ -1,0 +1,39 @@
+{% load i18n staticfiles sekizai_tags %}
+
+<div class="row">
+  <div class="col-xs-12 offset-md-2 col-md-8">
+    <div class="card">
+      <div class="card-body">
+        {% if form.errors or form.non_field_errors %}
+          {% for error in form.errors %}
+            {{ error }}
+          {% endfor %}
+          {{ form.form.non_field_errors }}
+        {% endif %}
+
+        <span class="hidden form-url" data-url="{% url 'travelling:rating_options' %}" data-empty="{% trans 'Please select' %}"></span>
+
+        <form class="form" method="get" action="{% url 'travelling:rating_options' %}">
+          {% include 'base/components/fields.html' with field=form.company hide_add_btns=True %}
+          <br/>
+          {% include 'base/components/fields.html' with field=form.country %}
+          <br/>
+          {% include 'base/components/fields.html' with field=form.region %}
+          <br/>
+          <input type="hidden" value="rate_trip" name="ref"/>
+          <button type="submit" class="btn btn-darkblue">
+            <i class="fa fa-chevron-right"></i>
+            {% trans 'Rate trip' %}
+          </button>
+        </form>
+        <hr class="hide"/>
+        <a href="{% url 'travelling:create_trip' %}?ref=create_trip" id="tripNotFound" class="btn btn-highlight" style="white-space: normal">{% trans 'Not found what you are looking for? Create a trip here!' %}</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% addtoblock "js" %}
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}"></script>
+    <script src="{% static 'scripts/components/find-a-trip-to-rate.min.js' %}"></script>
+{% endaddtoblock %}

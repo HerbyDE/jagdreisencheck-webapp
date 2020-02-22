@@ -1,0 +1,99 @@
+{% extends "base/structure/base.html" %}
+
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{{ object.title }} - {% trans 'Newsletter' %}{% endblock title %}
+
+{% block headline-img-source %}
+    {% static 'assets/../../static/images/background/Middle_European_Landscape.jpg' %}
+{% endblock %}
+
+{% block headline-content-containerized %}
+    <div class="row">
+        <div class="col-12">
+            <h1>{% trans 'Our' context "newsletter" %} {{ object.title }}</h1>
+            <p style="color: white;">{% trans 'Our newsletters keep you up-to-date on topics around hunting trips. Yet our offering is only available in german.' %}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+  <div class="container nav-padding">
+    <div class="row">
+      <div class="col-xs-12 col-lg-6 offset-lg-3">
+
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ formset.management_form }}
+
+          <div class="card">
+            <div class="card-body">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>
+                      <span style="font-style: italic">{{ object.title }}</span>
+                      <br/>
+                      <small>{% trans 'Please choose an action below.' %}</small>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <a href="{% url "newsletter_subscribe_request" object.slug %}">
+                        <i class="fa fa-chevron-right"></i>
+                        {% trans "Subscribe" %}
+                      </a>
+                    </td>
+                  </tr>
+                  {% if not user.is_authenticated %}
+                    <tr>
+                      <td>
+                        <a href="{% url "newsletter_update_request" object.slug %}">
+                          <i class="fa fa-chevron-right"></i>
+                          {% trans "Update" %}
+                        </a>
+                      </td>
+                    </tr>
+                  {% endif %}
+                  <tr>
+                    <td>
+                      <a href="{% url "newsletter_unsubscribe_request" object.slug %}">
+                        <i class="fa fa-chevron-right"></i>
+                        {% trans "Unsubscribe" %}
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="{% url "newsletter_archive" object.slug %}">
+                        <i class="fa fa-chevron-right"></i>
+                        {% trans "Archive" %}
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <a href="..">
+                        <i class="fa fa-chevron-right"></i>
+                        {% trans "Back to list" %}
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/newsletter.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

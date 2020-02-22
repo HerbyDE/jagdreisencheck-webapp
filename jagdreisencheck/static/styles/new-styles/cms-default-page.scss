@@ -1,0 +1,66 @@
+/*
+Title: CMS Default Page
+Description: Sourcefile for the web app's default page without an image headline.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "base";
+@import "components/bs-select";
+
+
+// 2. CUSTOM STYLES
+.jrc-navbar {
+  background: $white;
+  -webkit-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+  .nav-item {
+    color: $gray-700;
+  }
+
+}
+
+.nav-padding {
+  padding-top: 110px;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 30px;
+}
+
+#tripNotFound {
+  margin-left: 50%;
+  -webkit-transform: translate(-50%, 0);
+  -moz-transform: translate(-50%, 0);
+  -ms-transform: translate(-50%, 0);
+  -o-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+  width: 100%;
+
+  @include media-breakpoint-up(md) {
+    width: auto;
+    white-space: nowrap !important;
+  }
+
+
+}
+
+button[type=submit] {
+  float: right;
+}

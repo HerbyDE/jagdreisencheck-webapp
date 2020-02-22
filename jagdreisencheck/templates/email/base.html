@@ -1,0 +1,99 @@
+{% load i18n staticfiles %}
+
+<div style="font-family: 'Nunito Sans', Helvetica, Arial, sans-serif">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td>
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+
+          <tr id="emailHead">
+            <td>
+              <table border="0" cellspacing="0" width="100%" height="120" style="border: 2px solid #61b561; background: #61b561; padding: 10px 10px;">
+                <tr>
+                  <td>
+                    <table>
+                      <tr>
+                        <td>
+                          <img src="{% static 'assets/../../static/images/logos/logo_white_inverted.png' %}" height="70" width="70" alt="{% trans 'Jagdreisencheck' %}"/>
+                        </td>
+                        <td><h1 style="font-size: 2rem; color: white; margin-top: 30px;">Jagdreisencheck</h1></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr></tr>
+                <tr>
+                  <td><h2 style="font-size: 1.5rem; color: white;">{{ headline }}</h2></td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr id="emailBody">
+            <td>
+
+              <table border="0" cellpadding="10" cellspacing="0" width="100%" height="100%" style="border-left: 2px solid #61b561;border-right: 2px solid #61b561; padding: 30px 0;">
+
+                <tr>
+                  <td style="text-align: justify">
+                    {% block mail-body %}{{ body }}{% endblock %}
+                  </td>
+                </tr>
+
+              </table>
+
+            </td>
+          </tr>
+
+          <tr id="emailFooter" border="0" cellpadding="10" cellspacing="0" width="100%" height="100%">
+            <td>
+
+              <table border="0" cellpadding="10" cellspacing="0" width="100%" height="100%" style="background: #61b561;">
+
+                <tr>
+                  <td>
+                    <table border="0" cellpadding="10" cellspacing="0" width="100%" height="100%">
+
+                      <tr>
+                        <td>
+                          <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}/flat/imprint/" style="color: white;">{% trans 'Imprint' %}</a>
+                        </td>
+                        <td>
+                          <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}/flat/tos/" style="color: white;">{% trans 'Terms of Service' context "email_footer" %}</a>
+                        </td>
+                        <td>
+                          <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% url 'accounts:user_login' %}" style="color: white;">{% trans 'Login' %}</a>
+                        </td>
+                        <td>
+                          <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% url 'newsletter_list' %}" style="color: white;">{% trans 'Newsletter' %}</a>
+                        </td>
+                      </tr>
+
+                    </table>
+                  </td>
+                  <td align="right">
+                    <table border="0" cellpadding="10" cellspacing="0" width="100%" height="100%">
+                      <tr>
+                        <td>
+                          <a href="https://fb.me/jagdreisencheck/" style="color: #61b561;">
+                            <img src="https://cdn.pixabay.com/photo/2015/05/17/10/51/facebook-770688_960_720.png" alt="{% trans 'Facebook' %}" height="30" width="30"/>
+                          </a>
+                        </td>
+                        <td>
+                          <a href="https://linkedin.com/company/jagdreisencheck/" style="color: #61b561;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/600px-LinkedIn_logo_initials.png" alt="{% trans 'LinkedIn' %}" height="30" width="30"/>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>

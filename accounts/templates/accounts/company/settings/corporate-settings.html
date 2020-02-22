@@ -1,0 +1,112 @@
+{% extends 'base/structure/default-page.html' %}
+{% load staticfiles i18n accounts_tags sekizai_tags %}
+
+
+{% block title %}{% trans 'Settings' %}{% endblock %}
+
+
+{% block headline-img-source %}
+  {% if object.title_pic %}
+    {{ object.title_pic.url }}
+  {% else %}
+    {% static 'images/background/Hilly_Landscape.jpg' %}
+  {% endif %}
+{% endblock %}
+
+{% block headline-content-containerized %}
+  <h1>{% trans 'Settings' %}</h1>
+{% endblock %}
+
+
+{% block headline-nav %}
+    <ul class="list-inline on-page-nav">
+        <li class="list-inline-item on-page-nav-element active" id="account-nav">{% trans 'Login settings' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="contact-nav">{% trans 'Contact settings' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="profile-nav">{% trans 'Public profile' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="password-nav">{% trans 'Change your password' %}</li>
+    </ul>
+{% endblock %}
+
+{% block main-content %}
+
+  <div class="container nav-padding">
+
+    {% if base_form.errors or base_form.non_field_errors or profile_contact_form.errors or profile_contact_form.non_field_errors or profile_info_form.errors or profile_info_form.non_field_errors or password_form.errors or password_form.non_field_errors %}
+
+      <div class="row">
+        <div class="col-xs-12 col-lg-10 offset-lg-1 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h3 style="color: red;">{% trans 'Error' %}</h3>
+              <hr/>
+
+              {% include 'base/components/forms/error-handler/form-error.html' with form=base_form %}
+              {{ base_form.non_field_errors }}
+
+              {% include 'base/components/forms/error-handler/form-error.html' with form=profile_contact_form %}
+              {{ profile_contact_form.non_field_errors }}
+
+              {% include 'base/components/forms/error-handler/form-error.html' with form=profile_info_form %}
+              {{ profile_info_form.non_field_errors }}
+
+              {% include 'base/components/forms/error-handler/form-error.html' with form=password_form %}
+              {{ password_form.non_field_errors }}
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    {% endif %}
+
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-10 offset-lg-1">
+
+        <div class="card">
+          <div class="card-body">
+            <form class="page-element form" action="" method="post" id="account">
+              {% csrf_token %}
+              {% include 'accounts/settings/base-user-settings/base-user-settings.html' %}
+              <input type="hidden" name="form-name" value="base-user">
+            </form>
+            <form class="page-element form" action="" method="post" id="contact">
+              {% csrf_token %}
+              {% include 'accounts/company/settings/corporate-contacts-form.html' %}
+              <input type="hidden" name="form-name" value="corporate-contact">
+            </form>
+            <form class="page-element form" action="" method="post" id="profile" enctype="multipart/form-data">
+              {% csrf_token %}
+              {% include 'accounts/company/settings/corporate-information-form.html' %}
+              <input type="hidden" name="form-name" value="corporate-profile">
+            </form>
+            <form class="page-element form" action="" method="post" id="password">
+              {% csrf_token %}
+              {% include 'accounts/settings/base-user-settings/change-password-form.html' %}
+              <input type="hidden" name="form-name" value="password-settings">
+            </form>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/settings.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'scripts/components/forms.min.js' %}"></script>
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}"></script>
+    <script src='https://www.google.com/recaptcha/api.js' nonce="{{ request.csp_nonce }}"></script>
+    <script src='https://www.google.com/recaptcha/api.js?render=6LeSO4EUAAAAAHe-rvZnboRVU_WbKhaivHpx9UXK' nonce="{{ request.csp_nonce }}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}
+
+
+

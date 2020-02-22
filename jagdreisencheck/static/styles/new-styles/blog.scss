@@ -1,0 +1,297 @@
+/*
+Title: CMS Default Page
+Description: Sourcefile for the web app's default page without an image headline.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES (GLOBAL)
+3. BLOG STYLES
+4. PODCAST STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-default-page";
+@import "components/owl-theme";
+@import "components/podcast-categoy-slider";
+
+
+// 2. CUSTOM STYLES (GLOBAL)
+.topline {
+  .container {
+    .row {
+      float: right;
+    }
+  }
+}
+
+#loginDropdown {
+  color: $darkblue !important;
+
+  &:hover {
+    color: $white !important;
+  }
+
+}
+
+.nav-padding {
+  padding-top: 110px;
+
+  &-plus {
+    padding-top: 130px;
+  }
+
+}
+
+
+// 3. BLOG STYLES
+#blogSlider {
+
+  margin: 0;
+  padding: 0;
+  height: 550px;
+
+  .owl-stage-outer {}
+
+  .owl-stage {}
+
+  .owl-item {
+    position: relative;
+    padding: 0;
+
+    .item {
+      height: 480px;
+      overflow: hidden;
+
+      @include media-breakpoint-down(md) {
+        height: auto;
+        overflow: visible;
+      }
+
+    }
+
+    img {
+      height: 100%;
+      width: auto;
+      max-height: none;
+      max-width: none;
+
+      @include media-breakpoint-down(md) {
+        height: auto;
+        width: 100%;
+      }
+
+    }
+
+    .post-item-content {
+      display: none;
+    }
+
+    &.active {
+      .post-item-content {
+        position: absolute;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: block;
+
+        padding-left: 30px;
+        background: transparentize($gray-700, 0.6);
+
+        h3 {
+          z-index: 2;
+
+          @include media-breakpoint-down(md) {
+            margin: 0 0 5px 0;
+            font-size: 1.25rem;
+          }
+
+        }
+
+        h4 {
+          margin: 0 0 5px 0;
+          z-index: 2;
+          color: $gray-400;
+
+          @include media-breakpoint-down(md) {
+            font-size: 1rem;
+          }
+        }
+
+        > a {
+          font-size: 0.85rem;
+        }
+
+      }
+
+    }
+  }
+
+  .owl-nav {
+    .owl-prev {
+      left: 30px;
+      @include media-breakpoint-down(md) {
+        left: calc(50% - 40px);
+      }
+    }
+    .owl-next {
+      right: 20px;
+
+      @include media-breakpoint-down(md) {
+        right: calc(50% - 40px);
+      }
+
+
+    }
+
+    @include media-breakpoint-down(md) {
+      top: auto;
+      bottom: 0;
+    }
+
+  }
+
+  @include media-breakpoint-down(md) {
+    margin: 0 0 99px 0;
+    height: auto;
+  }
+
+}
+
+.post-thumb-list {
+  margin-top: 10px;
+  border-left: 2px solid $white;
+  overflow: hidden;
+
+  .article-thumbnail {
+    display: inline-flex;
+    overflow: hidden;
+    width: 100%;
+
+    .img-wrapper {
+      width: 130px !important;
+      height: 100%;
+
+      img {
+        width: 130px !important;
+        max-width: none;
+      }
+
+    }
+
+    > .text-content {
+      padding-left: 10px;
+      padding-right: 20px;
+      width: auto;
+
+      * {
+        text-align: left;
+      }
+
+
+    }
+
+    h5 {
+      margin-bottom: 1px;
+      font-size: $font-size-base * 1.25;
+
+      @include media-breakpoint-down(lg) {
+        font-size: $font-size-base * 1;
+      }
+
+    }
+    h6, i, time {
+      margin: 0;
+      font-size: $font-size-base * 0.85;
+    }
+
+
+
+    &.active {
+
+      background: $green;
+
+      h5 {
+        a {color: $white}
+      }
+
+    }
+
+  }
+
+  @include media-breakpoint-down(md) {
+    display: none;
+  }
+
+}
+
+
+// 4. PODCAST STYLES
+
+
+
+.podcast-image {
+  min-height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  audio {
+    position: absolute;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 15px;
+    width: calc(100% - 30px);
+  }
+
+  a.btn {
+    position: absolute;
+    top: auto;
+    right: 30px;
+    bottom: 15px;
+    left: 30px;
+    border-color: $white;
+  }
+
+  @include media-breakpoint-down(md) {
+    height: 300px;
+    width: 100%;
+    max-height: none;
+    max-width: none;
+  }
+
+
+}
+
+.podcast-numerator {
+
+  font-size: $font-size-base * 2;
+
+  span {
+    display: none;
+
+    @include media-breakpoint-down(md) {
+      display: inline;
+    }
+
+  }
+
+}
+
+.podcast-description {
+  h4 {
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
+  }
+}

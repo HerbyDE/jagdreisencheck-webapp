@@ -1,0 +1,52 @@
+/*
+Title: Trip rating field
+Description: Sourcefile for the web app's trip rating field.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "../../../bootstrap/variables";
+@import "../../../bootstrap/mixins";
+
+
+// 2. CUSTOM STYLES
+.rating-container {
+
+  .rating-symbol {
+    height: 20px;
+    width: 20px;
+    font-size: $font-size-base * 1.8;
+
+    .rating-symbol-foreground {
+      position: absolute;
+      top: -5px;
+      right: auto;
+      bottom: auto;
+      left: auto;
+
+      > span {
+        color: $green;
+      }
+
+    }
+    .rating-symbol-background {
+      position: absolute;
+      top: 0;
+      right: auto;
+      bottom: auto;
+      left: auto;
+    }
+  }
+
+}

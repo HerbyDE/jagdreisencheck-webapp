@@ -1,0 +1,30 @@
+/*
+Title: Trip detail pages
+Description: Sourcefile for the web app's trip detail page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-default-page";
+@import "components/forms/base";
+@import "components/forms/errors";
+
+
+// 2. CUSTOM STYLES
+.jrc-navbar {
+  #loginDropdown {
+    color: $darkblue;
+    &:hover {color: $white;}
+  }
+}

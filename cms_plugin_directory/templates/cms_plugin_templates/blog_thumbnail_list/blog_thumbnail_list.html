@@ -1,0 +1,28 @@
+{% load i18n staticfiles easy_thumbnails_tags %}
+
+<div class="blog-thumb-list">
+  <ul>
+    {% for obj in objects %}
+      <li>
+        <div class="row">
+          <div class="col-4">
+            {% thumbnail obj.main_image 150x150 crop=obj.full_image_options.crop upscale=obj.full_image_options.upscale subject_location=obj.main_image.subject_location  as thumb %}
+            {% if thumb %}<img src="{{ thumb.url }}" alt="{{ obj.main_image.default_alt_text }}" class="blog-visual"/>{% endif %}
+          </div>
+          <div class="col-8">
+            <h4>{{ obj.title }}</h4>
+            <hr>
+            <p>
+               <i class="fa fa-clock-o"></i>
+              <time>{{ obj.date_published|date:"d.m.y" }}</time>
+            </p>
+          </div>
+        </div>
+      </li>
+    {% empty %}
+      <li>
+        {% trans 'Stay tuned! We will release new blog articles soon.' %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>

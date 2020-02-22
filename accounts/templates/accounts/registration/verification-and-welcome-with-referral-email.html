@@ -1,0 +1,49 @@
+{% extends 'email/base.html' %}
+{% load i18n %}
+
+
+{% block mail-body %}
+
+  {% if corporate %}
+    {% blocktrans with user=user.get_short_name %}
+      Dear team of {{ user }}!
+      <br/>
+      <br/>
+      You have successfully created your account on Jagdreisencheck.
+      You can start with creating a trip anytime by clicking on the button below.
+      <br/>
+      <br/>
+      Sincerely,<br/>
+      Your Jagdreisencheck Team
+    {% endblocktrans %}
+    <br/>
+    <br/>
+    <br/>
+    <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ link }}" style="padding: 10px 15px; background: #ffc914; border-radius: 3px; color: black; text-decoration: none">{% trans 'Get started' %}</a>
+    <br/>
+    <br/>
+    <hr style="color: #61b561;border: 1px solid #61b561;"/>
+    <small>{% trans 'Please copy this link to your browser if the button above does not work:' %} <br/> {% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ link }}</small>
+
+
+  {% else %}
+    {% blocktrans with user=user.get_short_name %}Hello {{ user }}!<br/><br/>You have successfully created your account on Jagdreisencheck.You can start off anytime by clicking on the button below. It will bring you right to the point where you decided to register.<br/>As we all know, sharing is caring: To provide useful information Jagdreisencheck needs reviews on trips. This happens through you and your fellow hunters! Please share your commitment on Jagdreisencheck by sending this link to your friends:{% endblocktrans %}
+
+    <a href="{{ ref_link }}">{{ ref_link }}</a>
+
+    {% blocktrans %}If one of your friends signs up or if you create a review you will receive our exclusive 52-point checklist for your next hunting trips.{% endblocktrans %}
+    <br/>
+    <br/>
+    {% trans 'Your Jagdreisencheck Team' %}
+    <br/>
+    <br/>
+    <br/>
+    <a href="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ link }}" style="padding: 10px 15px; background: #ffc914; border-radius: 3px; color: black; text-decoration: none">{% trans 'Get started' %}</a>
+    <br/>
+    <br/>
+    <hr style="color: #61b561;border: 1px solid #61b561;"/>
+    <small>{% trans 'Please copy this link to your browser if the button above does not work:' %} <br/> {% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ link }}</small>
+
+  {% endif %}
+
+{% endblock %}

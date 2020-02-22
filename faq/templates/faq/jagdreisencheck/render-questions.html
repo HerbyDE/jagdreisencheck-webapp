@@ -1,0 +1,81 @@
+{% load i18n faq_tags %}
+
+{% for question in questions %}
+
+<div class="card" style="margin: 30px 10px;">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="card-title" style="font-size: 1.2rem; margin: 0;">
+                    {% trans 'Question' %} {{ forloop.counter }}: {{ question.name }}
+                </h4>
+                <small style="margin-left: 10px">{% trans 'posted by' %} {{ question.user.get_short_name }} {% trans 'on' context "date" %} {{ question.date_created|date }}</small>
+                {% if not question.answers.all|length > 0 %}
+                    {% if request.user == question.user %}
+                        <div style="margin-left: 10px">
+                            <button class="btn btn-outline-darkblue btn-sm" data-target="#editQuestion{{ question.pk }}" data-toggle="modal">
+                                <i class="fa fa-edit"></i>
+                                {% trans 'Edit Question' %}
+                            </button>
+                            {% include 'faq/jagdreisencheck/popup/edit-question-form.html' %}
+                            <button class="btn btn-outline-darkblue btn-sm" data-toggle="modal" data-target="#deleteQuestion{{ question.pk }}">
+                                <i class="fa fa-times"></i>
+                                {% trans 'Remove Question' %}
+                            </button>
+                            {% include 'faq/jagdreisencheck/popup/confirm-question-deletion.html' %}
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="container">
+            {% for answer in question.answers.all %}
+                <div class="row">
+                    <div class="col-4">
+                        {% blocktrans with name=answer.user.get_short_name %}Answer of {{ name }}:{% endblocktrans %}
+                        {% if profile.admin == answer.user %}
+                            <br/>
+                            <div class="badge badge-highlight">{% trans 'Operator' %}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-8">
+                        {{ answer.text }}
+                        <hr/>
+                        {% if not answer.answers.all|length > 0 %}
+                            {% if request.user == answer.user %}
+                                <div>
+                                    <button class="btn btn-outline-darkblue btn-sm" data-toggle="modal" data-target="#editAnswer{{ answer.pk }}">
+                                        <i class="fa fa-edit"></i>
+                                        {% trans 'Edit Answer' %}
+                                    </button>
+                                    {% include 'faq/jagdreisencheck/popup/edit-answer-form.html' %}
+                                    <button class="btn btn-outline-darkblue btn-sm" data-toggle="modal" data-target="#deleteAnswer{{ answer.pk }}">
+                                        <i class="fa fa-times"></i>
+                                        {% trans 'Remove Answer' %}
+                                    </button>
+                                    {% include 'faq/jagdreisencheck/popup/confirm-answer-deletion.html' %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="row">
+                    <div class="col-12">
+                        <p>{% trans 'There is no answer yet.' %}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if not question.answers.all|length > 0 %}
+                {% if request.user == object.user or request.user == object.admin or request.user == profile.admin %}
+                    <hr/>
+                    {% answer_question_form identifier=question.pk parent='instance' %}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endfor %}

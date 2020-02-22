@@ -1,0 +1,47 @@
+{% load i18n staticfiles sekizai_tags %}
+
+
+{% spaceless %}
+    <div class="form-group">
+        {% if not field.field.widget.attrs.no_label %}
+            <label class="control-label" for="{{ field.id_for_label }}">
+                {{ field.label }}
+                {% if field.help_text %}
+                    <span><i class="fa fa-info-circle" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{{ field.help_text|safe }}"></i></span>
+                {% endif %}
+
+                {% if field.field.required == True %}<span class="required-indicator">*</span>{% endif %}
+                {% if field.value %} <i class="fa fa-check-circle" style="color: #1b4079;"></i>{% endif %}
+
+            </label>
+            {% if field.field.widget.attrs.warning %}
+                <small><i class="fa fa-exclamation-circle"></i> {{ field.field.widget.attrs.warning }}</small>
+            {% endif %}
+        {% endif %}
+        <div class="custom-file">
+            <label class="custom-file-label" for="validatedCustomFile">
+                <i class="fa fa-file"></i>
+                {% if field.value %}{{ field.value }}{% else %}{% trans 'Choose file' %}...{% endif %}
+            </label>
+            <input type="{{ field.field.widget.input_type }}" name="{% if custom_name_ext %}form-{{ forloop.counter0 }}-{% elif form.prefix %}{{ form.prefix }}-{% endif %}{{ field.name }}"
+                   {% if field.value %}value="{{ field.value }}"{% endif %}
+                   id="{{ field.id_for_label }}"
+                   {% if field.placeholder %}placeholder="{{ field.placeholder }}"{% endif %}
+                   class="custom-file-input" {% if field.field.required %}required{% endif %}
+                   {% if field.field.max_length %}maxlength="{{ field.field.max_length }}"{% endif %}
+                   {% if field.field.widget.attrs.disabled %}disabled="disabled"{% endif %}/>
+        </div>
+        {% if field.value %}
+        <div class="row">
+            <div class="col-12">
+                <div class="current-path">
+                    <span>{% trans 'Current file' %}: </span> <a href="{{ MEDIA_URL }}{{ field.value }}" target="_blank">{{ MEDIA_URL }}{{ field.value }}</a>
+                </div>
+            </div>
+            <div class="col-12">
+                {% include 'base/components/fields.html' with field=clearing_input %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endspaceless %}

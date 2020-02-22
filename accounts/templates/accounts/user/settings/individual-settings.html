@@ -1,0 +1,123 @@
+{% extends 'base/structure/default-page.html' %}
+{% load staticfiles i18n accounts_tags sekizai_tags %}
+
+{% block title %}{% trans 'Settings' %}{% endblock %}
+
+{% block headline-content-containerized %}
+  <h1>{% trans 'Settings' %}</h1>
+  <p>
+    {% blocktrans with username=object.user.get_short_name %}{{ username }} here you can change all your profile information.{% endblocktrans %}
+    <br/>
+    <br/>
+    <a href="{% url 'accounts:user_profile' object.user.pk %}" class="btn btn-highlight">{% trans 'View Profile' %}</a>
+  </p>
+
+
+{% endblock %}
+
+
+{% block headline-nav %}
+    <ul class="list-inline on-page-nav">
+        <li class="list-inline-item on-page-nav-element active" id="account-nav">{% trans 'Account' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="public_profile-nav">{% trans 'Individual Profile' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="privacy-nav">{% trans 'Privacy Settings' %}</li>
+        <li class="list-inline-item on-page-nav-element" id="password-nav">{% trans 'Password Settings' %}</li>
+    </ul>
+{% endblock %}
+
+{% block main-content %}
+<div class="container">
+
+{% if base_form.errors or base_form.non_field_errors or profile_form.errors or profile_form.non_field_errors or profile_info_form.errors or profile_info_form.non_field_errors or password_form.errors or password_form.non_field_errors %}
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-10 offset-lg-1 mb-3">
+      <div class="card">
+        <div class="card-body">
+          <h3 style="color: red;">{% trans 'Error' %}</h3>
+          <hr/>
+
+          {% include 'base/components/forms/error-handler/form-error.html' with form=base_form %}
+          {{ base_form.non_field_errors }}
+
+          {% include 'base/components/forms/error-handler/form-error.html' with form=profile_form %}
+          {{ profile_form.non_field_errors }}
+
+          {% include 'base/components/forms/error-handler/form-error.html' with form=profile_info_form %}
+          {{ profile_info_form.non_field_errors }}
+
+          {% include 'base/components/forms/error-handler/form-error.html' with form=password_form %}
+          {{ password_form.non_field_errors }}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endif %}
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-8 offset-lg-2">
+      <div class="card">
+        <div class="card-body">
+
+          <form class="page-element form" action="" method="post" id="account">
+            {% csrf_token %}
+
+            {% include 'accounts/settings/base-user-settings/base-user-settings.html' %}
+            <input type="hidden" name="form-name" value="base-user">
+
+          </form>
+          <form class="page-element form" action="" method="post" id="public_profile" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% include 'accounts/user/settings/public-settings-form.html' %}
+            <input type="hidden" name="form-name" value="public-settings">
+
+          </form>
+          <form class="page-element form" action="" method="post" id="privacy">
+            {% csrf_token %}
+
+            {% include 'accounts/user/settings/privacy-settings-form.html' %}
+            <input type="hidden" name="form-name" value="privacy-settings">
+
+          </form>
+          <form class="page-element form" action="" method="post" id="password">
+            {% csrf_token %}
+
+            {% include 'accounts/settings/base-user-settings/change-password-form.html' %}
+            <input type="hidden" name="form-name" value="password-settings">
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/settings.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/datepicker.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/forms.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script nonce="{{ request.csp_nonce }}">
+      let datepicker = $('input[data-type=date]');
+      datepicker.each(function () {
+        $(this).datepicker({
+          uiLibrary: 'fontawesome',
+          locale: 'de-de',
+          format: 'dd.mm.yyyy',
+        });
+      })
+    </script>
+  {% endaddtoblock %}
+
+{% endblock %}
+
+
+

@@ -1,0 +1,35 @@
+{% extends "base/structure/base.html" %}
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}{% trans "Newsletter update" %}{% endblock title %}
+
+{% block content %}
+  <div class="container nav-padding">
+    <div class="row">
+      <div class="col-xs-12 col-lg-6 offset-lg-3">
+        <div class="card">
+          <div class="card-body">
+
+            <h1 class="card-title">{% trans "Newsletter update" %}</h1>
+
+            <p>
+              <i class="fa fa-exclamation-circle"></i>
+              {% trans "Your update request was successfully received and an activation email has been sent to you. In that email you will find a link which you need to follow in order to update your subscription." %}
+            </p>
+            <div class="align-center">
+              <a href="/" class="btn btn-outline-darkblue">{% trans 'Back' %}</a>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/newsletter.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

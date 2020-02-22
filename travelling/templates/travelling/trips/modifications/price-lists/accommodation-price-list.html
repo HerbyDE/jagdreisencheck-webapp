@@ -1,0 +1,52 @@
+{% extends 'travelling/trips/modifications/price-lists/price-list-base.html' %}
+{% load i18n %}
+
+{% block acc_active %}active{% endblock %}
+{% block dropdown_active %}active{% endblock %}
+
+{% block table_title %}
+    {% trans 'Prices for accommodation ' %}
+{% endblock %}
+
+{% block table_hint %}
+    {% blocktrans %}Hint: You can provide game prices in the "Prices for game" section in the dropdown above.{% endblocktrans %}
+{% endblock %}
+
+{% block table-head %}
+    <tr>
+        <th style="min-width: 180px;">{% trans 'Type' %}</th>
+        <th>{% trans 'Costs (Hunter)' %}</th>
+        <th>{% trans 'Costs(No hunter)' %}</th>
+        <th style="min-width: 160px;">{% trans 'Unit' %}</th>
+        <th><i class="fa fa-cogs"></i></th>
+    </tr>
+{% endblock %}
+
+{% block table-body %}
+    {% regroup elements by acc_type as acc_list %}
+    {% for acc in acc_list %}
+        {% for element in acc.list %}
+            <tr>
+                <td>{% if forloop.first %}{{ element.get_acc_type_display }}{% endif %}</td>
+                <td>{{ element.price_hunter }}</td>
+                <td>{{ element.price_non_hunter }}</td>
+                <td>{{ element.get_calc_base_display }}</td>
+                <td>
+                    <button type="button" data-toggle="modal" data-target="#price-modal-{{ forloop.counter }}" class="btn btn-outline-darkblue"><i class="fa fa-cog"></i></button>
+                    {% include 'travelling/trips/modifications/price-lists/change-accommodation-price-modal.html' %}
+                </td>
+            </tr>
+        {% endfor %}
+    {% empty %}
+    {% endfor %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <tr>
+            <td>{% include 'base/components/fields.html' with field=form.acc_type %}</td>
+            <td>{{ form.price_hunter }}</td>
+            <td>{{ form.price_non_hunter }}</td>
+            <td>{% include 'base/components/fields.html' with field=form.calc_base %}</td>
+            <td><button type="submit" class="btn btn-highlight"><i class="fa fa-plus"></i></button></td>
+        </tr>
+    </form>
+{% endblock %}

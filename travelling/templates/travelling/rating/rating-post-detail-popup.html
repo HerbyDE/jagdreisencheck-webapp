@@ -1,0 +1,227 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n travelling_tags %}
+
+{% if forloop.counter %}
+    {% display_languages object.staff_languages %}
+{% endif %}
+
+{% block modal-id %}{% spaceless %}{% if forloop.counter %}
+        rating-details-{{ object.user.get_short_name }}-{{ forloop.counter }}
+    {% else %}
+        overallRatingDetails
+    {% endif %}{% endspaceless %}{% endblock %}
+
+{% block modal-title %}
+    {% if forloop.counter %}
+        {% blocktrans with user=object.user.get_short_name country=object.trip.country.name region=object.trip.region company=object.trip.company.name %}
+            {{ user }} has been in {{ region }}, {{ country }}, with {{ company }}.
+        {% endblocktrans %}
+    {% else %}
+        {% trans 'Rating Overview' %}
+    {% endif %}
+{% endblock %}
+
+{% block modal-body %}
+  {% include 'travelling/rating/components/rating_table/rating-data-table.html' %}
+
+  <h4 class="mt-4">{% trans 'Rating of the hunt' %} ({% trans 'Ecologic Factors' %})</h4>
+  <hr/>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Were dogs used' %}?
+      </p>
+      <p class="rating-answer">
+        {% if object.use_of_dogs is True or object.use_of_dogs >= 0.5 %}
+          {% trans 'Yes' %}
+        {% else %}
+          {% trans 'No' %}
+        {% endif %}
+      </p>
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Free-ranging hunt' %}
+      </p>
+      <p class="rating-answer">
+        {% if object.hunt_in_wilderness is True or object.hunt_in_wilderness >= 0.5 %}
+          {% trans 'Yes' %}
+        {% else %}
+          {% trans 'No' %}
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  {% if object.use_of_dogs is True %}
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Dog type' %}
+      </p>
+      <p class="rating-answer">
+        {{ object.get_dog_purpose_display }}
+      </p>
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Dog Quality' %}
+      </p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.dog_quality %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Wildlife density' %}
+      </p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.game_density %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Wildlife age distribution' %}
+      </p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.game_age_dist %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Wildlife gender distribution' %}
+      </p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.game_gender_dist %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Professional hunter quality' %}
+      </p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.professional_hunter_quality %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans "Quality of the hunt's organization" %}
+      </p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.organization_of_hunt %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'Check of rifle strike position' %}?
+      </p>
+      <p class="rating-answer">
+        {% if object.check_strike_pos is True or object.check_strike_pos >= 0.5 %}
+          {% trans 'Yes' %}
+        {% else %}
+          {% trans 'No' %}
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">
+        {% trans 'License check' %}?
+      </p>
+      <p class="rating-answer">
+        {% if object.check_hunt_license is True or object.check_hunt_license >= 0.5 %}
+          {% trans 'Yes' %}
+        {% else %}
+          {% trans 'No' %}
+        {% endif %}
+      </p>
+    </div>
+  </div>
+  {# ./Ecologic Rating #}
+
+  <h4 class="mt-4">{% trans 'Rating of the service' %} ({% trans 'Socio-cultural Factors' %})</h4>
+  <hr/>
+
+  <div class="row">
+
+    {% if forloop %}
+      <div class="col-xs-12 col-lg-6">
+        <p class="rating-criterion">
+          {% trans 'Meal plan' %}
+        </p>
+        <p class="rating-answer">{{ object.get_meal_option_display }}</p>
+      </div>
+    {% endif %}
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Meal quality' %}</p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.meal_quality %}
+    </div>
+
+    {% if forloop %}
+      <div class="col-xs-12 col-lg-6">
+        <p class="rating-criterion">{% trans 'Accommodation' %}</p>
+        <p class="rating-answer">{{ object.get_accommodation_type_display }}</p>
+      </div>
+    {% endif %}
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Accommodation rating' %}</p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.accommodation_rating %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Issue support' %}</p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.support_with_issues %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Price-utility' %}</p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.price_utility %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+        <p class="rating-criterion">{% trans 'Customer support' %}</p>
+        {% include 'base/components/progressbar/progressbar.html' with field=object.customer_support %}
+    </div>
+
+    {% if forloop %}
+      <div class="col-xs-12 col-lg-6">
+        <p class="rating-criterion">{% trans 'Staff languages' %}</p>
+        {% if object.staff_languages %}
+          <p class="rating-answer">{% display_languages object.staff_languages %}</p>
+        {% else %}
+          <p class="rating-answer">{% trans 'No information' %}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Introduction to local hunting conditions' %}</p>
+      {% include 'base/components/progressbar/progressbar.html' with field=object.hunting_introduction %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Use of alternative program' %}</p>
+      <p class="rating-answer">
+        {% if object.alternative_program is True or object.alternative_program >= 0.5 %}
+          {% trans 'Yes' %}
+        {% else %}
+          {% trans 'No' %}
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      <p class="rating-criterion">{% trans 'Quality of alternative program' %}</p>
+      {% if object.alternative_program is True or object.alternative_program > 0 %}
+        {% include 'base/components/progressbar/progressbar.html' with field=object.quality_alternative_program %}
+      {% else %}
+        <p class="rating-answer">{% trans 'Alternative program not used.' %}</p>
+      {% endif %}
+    </div>
+
+  </div>
+
+{% endblock %}

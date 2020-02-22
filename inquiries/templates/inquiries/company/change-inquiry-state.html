@@ -1,0 +1,14 @@
+{% load sekizai_tags %}
+
+<form class="form" method="post" action="{% url 'inquiries:change_lead_status' trip.company.slug trip.country.code|slugify trip.region|slugify %}">
+  {% csrf_token %}
+  {% include 'base/components/fields.html' with field=form.lead_status disable_empty=True %}
+</form>
+
+{% addtoblock 'js' %}
+  <script>
+    $('form select').on('change', function(){
+      $(this).closest('form').submit();
+    });
+  </script>
+{% endaddtoblock %}

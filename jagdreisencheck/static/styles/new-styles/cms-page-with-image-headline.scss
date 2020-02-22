@@ -1,0 +1,128 @@
+/*
+Title: CMS Page with image headline
+Description: Sourcefile for the web app's default page with a headline.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "base";
+
+
+// 2. CUSTOM STYLES
+
+.headline {
+  position: relative;
+  margin: 0 0 30px 0;
+  padding: 0;
+  height: 400px;
+  width: 100vw;
+  overflow: hidden;
+
+  background: transparentize($gray-700, 0.5);
+
+  img {
+    height: 100%;
+    width: auto;
+    max-height: 400px;
+    max-width: none;
+    object-fit: cover;
+    z-index: -1;
+
+    @include media-breakpoint-up(sm) {
+      height: auto;
+      width: 100%;
+    }
+
+
+  }
+
+  .headline-content {
+    position: absolute;
+    top: 100px;
+    right: auto;
+    bottom: auto; 
+    left: 50%;
+    -webkit-transform: translate(-50%, 0);
+    -moz-transform: translate(-50%, 0);
+    -ms-transform: translate(-50%, 0);
+    -o-transform: translate(-50%, 0);
+    transform: translate(-50%, 0);
+    padding: 0 30px;
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      top: 120px;
+    }
+
+    @include make-container-max-widths();
+
+    h1 {
+      font-size: 1.5rem;
+      color: white;
+      text-align: center;
+
+      @include media-breakpoint-up(lg) {
+        font-size: $h1-font-size;
+        white-space: nowrap;
+
+      }
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      color: white;
+      text-align: center;
+
+      @include media-breakpoint-up(lg) {
+        font-size: $h2-font-size;
+        white-space: nowrap;
+
+      }
+    }
+
+
+    p {
+      font-size: 0.8rem;
+      color: $gray-500;
+      text-align: center;
+
+      @include media-breakpoint-up(lg) {
+        font-size: $font-size-base;
+      }
+    }
+
+  }
+
+
+}
+
+.headline-nav {
+  position: relative;
+  margin: -78px 0 50px 0;
+  height: 48px;
+  width: 100%;
+  background: transparentize($green, 0.33);
+  white-space: nowrap;
+
+  > .inner {
+    @include make-container();
+    @include make-container-max-widths();
+    padding: 0 30px;
+    height: 100%;
+
+  }
+
+
+
+}

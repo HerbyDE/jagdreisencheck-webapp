@@ -1,0 +1,13 @@
+{% load i18n staticfiles sekizai_tags %}
+
+{% spaceless %}
+    <div class="form-group">
+        <input type="{{ field.field.widget.input_type }}" name="{% if custom_name_ext %}form-{{ forloop.counter0 }}-{% elif form.prefix %}{{ form.prefix }}-{% endif %}{{ field.name }}"
+           {% if field.value %}value="{{ field.value }}"{% endif %}
+           id="{{ field.id_for_label }}"
+           {% if field.placeholder or field.field.widget.attrs.placeholder %}placeholder="{{ field.field.widget.attrs.placeholder }}"{% endif %}
+           class="form-control" {% if field.field.required %}required{% endif %}
+           {% if field.field.max_length %}maxlength="{{ field.field.max_length }}"{% endif %}
+           {% if field.field.widget.attrs.disabled %}disabled="disabled"{% endif %}/>
+    </div>
+{% endspaceless %}

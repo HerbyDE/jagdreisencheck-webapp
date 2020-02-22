@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<br/>
+<div class="row form-navigation">
+  <div class="col-xs-12 col-lg-6">
+    <p><span class="required-indicator">*</span> {% trans 'marks required inputs.' %}</p>
+  </div>
+  <div class="col-xs-12 col-lg-6 navigator-btn-group">
+    {% if final_step %}
+      <button class="btn btn-darkblue" type="submit">
+        <i class="fa fa-plus"></i>
+        {% if rating %}
+          {% trans 'Submit Rating' %}
+        {% elif inquiry %}
+          {% trans 'Submit Inquiry' %}
+        {% elif registration %}
+          {% trans 'Create Account' %}
+        {% elif reset_pw %}
+          {% trans 'Reset Password' %}
+        {% else %}
+          {% trans 'Create Trip' %}{% endif %}</button>
+    {% else %}
+      <button class="btn btn-darkblue next-btn" type="button">{% trans 'Next' %} <i class="fa fa-chevron-right"></i></button>
+    {% endif %}
+
+    {% if not first_step %}
+      <button class="btn btn-default prev-btn" type="button"><i class="fa fa-chevron-left"></i> {% trans 'Previous' %}</button>
+    {% endif %}
+  </div>
+</div>

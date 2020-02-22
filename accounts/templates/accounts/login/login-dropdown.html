@@ -1,0 +1,47 @@
+{% load staticfiles i18n sekizai_tags menu_tags %}
+
+{% if user.is_authenticated %}
+    <div class="dropdown nav-buttons">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="registerDropdown" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            {% if user.is_company %}<i class="fa fa-industry"></i>{% else %}
+                <i class="fa fa-user"></i>{% endif %} {{ user.get_short_name }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="registerDropdown">
+            {% if request.user.is_company %}
+                <a class="dropdown-item" href="{% url 'accounts:console' %}">{% trans 'Console' %}</a>
+            {% else %}
+                <a class="dropdown-item" href="{% url 'accounts:user_profile' user.pk %}">{% trans 'Profile' %}</a>
+                <a class="dropdown-item" href="{% url 'accounts:settings' user.pk %}">{% trans 'Settings' %}</a>
+                <a class="dropdown-item" href="{% url 'inquiries:inquiry_list' %}">{% trans 'Your inquiries' %}</a>
+            {% endif %}
+            <a class="dropdown-item"
+               href="{% url 'newsletter_list' %}">{% trans 'Newsletter' %}</a>
+            <a class="dropdown-item"
+               href="{% url 'accounts:settings' user.pk %}#password">{% trans 'Change your Password' %}</a>
+            {% if user.is_superuser %}
+                <a class="dropdown-item" href="{% url 'admin:index' %}">{% trans 'Administration' %}</a>
+            {% endif %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{% url 'logout' %}">{% trans 'Logout' %}</a>
+
+        </div>
+    </div>
+{% else %}
+    <div class="btn-group nav-buttons">
+        <div class="dropdown">
+            <button class="btn btn-outline-darkblue dropdown-toggle" type="button" id="loginDropdown"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% trans 'Login' %}
+            </button>
+            <ul class="dropdown-menu login-menu" aria-labelledby="loginDropdown">
+                <li class="dropdown-item no-hover">
+                    {% include 'accounts/login/login-form.html' %}
+                </li>
+            </ul>
+            <a href="{% url 'accounts:register' %}{% if request.GET.ref or request.GET.next %}?{% endif %}{% if request.GET.ref %}ref={{ request.GET.ref }}{% endif %}{% if request.GET.ref and request.GET.next %}&{% endif %}{% if request.GET.next %}next={{ request.GET.next }}{% endif %}">
+                <button class="btn btn-darkblue">{% trans 'Register' %}</button>
+            </a>
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,67 @@
+{% load i18n %}
+
+{% url 'search:country_list' object.country.name|lower as url %}
+
+<div class="card mt-3 mb-3">
+  <div class="card-body">
+    <h5 class="card-title">{% trans 'About this trip' %}</h5>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <tbody>
+          <tr>
+            <td>{% trans 'Country' %}</td>
+            <td>
+              {% if url %}<a href="{{ url }}">{{ object.country.name }}</a>{% else %}{{ object.country.name }}{% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td>{% trans 'Region/Territory' %}</td>
+            <td>{{ object.region }}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Operator' %}</td>
+            <td>{% if object.company.has_profile %}<a href="{% url 'accounts:user_profile' object.company.slug %}">{{ object.company.name }}</a>{% else %}{{ object.company.name }}{% endif %}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Hunting Types' %}</td>
+            <td>{{ object.get_available_hunting_types_display|join:", " }}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Game' %}</td>
+            <td>{{ object.game.all|join:', ' }}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Average walking distance' %}</td>
+            <td>{{ object.get_hunters_fitness_display|default_if_none:"-" }}</td>
+          </tr>
+          {% comment %}
+          <tr>
+          <td>{% trans 'Suggested Experience' %}</td>
+          <td>{{ object.get_hunters_experience_display|default_if_none:"-"  }}</td>
+          </tr>
+          <tr>
+          <td>{% trans 'Suggested Physical Fitness' %}</td>
+          <td>{{ object.get_hunters_fitness_display|default_if_none:"-"  }}</td>
+          </tr>
+          {% endcomment %}
+          <tr>
+            <td>{% trans 'Accommodation' %}</td>
+            <td>{{ object.get_available_accommodation_types_display|join:", "|default_if_none:"-"  }}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Hunting Time' %}</td>
+            <td>{{ object.get_hunting_start_time_display }} - {{ object.get_hunting_end_time_display }}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Family Offers' %}</td>
+            <td>{% if object.family_offers %}{{ object.get_family_offers_display }}{% else %}{% trans 'N/A' %}{% endif %}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Alternative Activities' %}</td>
+            <td>{% if object.alternative_activities %}{{ object.get_alternative_activities_display }}{% else %}{% trans 'N/A' %}{% endif %}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

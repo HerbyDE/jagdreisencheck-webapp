@@ -1,0 +1,42 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}addAccommodationPriceElement{% endblock %}
+
+{% block modal-title %}{% trans 'Add a new Element to the price table' %}{% endblock %}
+
+{% block modal-body %}
+    <form id="CreateAccommodationPriceTableElement" class="form container"
+          action="#" method="post">
+        {% csrf_token %}
+        <div class="row mt-2">
+            <div class="col-xs-12 col-lg-6">
+                {% with accommodation_price_form.acc_type as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% with accommodation_price_form.calc_base as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-xs-12 col-lg-6">
+                {% with accommodation_price_form.price_hunter as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                {% with accommodation_price_form.price_non_hunter as field %}
+                    {% include 'base/components/fields.html' %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="row mt-2" align="right">
+            <div class="col-12">
+                <button type="submit" class="btn btn-darkblue">{% trans 'Submit' %}</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

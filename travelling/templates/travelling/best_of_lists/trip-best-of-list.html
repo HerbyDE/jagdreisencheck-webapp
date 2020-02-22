@@ -1,0 +1,152 @@
+{% load i18n %}
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="row">
+            <div class="col-xs-12">
+                <h4>{{ instance.title }}</h4>
+            </div>
+        </div>
+        <div class="row filter-row">
+            <div class="col-xs-12">
+                <div class="scroll-bar">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <button class="btn btn-outline-navy active" data-toggle="tab"
+                                        href="#overall-{{ instance.pk }}">{% trans 'Overall Ranking' %}</button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <button class="btn btn-outline-navy" data-toggle="tab"
+                                        href="#economic-{{ instance.pk }}">{% trans 'Economic Ranking' %}</button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <button class="btn btn-outline-navy" data-toggle="tab"
+                                        href="#ecologic-{{ instance.pk }}">{% trans 'Ecologic Ranking' %}</button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <button class="btn btn-outline-navy" data-toggle="tab"
+                                        href="#sociocultural-{{ instance.pk }}">{% trans 'Socio-Cultural Ranking' %}</button>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane container active" id="overall-{{ instance.pk }}">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>{% trans 'Rank' %}</th>
+                            <th>{% trans 'Name' %}</th>
+                            <th>{% trans 'Country' %}</th>
+                            <th>{% trans 'Company' %}</th>
+                            <th>{% trans 'Available Hunting Types' %}</th>
+                            <th>{% trans 'Actions' %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for object in objects.globalTop %}
+                            <tr>
+                                <td># {{ forloop.counter }}</td>
+                                <td>{{ object.name }}</td>
+                                <td>{{ object.country.name }}</td>
+                                <td>{{ object.company.name }}</td>
+                                <td>{{ object.available_hunting_types|join:', ' }}</td>
+                                <td><a href="{{ object.slug }}" class="btn btn-outline-navy">{% trans 'More' %}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container fade" id="economic-{{ instance.pk }}">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans 'Rank' %}</th>
+                        <th>{% trans 'Name' %}</th>
+                        <th>{% trans 'Country' %}</th>
+                        <th>{% trans 'Company' %}</th>
+                        <th>{% trans 'Available Hunting Types' %}</th>
+                        <th>{% trans 'Actions' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in objects.economicTop %}
+                        <tr>
+                            <td># {{ forloop.counter }}</td>
+                            <td>{{ object.name }}</td>
+                            <td>{{ object.country.name }}</td>
+                            <td>{{ object.company.name }}</td>
+                            <td>{{ object.available_hunting_types|join:', ' }}</td>
+                            <td><a href="{{ object.slug }}" class="btn btn-outline-navy">{% trans 'More' %}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane container fade" id="ecologic-{{ instance.pk }}">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans 'Rank' %}</th>
+                        <th>{% trans 'Name' %}</th>
+                        <th>{% trans 'Country' %}</th>
+                        <th>{% trans 'Company' %}</th>
+                        <th>{% trans 'Available Hunting Types' %}</th>
+                        <th>{% trans 'Actions' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in objects.ecologicTop %}
+                        <tr>
+                            <td># {{ forloop.counter }}</td>
+                            <td>{{ object.name }}</td>
+                            <td>{{ object.country.name }}</td>
+                            <td>{{ object.company.name }}</td>
+                            <td>{{ object.available_hunting_types|join:', ' }}</td>
+                            <td><a href="{{ object.slug }}" class="btn btn-outline-navy">{% trans 'More' %}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane container fade" id="sociocultural-{{ instance.pk }}">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans 'Rank' %}</th>
+                        <th>{% trans 'Name' %}</th>
+                        <th>{% trans 'Country' %}</th>
+                        <th>{% trans 'Company' %}</th>
+                        <th>{% trans 'Available Hunting Types' %}</th>
+                        <th>{% trans 'Actions' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for object in objects.socioCulturalTop %}
+                        <tr>
+                            <td># {{ forloop.counter }}</td>
+                            <td>{{ object.name }}</td>
+                            <td>{{ object.country.name }}</td>
+                            <td>{{ object.company.name }}</td>
+                            <td>{{ object.available_hunting_types|join:', ' }}</td>
+                            <td><a href="{{ object.slug }}" class="btn btn-outline-navy">{% trans 'More' %}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

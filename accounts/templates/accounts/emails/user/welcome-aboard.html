@@ -1,0 +1,35 @@
+{% extends 'email/base/email-base.html' %}
+{% load i18n staticfiles %}
+
+
+{% block headline %}
+    {% blocktrans with user=user.get_short_name %}Welcome aboard {{ user }}!{% endblocktrans %}
+{% endblock %}
+
+{% block body %}
+<p>
+  {% blocktrans %}
+    We're happy to have you with us. Together with you we want to transform the hunting travel industy
+    and increase sustainability. As we can achieve these goals only when we share our experiences from
+    hunting travels on Jagdreisencheck. Your fellow hunters will be grateful for your personal insights
+    and if you share them. Therefore, you may invite them to Jagdreisencheck with the link below:
+  {% endblocktrans %}
+</p>
+<hr/>
+  <a href="{{ request.get_host }}{% url 'accounts:register_user' %}?referred_by={{ user.referral_code }}" style="text-align: center;">
+    {{ request.get_host }}{% url 'accounts:register_user' %}?referred_by={{ user.referral_code }}
+  </a>
+<br/>
+  <small>{% trans 'Hint: If the link does not work please copy the link into your browser.' %}</small>
+<hr/>
+<p>{% blocktrans %}
+  If two of your hunting friends sign up you will receive our exclusive 52 point long check list for your
+  next hunting trips as a reward.
+{% endblocktrans %}</p>
+
+<hr>
+  <p>{% blocktrans %}To stay updated we invite you to follow us on Facebook. There you will receive regular updates:{% endblocktrans %}</p>
+  <a href="https://fb.me/jagdreisencheck">Jagdreisencheck @ Facebook</a>
+
+<p>{% trans 'We again welcome you on board' %}!</p>
+{% endblock %}

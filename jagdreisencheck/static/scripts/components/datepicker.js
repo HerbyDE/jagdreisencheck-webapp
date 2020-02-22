@@ -1,0 +1,2062 @@
+/*
+ * Gijgo DatePicker v1.9.10
+ * http://gijgo.com/datepicker
+ *
+ * Copyright 2014, 2018 gijgo.com
+ * Released under the MIT license
+ */
+/* global window alert jQuery gj */
+var gj = {};
+
+gj.widget = function () {
+    var self = this;
+
+    self.xhr = null;
+
+    self.generateGUID = function () {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    };
+
+    self.mouseX = function (e) {
+        if (e) {
+            if (e.pageX) {
+                return e.pageX;
+            } else if (e.clientX) {
+                return e.clientX + (document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft);
+            } else if (e.touches && e.touches.length) {
+                return e.touches[0].pageX;
+            } else if (e.changedTouches && e.changedTouches.length) {
+                return e.changedTouches[0].pageX;
+            } else if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length) {
+                return e.originalEvent.touches[0].pageX;
+            } else if (e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches.length) {
+                return e.originalEvent.touches[0].pageX;
+            }
+        }
+        return null;
+    };
+
+    self.mouseY = function (e) {
+        if (e) {
+            if (e.pageY) {
+                return e.pageY;
+            } else if (e.clientY) {
+                return e.clientY + (document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop);
+            } else if (e.touches && e.touches.length) {
+                return e.touches[0].pageY;
+            } else if (e.changedTouches && e.changedTouches.length) {
+                return e.changedTouches[0].pageY;
+            } else if (e.originalEvent && e.originalEvent.touches && e.originalEvent.touches.length) {
+                return e.originalEvent.touches[0].pageY;
+            } else if (e.originalEvent && e.originalEvent.changedTouches && e.originalEvent.changedTouches.length) {
+                return e.originalEvent.touches[0].pageY;
+            }
+        }
+        return null;
+    };
+
+    self.extend = function () {
+        for (var i = 1; i < arguments.length; i++) {
+            for (var key in arguments[i]) {
+                if (arguments[i].hasOwnProperty(key)) {
+                    if (typeof arguments[0][key] === 'object') {
+                        arguments[0][key] = this.extend(arguments[0][key], arguments[i][key]);
+                    } else {
+                        arguments[0][key] = arguments[i][key];
+                    }
+                }
+            }
+        }
+        return arguments[0];
+    };
+};
+
+gj.widget.prototype.init = function (jsConfig, type) {
+    var option, clientConfig, fullConfig;
+
+    this.element.setAttribute('data-type', type);
+    clientConfig = $.extend(true, {}, this.getHTMLConfig() || {});
+    $.extend(true, clientConfig, jsConfig || {});
+    fullConfig = this.getConfig(clientConfig, type);
+    this.element.setAttribute('data-guid', fullConfig.guid);
+    this.data(fullConfig);
+
+    // Initialize events configured as options
+    for (option in fullConfig) {
+        if (gj[type].events.hasOwnProperty(option)) {
+            this.on(option, fullConfig[option]);
+            delete fullConfig[option];
+        }
+    }
+
+    // Initialize all plugins
+    for (plugin in gj[type].plugins) {
+        if (gj[type].plugins.hasOwnProperty(plugin)) {
+            gj[type].plugins[plugin].configure(this, fullConfig, clientConfig);
+        }
+    }
+
+    return this;
+};
+
+gj.widget.prototype.getConfig = function (clientConfig, type) {
+    var config, uiLibrary, iconsLibrary, plugin;
+
+    config = $.extend(true, {}, gj[type].config.base);
+
+    uiLibrary = clientConfig.hasOwnProperty('uiLibrary') ? clientConfig.uiLibrary : config.uiLibrary;
+    if (gj[type].config[uiLibrary]) {
+        $.extend(true, config, gj[type].config[uiLibrary]);
+    }
+
+    iconsLibrary = clientConfig.hasOwnProperty('iconsLibrary') ? clientConfig.iconsLibrary : config.iconsLibrary;
+    if (gj[type].config[iconsLibrary]) {
+        $.extend(true, config, gj[type].config[iconsLibrary]);
+    }
+
+    for (plugin in gj[type].plugins) {
+        if (gj[type].plugins.hasOwnProperty(plugin)) {
+            $.extend(true, config, gj[type].plugins[plugin].config.base);
+            if (gj[type].plugins[plugin].config[uiLibrary]) {
+                $.extend(true, config, gj[type].plugins[plugin].config[uiLibrary]);
+            }
+            if (gj[type].plugins[plugin].config[iconsLibrary]) {
+                $.extend(true, config, gj[type].plugins[plugin].config[iconsLibrary]);
+            }
+        }
+    }
+
+    $.extend(true, config, clientConfig);
+
+    if (!config.guid) {
+        config.guid = this.generateGUID();
+    }
+
+    return config;
+};
+
+gj.widget.prototype.getHTMLConfig = function () {
+    var result = this.data(),
+        attrs = this[0].attributes;
+    if (attrs['width']) {
+        result.width = attrs['width'].value;
+    }
+    if (attrs['height']) {
+        result.height = attrs['height'].value;
+    }
+    if (attrs['value']) {
+        result.value = attrs['value'].value;
+    }
+    if (attrs['align']) {
+        result.align = attrs['align'].value;
+    }
+    if (result && result.source) {
+        result.dataSource = result.source;
+        delete result.source;
+    }
+    return result;
+};
+
+window.gijgoStorage = {
+    _storage: new WeakMap(),
+    put: function (el, key, obj) {
+        if (!this._storage.has(key)) {
+            this._storage.set(el, new Map());
+        }
+        this._storage.get(el).set(key, obj);
+    },
+    get: function (el, key) {
+        return this._storage.get(el).get(key);
+    },
+    has: function (el, key) {
+        return this._storage.get(el).has(key);
+    },
+    remove: function (el, key) {
+        var ret = this._storage.get(el).delete(key);
+        if (this._storage.get(key) && !this._storage.get(key).size === 0) {
+            this._storage.delete(el);
+        }
+        return ret;
+    }
+};
+
+gj.widget.prototype.initJS = function (jsConfig, type) {
+    var option, clientConfig, fullConfig;
+
+    this.element.setAttribute('data-type', type);
+    clientConfig = this.extend({}, this.getHTMLConfigJS() || {});
+    this.extend(clientConfig, jsConfig || {});
+    fullConfig = this.getConfigJS(clientConfig, type);
+    this.element.setAttribute('data-guid', fullConfig.guid);
+    gijgoStorage.put(this.element, 'gijgo', fullConfig);
+
+    // Initialize events configured as options
+    for (option in fullConfig) {
+        if (gj[type].events.hasOwnProperty(option)) {
+            this.element.addEventListener(option, fullConfig[option]);
+            delete fullConfig[option];
+        }
+    }
+
+    // Initialize all plugins
+    for (plugin in gj[type].plugins) {
+        if (gj[type].plugins.hasOwnProperty(plugin)) {
+            gj[type].plugins[plugin].configure(this, fullConfig, clientConfig);
+        }
+    }
+
+    return this;
+};
+
+gj.widget.prototype.getConfigJS = function (clientConfig, type) {
+    var config, uiLibrary, iconsLibrary, plugin;
+
+    config = this.extend({}, gj[type].config.base);
+
+    uiLibrary = clientConfig.hasOwnProperty('uiLibrary') ? clientConfig.uiLibrary : config.uiLibrary;
+    if (gj[type].config[uiLibrary]) {
+        this.extend(config, gj[type].config[uiLibrary]);
+    }
+
+    iconsLibrary = clientConfig.hasOwnProperty('iconsLibrary') ? clientConfig.iconsLibrary : config.iconsLibrary;
+    if (gj[type].config[iconsLibrary]) {
+        this.extend(config, gj[type].config[iconsLibrary]);
+    }
+
+    for (plugin in gj[type].plugins) {
+        if (gj[type].plugins.hasOwnProperty(plugin)) {
+            this.extend(config, gj[type].plugins[plugin].config.base);
+            if (gj[type].plugins[plugin].config[uiLibrary]) {
+                this.extend(config, gj[type].plugins[plugin].config[uiLibrary]);
+            }
+            if (gj[type].plugins[plugin].config[iconsLibrary]) {
+                this.extend(config, gj[type].plugins[plugin].config[iconsLibrary]);
+            }
+        }
+    }
+
+    this.extend(config, clientConfig);
+
+    if (!config.guid) {
+        config.guid = this.generateGUID();
+    }
+
+    return config;
+}
+
+gj.widget.prototype.getHTMLConfigJS = function () {
+    var result = {},
+        attrs = this.element.attributes;
+    if (attrs['width']) {
+        result.width = attrs['width'].value;
+    }
+    if (attrs['height']) {
+        result.height = attrs['height'].value;
+    }
+    if (attrs['value']) {
+        result.value = attrs['value'].value;
+    }
+    if (attrs['align']) {
+        result.align = attrs['align'].value;
+    }
+    if (result && result.source) {
+        result.dataSource = result.source;
+        delete result.source;
+    }
+    return result;
+};
+
+gj.widget.prototype.createDoneHandler = function () {
+    var $widget = this;
+    return function (response) {
+        if (typeof (response) === 'string' && JSON) {
+            response = JSON.parse(response);
+        }
+        gj[$widget.data('type')].methods.render($widget, response);
+    };
+};
+
+gj.widget.prototype.createErrorHandler = function () {
+    return function (response) {
+        if (response && response.statusText && response.statusText !== 'abort') {
+            alert(response.statusText);
+        }
+    };
+};
+
+gj.widget.prototype.reload = function (params) {
+    var ajaxOptions, result, data = this.data(), type = this.data('type');
+    if (data.dataSource === undefined) {
+        gj[type].methods.useHtmlDataSource(this, data);
+    }
+    $.extend(data.params, params);
+    if ($.isArray(data.dataSource)) {
+        result = gj[type].methods.filter(this);
+        gj[type].methods.render(this, result);
+    } else if (typeof(data.dataSource) === 'string') {
+        ajaxOptions = { url: data.dataSource, data: data.params };
+        if (this.xhr) {
+            this.xhr.abort();
+        }
+        this.xhr = $.ajax(ajaxOptions).done(this.createDoneHandler()).fail(this.createErrorHandler());
+    } else if (typeof (data.dataSource) === 'object') {
+        if (!data.dataSource.data) {
+            data.dataSource.data = {};
+        }
+        $.extend(data.dataSource.data, data.params);
+        ajaxOptions = $.extend(true, {}, data.dataSource); //clone dataSource object
+        if (ajaxOptions.dataType === 'json' && typeof(ajaxOptions.data) === 'object') {
+            ajaxOptions.data = JSON.stringify(ajaxOptions.data);
+        }
+        if (!ajaxOptions.success) {
+            ajaxOptions.success = this.createDoneHandler();
+        }
+        if (!ajaxOptions.error) {
+            ajaxOptions.error = this.createErrorHandler();
+        }
+        if (this.xhr) {
+            this.xhr.abort();
+        }
+        this.xhr = $.ajax(ajaxOptions);
+    }
+    return this;
+}
+
+gj.documentManager = {
+    events: {},
+
+    subscribeForEvent: function (eventName, widgetId, callback) {
+        if (!gj.documentManager.events[eventName] || gj.documentManager.events[eventName].length === 0) {
+            gj.documentManager.events[eventName] = [{ widgetId: widgetId, callback: callback }];
+            document.addEventListener(eventName, gj.documentManager.executeCallbacks);
+        } else if (!gj.documentManager.events[eventName][widgetId]) {
+            gj.documentManager.events[eventName].push({ widgetId: widgetId, callback: callback });
+        } else {
+            throw 'Event ' + eventName + ' for widget with guid="' + widgetId + '" is already attached.';
+        }
+    },
+
+    executeCallbacks: function (e) {
+        var callbacks = gj.documentManager.events[e.type];
+        if (callbacks) {
+            for (var i = 0; i < callbacks.length; i++) {
+                callbacks[i].callback(e);
+            }
+        }
+    },
+
+    unsubscribeForEvent: function (eventName, widgetId) {
+        var success = false,
+            events = gj.documentManager.events[eventName];
+        if (events) {
+            for (var i = 0; i < events.length; i++) {
+                if (events[i].widgetId === widgetId) {
+                    events.splice(i, 1);
+                    success = true;
+                    if (events.length === 0) {
+                        document.removeEventListener(eventName, gj.documentManager.executeCallbacks);
+                        delete gj.documentManager.events[eventName];
+                    }
+                }
+            }
+        }
+        if (!success) {
+            throw 'The "' + eventName + '" for widget with guid="' + widgetId + '" can\'t be removed.';
+        }
+    }
+};
+
+/**  */gj.core = {
+    messages: {
+        'en-us': {
+            monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            monthShortNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            weekDaysMin: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            weekDaysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+            weekDays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+            am: 'AM',
+            pm: 'PM',
+            ok: 'Ok',
+            cancel: 'Cancel',
+            titleFormat: 'mmmm yyyy'
+        }
+    },
+
+    parseDate: function (value, format, locale) {
+        var i, year = 0, month = 0, date = 1, hour = 0, minute = 0, dateParts, formatParts, result;
+
+        if (value && typeof value === 'string') {
+            if (/^\d+$/.test(value)) {
+                result = new Date(value);
+            } else if (value.indexOf('/Date(') > -1) {
+                result = new Date(parseInt(value.substr(6), 10));
+            } else if (value) {
+                formatParts = format.split(/[\s,-\.//\:]+/);
+                // Split only by spaces
+                dateParts = value.split(/[\s]+/);
+                // Split by other chars if the split by spaces doesn't work
+                if (dateParts.length != formatParts.length) {
+                    dateParts = value.split(/[\s,-\.//\:]+/);
+                }
+                for (i = 0; i < formatParts.length; i++) {
+                    if (['d', 'dd'].indexOf(formatParts[i]) > -1) {
+                        date = parseInt(dateParts[i], 10);
+                    } else if (['m', 'mm'].indexOf(formatParts[i]) > -1) {
+                        month = parseInt(dateParts[i], 10) - 1;
+                    } else if ('mmm' === formatParts[i]) {
+                        month = gj.core.messages[locale || 'en-us'].monthShortNames.indexOf(dateParts[i]);
+                    } else if ('mmmm' === formatParts[i]) {
+                        month = gj.core.messages[locale || 'en-us'].monthNames.indexOf(dateParts[i]);
+                    } else if (['yy', 'yyyy'].indexOf(formatParts[i]) > -1) {
+                        year = parseInt(dateParts[i], 10);
+                        if (formatParts[i] === 'yy') {
+                            year += 2000;
+                        }
+                    } else if (['h', 'hh', 'H', 'HH'].indexOf(formatParts[i]) > -1) {
+                        hour = parseInt(dateParts[i], 10);
+                    } else if (['M', 'MM'].indexOf(formatParts[i]) > -1) {
+                        minute = parseInt(dateParts[i], 10);
+                    }
+                }
+                result = new Date(year, month, date, hour, minute);
+            }
+        } else if (typeof value === 'number') {
+            result = new Date(value);
+        } else if (value instanceof Date) {
+            result = value;
+        }
+
+        return result;
+    },
+
+    formatDate: function (date, format, locale) {
+        var result = '', separator, tmp,
+            formatParts = format.split(/[\s,-\.//\:]+/),
+            separators = format.split(/s+|M+|H+|h+|t+|T+|d+|m+|y+/);
+
+        separators = separators.splice(1, separators.length - 2);
+
+        for (i = 0; i < formatParts.length; i++) {
+            separator = (separators[i] || '');
+            switch (formatParts[i]) {
+                case 's':
+                    result += date.getSeconds() + separator;
+                    break;
+                case 'ss':
+                    result += gj.core.pad(date.getSeconds()) + separator;
+                    break;
+                case 'M':
+                    result += date.getMinutes() + separator;
+                    break;
+                case 'MM':
+                    result += gj.core.pad(date.getMinutes()) + separator;
+                    break;
+                case 'H':
+                    result += date.getHours() + separator;
+                    break;
+                case 'HH':
+                    result += gj.core.pad(date.getHours()) + separator;
+                    break;
+                case 'h':
+                    tmp = date.getHours() > 12 ? date.getHours() % 12 : date.getHours();
+                    result += tmp + separator;
+                    break;
+                case 'hh':
+                    tmp = date.getHours() > 12 ? date.getHours() % 12 : date.getHours();
+                    result += gj.core.pad(tmp) + separator;
+                    break;
+                case 'tt':
+                    result += (date.getHours() >= 12 ? 'pm' : 'am') + separator;
+                    break;
+                case 'TT':
+                    result += (date.getHours() >= 12 ? 'PM' : 'AM') + separator;
+                    break;
+                case 'd':
+                    result += date.getDate() + separator;
+                    break;
+                case 'dd':
+                    result += gj.core.pad(date.getDate()) + separator;
+                    break;
+                case 'ddd':
+                    result += gj.core.messages[locale || 'en-us'].weekDaysShort[date.getDay()] + separator;
+                    break;
+                case 'dddd':
+                    result += gj.core.messages[locale || 'en-us'].weekDays[date.getDay()] + separator;
+                    break;
+                case 'm' :
+                    result += (date.getMonth() + 1) + separator;
+                    break;
+                case 'mm':
+                    result += gj.core.pad(date.getMonth() + 1) + separator;
+                    break;
+                case 'mmm':
+                    result += gj.core.messages[locale || 'en-us'].monthShortNames[date.getMonth()] + separator;
+                    break;
+                case 'mmmm':
+                    result += gj.core.messages[locale || 'en-us'].monthNames[date.getMonth()] + separator;
+                    break;
+                case 'yy' :
+                    result += date.getFullYear().toString().substr(2) + separator;
+                    break;
+                case 'yyyy':
+                    result += date.getFullYear() + separator;
+                    break;
+            }
+        }
+
+        return result;
+    },
+
+    pad: function (val, len) {
+        val = String(val);
+        len = len || 2;
+        while (val.length < len) {
+            val = '0' + val;
+        }
+        return val;
+    },
+
+    center: function (element) {
+        var left = (window.innerWidth / 2) - (gj.core.width(element, true) / 2),
+            top = (window.innerHeight / 2) - (gj.core.height(element, true) / 2);
+        element.style.position = 'absolute';
+        // element.style.left = (left > 0 ? left : 0) + 'px';
+        // element.style.top = (top > 0 ? top : 0) + 'px';
+    },
+
+    isIE: function () {
+        return !!navigator.userAgent.match(/Trident/g) || !!navigator.userAgent.match(/MSIE/g);
+    },
+
+    /*
+    setChildPosition: function (mainEl, childEl) {
+        var mainElRect = mainEl.getBoundingClientRect(),
+            mainElHeight = gj.core.height(mainEl, true),
+            childElHeight = gj.core.height(childEl, true),
+            mainElWidth = gj.core.width(mainEl, true),
+            childElWidth = gj.core.width(childEl, true),
+            scrollY = window.scrollY || window.pageYOffset || 0,
+            scrollX = window.scrollX || window.pageXOffset || 0;
+
+        if ((mainElRect.top + mainElHeight + childElHeight) > window.innerHeight && mainElRect.top > childElHeight) {
+            childEl.style.top = Math.round(mainElRect.top + scrollY - childElHeight - 3) + 'px';
+        } else {
+            childEl.style.top = Math.round(mainElRect.top + scrollY + mainElHeight + 3) + 'px';
+        }
+
+        if (mainElRect.left + childElWidth > document.body.clientWidth) {
+            childEl.style.left = Math.round(mainElRect.left + scrollX + mainElWidth - childElWidth) + 'px';
+        } else {
+            childEl.style.left = Math.round(mainElRect.left + scrollX) + 'px';
+        }
+    }, */
+
+    height: function (el, margin) {
+        var result, style = window.getComputedStyle(el);
+
+        if (style.boxSizing === 'border-box') { // border-box include padding and border within the height
+            result = parseInt(style.height, 10);
+            if (gj.core.isIE()) {
+                result += parseInt(style.paddingTop || 0, 10) + parseInt(style.paddingBottom || 0, 10);
+                result += parseInt(style.borderTopWidth || 0, 10) + parseInt(style.borderBottomWidth || 0, 10);
+            }
+        } else {
+            result = parseInt(style.height, 10);
+            result += parseInt(style.paddingTop || 0, 10) + parseInt(style.paddingBottom || 0, 10);
+            result += parseInt(style.borderTopWidth || 0, 10) + parseInt(style.borderBottomWidth || 0, 10);
+        }
+
+        if (margin) {
+            result += parseInt(style.marginTop || 0, 10) + parseInt(style.marginBottom || 0, 10);
+        }
+
+        return result;
+    },
+
+    width: function (el, margin) {
+        var result, style = window.getComputedStyle(el);
+
+        if (style.boxSizing === 'border-box') { // border-box include padding and border within the width
+            result = parseInt(style.width, 10);
+        } else {
+            result = parseInt(style.width, 10);
+            result += parseInt(style.paddingLeft || 0, 10) + parseInt(style.paddingRight || 0, 10);
+            result += parseInt(style.borderLeftWidth || 0, 10) + parseInt(style.borderRightWidth || 0, 10);
+        }
+
+        if (margin) {
+            result += parseInt(style.marginLeft || 0, 10) + parseInt(style.marginRight || 0, 10);
+        }
+
+        return result;
+    },
+
+    addClasses: function (el, classes) {
+        var i, arr;
+        if (classes) {
+            arr = classes.split(' ');
+            for (i = 0; i < arr.length; i++) {
+                el.classList.add(arr[i]);
+            }
+        }
+    },
+
+    createElement: function (htmlString) {
+        var div = document.createElement('div');
+        div.innerHTML = htmlString.trim();
+        return div.firstChild;
+    },
+
+    /*position: function (el) {
+        var xScroll, yScroll, left = 0, top = 0,
+            height = gj.core.height(el),
+            width = gj.core.width(el);
+
+        while (el) {
+            if (el.tagName == "BODY") {
+                xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+                yScroll = el.scrollTop || document.documentElement.scrollTop;
+                left += el.offsetLeft - xScroll; // + el.clientLeft);
+                top += el.offsetTop - yScroll; // + el.clientTop);
+            } else {
+                left += el.offsetLeft - el.scrollLeft; // + el.clientLeft;
+                top += el.offsetTop - el.scrollTop; // + el.clientTop;
+            }
+
+            el = el.offsetParent;
+        }
+
+        return { top: top, left: left, bottom: top + height, right: left + width };
+    }, */
+
+    setCaretAtEnd: function (elem) {
+        var elemLen;
+        if (elem) {
+            elemLen = elem.value.length;
+            if (document.selection) { // For IE Only
+                elem.focus();
+                var oSel = document.selection.createRange();
+                oSel.moveStart('character', -elemLen);
+                oSel.moveStart('character', elemLen);
+                oSel.moveEnd('character', 0);
+                oSel.select();
+            } else if (elem.selectionStart || elem.selectionStart == '0') { // Firefox/Chrome
+                elem.selectionStart = elemLen;
+                elem.selectionEnd = elemLen;
+                elem.focus();
+            }
+        }
+    },
+    getScrollParent: function (node) {
+        if (node == null) {
+            return null;
+        } else if (node.scrollHeight > node.clientHeight) {
+            return node;
+        } else {
+            return gj.core.getScrollParent(node.parentNode);
+        }
+    }
+};
+gj.picker = {
+    messages: {
+        'en-us': {
+        }
+    }
+};
+
+gj.picker.methods = {
+
+    initialize: function (picker, data, methods) {
+        var rightIcon, wrapper, input = picker.element,
+            popup = methods.createPopup(picker, data);
+
+        if (input.parentElement.attributes.role !== 'wrapper') {
+            wrapper = document.createElement('div');
+            wrapper.setAttribute('role', 'wrapper');
+            input.parentNode.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+        } else {
+            wrapper = input.parentElement;
+        }
+
+        gj.core.addClasses(wrapper, data.style.wrapper);
+
+        if (data.width) {
+            wrapper.style.width = data.width + 'px';
+        }
+
+        input.value = data.value || '';
+        gj.core.addClasses(input, data.style.input);
+        input.setAttribute('role', 'input');
+
+        if (data.fontSize) {
+            input.style.fontSize = data.fontSize;
+        }
+
+        if (data.uiLibrary === 'bootstrap' || data.uiLibrary === 'bootstrap4') {
+            if (data.size === 'small') {
+                wrapper.classList.add('input-group-sm');
+                input.classList.add('form-control-sm');
+            } else if (data.size === 'large') {
+                wrapper.classList.add('input-group-lg');
+                input.classList.add('form-control-lg');
+            }
+        } else {
+            if (data.size === 'small') {
+                wrapper.classList.add('small');
+            } else if (data.size === 'large') {
+                wrapper.classList.add('large');
+            }
+        }
+
+        if (data.showRightIcon) {
+            if (data.uiLibrary === 'bootstrap') {
+                rightIcon = document.createElement('span');
+                rightIcon.classList.add('input-group-addon');
+                rightIcon.innerHTML = data.icons.rightIcon;
+            } else if (data.uiLibrary === 'bootstrap4') {
+                rightIcon = document.createElement('span');
+                rightIcon.classList.add('input-group-append');
+                rightIcon.innerHTML = '<button class="btn btn-outline-secondary border-left-0" type="button">' + data.icons.rightIcon + '</button>';
+            } else {
+                rightIcon = gj.core.createElement(data.icons.rightIcon);
+            }
+            rightIcon.setAttribute('role', 'right-icon');
+            rightIcon.addEventListener('click', function (e) {
+                if (window.getComputedStyle(popup).display === 'none') {
+                    picker.open();
+                } else {
+                    picker.close();
+                }
+            });
+            wrapper.appendChild(rightIcon);
+        }
+
+        if (data.showOnFocus) {
+            input.addEventListener('focus', function () {
+                methods.open(picker, data);
+            });
+        }
+
+        if (data.footer !== true) {
+            input.addEventListener('blur', function () {
+                picker.timeout = setTimeout(function () {
+                    picker.close();
+                }, 500);
+            });
+            popup.addEventListener('mousedown', function () {
+                clearTimeout(picker.timeout);
+                document.activeElement !== input && input.focus();
+                return false;
+            });
+            popup.addEventListener('click', function () {
+                clearTimeout(picker.timeout);
+                document.activeElement !== input && input.focus();
+            });
+        }
+    }
+};
+
+
+gj.picker.widget = function (element, jsConfig) {
+    var self = this,
+        methods = gj.picker.methods;
+
+    self.destroy = function () {
+        return methods.destroy(this);
+    };
+
+    return element;
+};
+
+gj.picker.widget.prototype = new gj.widget();
+gj.picker.widget.constructor = gj.picker.widget;
+
+gj.picker.widget.prototype.init = function (jsConfig, type, methods) {
+    gj.widget.prototype.initJS.call(this, jsConfig, type);
+    this.element.setAttribute('data-' + type, 'true');
+    gj.picker.methods.initialize(this, gijgoStorage.get(this.element, 'gijgo'), gj[type].methods);
+    return this;
+};
+
+gj.picker.widget.prototype.open = function (type) {
+    var data = gijgoStorage.get(this.element, 'gijgo'),
+        picker = document.body.querySelector('[role="picker"][guid="' + this.element.getAttribute('data-guid') + '"]');
+
+    picker.style.display = 'block';
+    if (data.modal) {
+        picker.parentElement.style.display = 'block';
+        // gj.core.center(picker);
+    } else {
+        // gj.core.setChildPosition(this.element, picker);
+        document.activeElement !== this.element && this.element.focus();
+    }
+    clearTimeout(this.timeout);
+
+    gj[type].events.open(this.element);
+
+    return this;
+};
+
+gj.picker.widget.prototype.close = function (type) {
+    var data = gijgoStorage.get(this.element, 'gijgo'),
+        picker = document.body.querySelector('[role="picker"][guid="' + this.element.getAttribute('data-guid') + '"]');
+    picker.style.display = 'none';
+    if (data.modal) {
+        picker.parentElement.style.display = 'none';
+    }
+    gj[type].events.close(this.element);
+    return this;
+};
+
+gj.picker.widget.prototype.destroy = function (type) {
+    var data = gijgoStorage.get(this.element, 'gijgo'),
+        parent = this.element.parentElement,
+        picker = document.body.querySelector('[role="picker"][guid="' + this.element.getAttribute('data-guid') + '"]'),
+        rightIcon = this.element.parentElement.querySelector('[role="right-icon"]');
+    if (data) {
+        //this.off();
+        if (parent.getAttribute('role') === 'modal') {
+            this.element.outerHTML = this.element.innerHTML;
+        }
+        gijgoStorage.remove(this.element, 'gijgo');
+        this.element.removeAttribute('data-type');
+        this.element.removeAttribute('data-guid');
+        this.element.removeAttribute('data-datepicker');
+        this.element.removeAttribute('class');
+        if (rightIcon) {
+            this.element.parentElement.removeChild(rightIcon);
+        }
+        this.element.removeEventListener('focus');
+        this.element.removeEventListener('blur');
+        picker.parentNode.removeChild(picker);
+    }
+    return this;
+};
+
+gj.core.messages['bg-bg'] = {
+    monthNames: ['Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни', 'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'],
+    monthShortNames: ['Яну', 'Фев', 'Мар', 'Апр', 'Май', 'Юни', 'Юли', 'Авг', 'Сеп', 'ОКт', 'Ное', 'Дек'],
+    weekDaysMin: ['Н', 'П', 'В', 'С', 'Ч', 'П', 'С'],
+    weekDaysShort: ['Нед', 'Пон', 'Вто', 'Сря', 'Чет', 'Пет', 'Съб'],
+    weekDays: ['Неделя', 'Понеделник', 'Вторник', 'Сряда', 'Четвъртък', 'Петък', 'Събота'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'ОК',
+    cancel: 'Отказ',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['fr-fr'] = {
+    monthNames: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+    monthShortNames: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+    weekDaysMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    weekDaysShort: ['dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.'],
+    weekDays: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'OK',
+    cancel: 'Annuler',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['de-de'] = {
+    monthNames: ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+    monthShortNames: ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+    weekDaysMin: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    weekDaysShort: ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'],
+    weekDays: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'OK',
+    cancel: 'Abbrechen',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['pt-br'] = {
+    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+    monthShortNames: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+    weekDaysMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+    weekDaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+    weekDays: ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'OK',
+    cancel: 'Cancelar',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['ru-ru'] = {
+    monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    monthShortNames: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+    weekDaysMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+    weekDaysShort: ['вск', 'пнд', 'втр', 'срд', 'чтв', 'птн', 'сбт'],
+    weekDays: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'ОК',
+    cancel: 'Отмена',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['es-es'] = {
+    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+    monthShortNames: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+    weekDaysMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+    weekDaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+    weekDays: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'OK',
+    cancel: 'Cancelar',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['it-it'] = {
+    monthNames: ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"],
+    monthShortNames: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+    weekDaysMin: ['Do', 'Lu', 'Ma', 'Me', 'Gi', 'Ve', 'Sa'],
+    weekDaysShort: ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven','Sab'],
+    weekDays: ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'OK',
+    cancel: 'Annulla',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['tr-tr'] = {
+    monthNames: ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'],
+    monthShortNames: ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+    weekDaysMin: ['P', 'P', 'S', 'Ç', 'P', 'C', 'C'],
+    weekDaysShort: ['Pz', 'Pzt', 'Sal', 'Çrş', 'Prş', 'Cu', 'Cts'],
+    weekDays: ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi'],
+    am: 'AM',
+    pm: 'PM',
+    ok: 'Tamam',
+    cancel: 'İptal',
+    titleFormat: 'mmmm yyyy'
+};
+gj.core.messages['ja-jp'] = {
+    monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    monthShortNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    weekDaysMin: ['日', '月', '火', '水', '木', '金', '土'],
+    weekDaysShort: ['日', '月', '火', '水', '木', '金', '土'],
+    weekDays: ['日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜'],
+    am: '午前',
+    pm: '午後',
+    ok: 'OK',
+    cancel: 'キャンセル',
+    titleFormat: 'yyyy年mmmm'
+};
+gj.core.messages['zh-cn'] = {
+    monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    monthShortNames: ['01.', '02.', '03.', '04.', '05.', '06.', '07.', '08.', '09.', '10.', '11.', '12.'],
+    weekDaysMin: ['日', '一', '二', '三', '四', '五', '六'],
+    weekDaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+    weekDays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    am: '上午',
+    pm: '下午',
+    ok: '确认',
+    cancel: '取消',
+    titleFormat: 'yyyy年mmmm'
+};
+gj.core.messages['zh-tw'] = {
+    monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    monthShortNames: ['01.', '02.', '03.', '04.', '05.', '06.', '07.', '08.', '09.', '10.', '11.', '12.'],
+    weekDaysMin: ['日', '一', '二', '三', '四', '五', '六'],
+    weekDaysShort: ['周日', '周一', '周二', '周三', '周四', '周五', '周六'],
+    weekDays: ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+    am: '上午',
+    pm: '下午',
+    ok: '確認',
+    cancel: '取消',
+    titleFormat: 'yyyy年mmmm'
+};
+
+
+
+gj.datepicker = {
+    plugins: {}
+};
+
+gj.datepicker.config = {
+    base: {
+        /** Whether to display dates in other months at the start or end of the current month.         */        showOtherMonths: false,
+
+        /** Whether days in other months shown before or after the current month are selectable.
+         * This only applies if the showOtherMonths option is set to true.         */        selectOtherMonths: true,
+
+        /** The width of the datepicker.         */        width: undefined,
+
+        /** The minimum selectable date. When not set, there is no minimum.         */        minDate: undefined,
+
+        /** The maximum selectable date. When not set, there is no maximum         */        maxDate: undefined,
+
+        /** Specifies the format, which is used to format the value of the DatePicker displayed in the input.         */        format: 'mm/dd/yyyy',
+
+        /** The name of the UI library that is going to be in use.         */        uiLibrary: 'materialdesign',
+
+        /** The name of the icons library that is going to be in use. Currently we support Material Icons, Font Awesome and Glyphicons.         */        iconsLibrary: 'materialicons',
+
+        /** The initial datepicker value.         */        value: undefined,
+
+        /** Day of the week start. 0 (Sunday) to 6 (Saturday)         */        weekStartDay: 0,
+
+        /** An array or function that will be used to determine which dates to be disabled for selection by the widget.         */        disableDates: undefined,
+
+        /** An array that will be used to determine which days of week to be disabled for selection by the widget.
+         * The array needs to contains only numbers where 0 is Sunday, 1 is Monday and etc.         */        disableDaysOfWeek: undefined,
+
+        /** Whether to display week number in year on the left side of the calendar.         */        calendarWeeks: false,
+
+        /** Whether to enable keyboard navigation.         */        keyboardNavigation: true,
+
+        /** The language that needs to be in use.         */        locale: 'en-us',
+
+        icons: {
+            /** datepicker icon definition.             */            rightIcon: '<i class="gj-icon">event</i>',
+
+            previousMonth: '<i class="gj-icon chevron-left"></i>',
+            nextMonth: '<i class="gj-icon chevron-right"></i>'
+        },
+
+        fontSize: undefined,
+
+        /** The size of the datepicker input.         */        size: 'default',
+
+        /** If set to true, the datepicker will have modal behavior.         */        modal: false,
+
+        /** If set to true, add header to the datepicker.         */        header: false,
+
+        /** If set to true, add footer with ok and cancel buttons to the datepicker.         */        footer: false,
+
+        /** If set to true, show datepicker on input focus.         */        showOnFocus: true,
+
+        /** If set to true, show datepicker icon on the right side of the input.         */        showRightIcon: true,
+
+        style: {
+            modal: 'gj-modal',
+            wrapper: 'gj-datepicker gj-datepicker-md gj-unselectable',
+            input: 'gj-textbox-md',
+            calendar: 'gj-picker gj-picker-md datepicker gj-unselectable',
+            footer: '',
+            button: 'gj-button-md'
+        }
+    },
+
+    fontawesome: {
+        icons: {
+            rightIcon: '<i class="fa fa-calendar" aria-hidden="true"></i>',
+            previousMonth: '<i class="fa fa-chevron-left" aria-hidden="true"></i>',
+            nextMonth: '<i class="fa fa-chevron-right" aria-hidden="true"></i>'
+        }
+    }
+};
+
+gj.datepicker.methods = {
+    init: function (jsConfig) {
+        gj.widget.prototype.initJS.call(this, jsConfig, 'datepicker');
+        this.element.setAttribute('data-datepicker', 'true');
+        gj.datepicker.methods.initialize(this, gijgoStorage.get(this.element, 'gijgo'));
+        return this;
+    },
+
+    initialize: function (picker, data) {
+        var wrapper, rightIcon, calendar;
+
+        if (picker.element.parentElement.attributes.role !== 'wrapper') {
+            wrapper = document.createElement('div');
+            wrapper.setAttribute('role', 'wrapper');
+            picker.element.parentNode.insertBefore(wrapper, picker.element);
+            wrapper.appendChild(picker.element);
+        } else {
+            wrapper = picker.element.parentElement;
+        }
+
+        gj.core.addClasses(wrapper, data.style.wrapper);
+
+        if (data.width) {
+            wrapper.style.width = data.width + 'px';
+        }
+
+        picker.element.value = data.value || '';
+        gj.core.addClasses(picker.element, data.style.input);
+        wrapper.setAttribute('role', 'input');
+
+        if (data.fontSize) {
+            picker.element.style.fontSize = data.fontSize;
+        }
+
+        if (data.uiLibrary === 'bootstrap' || data.uiLibrary === 'bootstrap4') {
+            if (data.size === 'small') {
+                wrapper.classList.add('input-group-sm');
+                picker.element.classList.add('form-control-sm');
+            } else if (data.size === 'large') {
+                wrapper.classList.add('input-group-lg');
+                picker.element.classList.add('form-control-lg');
+            }
+        } else {
+            if (data.size === 'small') {
+                wrapper.classList.add('small');
+            } else if (data.size === 'large') {
+                wrapper.classList.add('large');
+            }
+        }
+
+        if (data.showRightIcon) {
+            if (data.uiLibrary === 'bootstrap') {
+                rightIcon = document.createElement('span');
+                rightIcon.classList.add('input-group-addon');
+                rightIcon.innerHTML = data.icons.rightIcon;
+            } else if (data.uiLibrary === 'bootstrap4') {
+                rightIcon = document.createElement('span');
+                rightIcon.classList.add('input-group-append');
+                rightIcon.innerHTML = '<button class="btn btn-outline-secondary border-left-0" type="button">' + data.icons.rightIcon + '</button>';
+            } else {
+                rightIcon = gj.core.createElement(data.icons.rightIcon);
+            }
+            rightIcon.setAttribute('role', 'right-icon');
+            rightIcon.addEventListener('click', function (e) {
+                var calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+                if (window.getComputedStyle(calendar).display === 'none') {
+                    gj.datepicker.methods.open(picker, data);
+                } else {
+                    gj.datepicker.methods.close(picker);
+                }
+            });
+            wrapper.appendChild(rightIcon);
+        }
+
+        if (data.showOnFocus) {
+            picker.element.addEventListener('focus', function () {
+                gj.datepicker.methods.open(picker, data);
+            });
+        }
+
+        calendar = gj.datepicker.methods.createCalendar(picker, data);
+
+        if (data.footer !== true) {
+            picker.element.addEventListener('blur', function () {
+                picker.timeout = setTimeout(function () {
+                    gj.datepicker.methods.close(picker);
+                }, 500);
+            });
+            calendar.addEventListener('mousedown', function () {
+                clearTimeout(picker.timeout);
+                document.activeElement !== picker.element && picker.element.focus();
+                return false;
+            });
+            calendar.addEventListener('click', function () {
+                clearTimeout(picker.timeout);
+                document.activeElement !== picker.element && picker.element.focus();
+            });
+        }
+
+        if (data.keyboardNavigation) {
+            document.addEventListener('keydown', gj.datepicker.methods.createKeyDownHandler(picker, calendar, data));
+        }
+    },
+
+    createCalendar: function (picker, data) {
+        var date, body, footer, btnCancel, btnOk, calendar, wrapper;
+
+        calendar = document.createElement('div');
+        calendar.setAttribute('role', 'picker');
+        calendar.setAttribute('type', 'month');
+        gj.core.addClasses(calendar, data.style.calendar);
+        calendar.setAttribute('guid', picker.element.getAttribute('data-guid'));
+
+        if (data.fontSize) {
+            calendar.style.fontSize = data.fontSize;
+        }
+
+        date = gj.core.parseDate(data.value, data.format, data.locale);
+        if (!date || isNaN(date.getTime())) {
+            date = new Date();
+        } else {
+            picker.element.setAttribute('day', date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate());
+        }
+
+        calendar.setAttribute('month', date.getMonth());
+        calendar.setAttribute('year', date.getFullYear());
+
+        gj.datepicker.methods.renderHeader(picker, calendar, data, date);
+
+        body = document.createElement('div');
+        body.setAttribute('role', 'body');
+        calendar.appendChild(body);
+
+        if (data.footer) {
+            footer = document.createElement('div');
+            footer.setAttribute('role', 'footer');
+            gj.core.addClasses(footer, data.style.footer);
+
+            btnCancel = gj.core.createElement('<button class="' + data.style.button + '">' + gj.core.messages[data.locale].cancel + '</button>');
+            btnCancel.addEventListener('click', function () { picker.close(); });
+            footer.appendChild(btnCancel);
+
+            btnOk = gj.core.createElement('<button class="' + data.style.button + '">' + gj.core.messages[data.locale].ok + '</button>');
+            btnOk.addEventListener('click', function () {
+                var date, dayArr, dayStr = calendar.getAttribute('selectedDay');
+                if (dayStr) {
+                    dayArr = dayStr.split('-');
+                    date = new Date(dayArr[0], dayArr[1], dayArr[2], calendar.getAttribute('hour') || 0, calendar.getAttribute('minute') || 0);
+                    gj.datepicker.methods.change(picker, calendar, data, date);
+                } else {
+                    picker.close();
+                }
+            });
+            footer.appendChild(btnOk);
+
+            calendar.appendChild(footer);
+        }
+
+        calendar.style.display = 'none';
+
+        picker.element.parentElement.appendChild(calendar);
+        // document.body.appendChild(calendar);
+
+        if (data.modal) {
+            wrapper = document.createElement('div');
+            wrapper.setAttribute('role', 'modal');
+            gj.core.addClasses(wrapper, data.style.modal);
+            calendar.parentNode.insertBefore(wrapper, calendar);
+            wrapper.appendChild(calendar);
+            gj.core.center(calendar);
+        }
+
+        return calendar;
+    },
+
+    renderHeader: function (picker, calendar, data, date) {
+        var header, dateEl, yearEl;
+
+        if (data.header) {
+            header = document.createElement('div');
+            header.setAttribute('role', 'header');
+
+            yearEl = document.createElement('div');
+            yearEl.setAttribute('role', 'year');
+
+            yearEl.addEventListener('click', function () {
+                gj.datepicker.methods.renderDecade(picker, calendar, data);
+                yearEl.classList.add('selected');
+                dateEl.classList.remove('selected');
+            });
+            yearEl.innerHTML = gj.core.formatDate(date, 'yyyy', data.locale);
+            header.appendChild(yearEl);
+
+            dateEl = document.createElement('div');
+            dateEl.setAttribute('role', 'date');
+            dateEl.classList.add('selected');
+            dateEl.addEventListener('click', function () {
+                gj.datepicker.methods.renderMonth(picker, calendar, data);
+                dateEl.classList.add('selected');
+                yearEl.classList.remove('selected');
+            });
+            dateEl.innerHTML = gj.core.formatDate(date, 'ddd, mmm dd', data.locale);
+            header.appendChild(dateEl);
+            calendar.appendChild(header);
+        }
+    },
+
+    updateHeader: function (calendar, data, date) {
+        var yearEl, dateEl, hour, minute;
+
+        if (data.header) {
+            yearEl = calendar.querySelector('[role="header"] [role="year"]');
+            yearEl.classList.remove('selected');
+            yearEl.innerHTML = gj.core.formatDate(date, 'yyyy', data.locale);
+
+            dateEl = calendar.querySelector('[role="header"] [role="date"]');
+            dateEl.classList.add('selected');
+            dateEl.innerHTML = gj.core.formatDate(date, 'ddd, mmm dd', data.locale);
+
+            hour = calendar.querySelector('[role="header"] [role="hour"]');
+            if (hour) {
+                hour.classList.remove('selected');
+                hour.innerHTML = gj.core.formatDate(date, 'HH', data.locale);
+            }
+
+            minute = calendar.querySelector('[role="header"] [role="minute"]');
+            if (minute) {
+                minute.classList.remove('selected');
+                minute.innerHTML = gj.core.formatDate(date, 'MM', data.locale);
+            }
+        }
+    },
+
+    createNavigation: function (picker, body, table, data) {
+        var navigator, row, prevIcon, period, nextIcon, th, thead = document.createElement('thead');
+
+        navigator = document.createElement('div');
+        navigator.setAttribute('role', 'navigator');
+
+        prevIcon = document.createElement('div');
+        prevIcon.innerHTML = data.icons.previousMonth;
+        prevIcon.addEventListener('click', gj.datepicker.methods.prev(picker, data));
+        navigator.appendChild(prevIcon);
+
+        period = document.createElement('div');
+        period.setAttribute('role', 'period');
+        period.addEventListener('click', gj.datepicker.methods.changePeriod(picker, data));
+        navigator.appendChild(period);
+
+        nextIcon = document.createElement('div');
+        nextIcon.innerHTML = data.icons.nextMonth;
+        nextIcon.addEventListener('click', gj.datepicker.methods.next(picker, data));
+        navigator.appendChild(nextIcon);
+
+        body.append(navigator);
+
+        row = document.createElement('tr');
+        row.setAttribute('role', 'week-days');
+
+        if (data.calendarWeeks) {
+            th = document.createElement('th');
+            th.innerHTML = '<div>&nbsp;</div>';
+            row.appendChild(th);
+        }
+        for (i = data.weekStartDay; i < gj.core.messages[data.locale].weekDaysMin.length; i++) {
+            th = document.createElement('th');
+            th.innerHTML = '<div>' + gj.core.messages[data.locale].weekDaysMin[i] + '</div>';
+            row.appendChild(th);
+        }
+        for (i = 0; i < data.weekStartDay; i++) {
+            th = document.createElement('th');
+            th.innerHTML = '<div>' + gj.core.messages[data.locale].weekDaysMin[i] + '</div>';
+            row.appendChild(th);
+        }
+        thead.appendChild(row);
+
+        table.appendChild(thead);
+    },
+
+    getDaysInMonth: function (year) {
+        var result = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+        if (year % 4 == 0 && year != 1900) {
+            result[1] = 29;
+        }
+        return result;
+    },
+
+    renderMonth: function (picker, calendar, data) {
+        var weekDay, selectedDay, day, month, year, total, daysInMonth, firstDayPosition, i, now, prevMonth, nextMonth, cell, dayEl, date,
+            body = calendar.querySelector('[role="body"]'),
+            table = document.createElement('table'),
+            tbody = document.createElement('tbody'),
+            period = gj.core.messages[data.locale].titleFormat;
+
+        body.innerHTML = '';
+        gj.datepicker.methods.createNavigation(picker, body, table, data);
+
+        month = parseInt(calendar.getAttribute('month'), 10);
+        year = parseInt(calendar.getAttribute('year'), 10);
+
+        calendar.setAttribute('type', 'month');
+        period = period.replace('mmmm', gj.core.messages[data.locale].monthNames[month]).replace('yyyy', year);
+        calendar.querySelector('div[role="period"]').innerText = period;
+        daysInMonth = gj.datepicker.methods.getDaysInMonth(year);
+        total = daysInMonth[month];
+
+        firstDayPosition = (new Date(year, month, 1).getDay() + 7 - data.weekStartDay) % 7;
+
+        weekDay = 0;
+        row = document.createElement('tr');
+        prevMonth = gj.datepicker.methods.getPrevMonth(month, year);
+        for (i = 1; i <= firstDayPosition; i++) {
+            day = (daysInMonth[prevMonth.month] - firstDayPosition + i);
+            date = new Date(prevMonth.year, prevMonth.month, day);
+            if (data.calendarWeeks && i === 1) {
+                cell = document.createElement('td');
+                cell.classList.add('calendar-week');
+                cell.innerHTML = '<div>' + gj.datepicker.methods.getWeekNumber(date) + '</div>';
+                row.appendChild(cell);
+            }
+            cell = document.createElement('td');
+            cell.classList.add('other-month');
+            if (data.showOtherMonths) {
+                dayEl = document.createElement('div');
+                dayEl.innerHTML = day;
+                cell.appendChild(dayEl);
+                if (data.selectOtherMonths && gj.datepicker.methods.isSelectable(data, date)) {
+                    cell.classList.add('gj-cursor-pointer');
+                    cell.setAttribute('day', day);
+                    cell.setAttribute('month', prevMonth.month);
+                    cell.setAttribute('year', prevMonth.year);
+                    dayEl.addEventListener('click', gj.datepicker.methods.dayClickHandler(picker, calendar, data, date));
+                    dayEl.addEventListener('mousedown', function (e) { e.stopPropagation() });
+                } else {
+                    cell.classList.add('disabled');
+                }
+            }
+            row.appendChild(cell);
+            weekDay++;
+        }
+        if (i > 1) {
+            tbody.appendChild(row);
+        }
+
+        now = new Date();
+        for (i = 1; i <= total; i++) {
+            date = new Date(year, month, i);
+            if (weekDay == 0) {
+                row = document.createElement('tr');
+                if (data.calendarWeeks) {
+                    cell = document.createElement('td');
+                    cell.classList.add('calendar-week');
+                    cell.innerHTML = '<div>' + gj.datepicker.methods.getWeekNumber(date) + '</div>';
+                    row.appendChild(cell);
+                }
+            }
+            cell = document.createElement('td');
+            cell.setAttribute('day', i);
+            cell.setAttribute('month', month);
+            cell.setAttribute('year', year);
+            if (year === now.getFullYear() && month === now.getMonth() && i === now.getDate()) {
+                cell.classList.add('today');
+            } else {
+                cell.classList.add('current-month');
+            }
+            dayEl = document.createElement('div');
+            dayEl.innerText = i;
+            if (gj.datepicker.methods.isSelectable(data, date)) {
+                cell.classList.add('gj-cursor-pointer');
+                dayEl.addEventListener('click', gj.datepicker.methods.dayClickHandler(picker, calendar, data, date));
+                dayEl.addEventListener('mousedown', function (e) { e.stopPropagation() });
+            } else {
+                cell.classList.add('disabled');
+            }
+            cell.appendChild(dayEl);
+            row.appendChild(cell);
+            weekDay++;
+            if (weekDay == 7) {
+                tbody.appendChild(row);
+                weekDay = 0;
+            }
+        }
+
+        nextMonth = gj.datepicker.methods.getNextMonth(month, year);
+        for (i = 1; weekDay != 0; i++) {
+            date = new Date(nextMonth.year, nextMonth.month, i);
+            cell = document.createElement('td');
+            cell.classList.add('other-month');
+            if (data.showOtherMonths) {
+                dayEl = document.createElement('div');
+                dayEl.innerText = i;
+                if (data.selectOtherMonths && gj.datepicker.methods.isSelectable(data, date)) {
+                    cell.classList.add('gj-cursor-pointer');
+                    cell.setAttribute('day', i);
+                    cell.setAttribute('month', nextMonth.month);
+                    cell.setAttribute('year', nextMonth.year);
+                    dayEl.addEventListener('click', gj.datepicker.methods.dayClickHandler(picker, calendar, data, date));
+                    dayEl.addEventListener('mousedown', function (e) { e.stopPropagation() });
+                } else {
+                    cell.classList.add('disabled');
+                }
+                cell.appendChild(dayEl);
+            }
+            row.appendChild(cell);
+            weekDay++;
+            if (weekDay == 7) {
+                tbody.appendChild(row);
+                weekDay = 0;
+            }
+        }
+
+        table.appendChild(tbody);
+        body.appendChild(table);
+
+        if (calendar.getAttribute('selectedDay')) {
+            selectedDay = calendar.getAttribute('selectedDay').split('-');
+            date = new Date(selectedDay[0], selectedDay[1], selectedDay[2], calendar.getAttribute('hour') || 0, calendar.getAttribute('minute') || 0);
+            cell = calendar.querySelector('tbody td[day="' + selectedDay[2] + '"][month="' + selectedDay[1] + '"]');
+            if (cell) {
+                cell.classList.add('selected');
+            }
+            gj.datepicker.methods.updateHeader(calendar, data, date);
+        }
+    },
+
+    renderYear: function (picker, calendar, data) {
+        var year, i, m, row, month,
+            table = calendar.querySelector('[role="body"] table'),
+            tbody = table.querySelector('tbody');
+
+        table.querySelector('thead').style.display = 'none';
+
+        year = parseInt(calendar.getAttribute('year'), 10);
+
+        calendar.setAttribute('type', 'year');
+        calendar.querySelector('div[role="period"]').innerText = year;
+
+        tbody.innerHTML = '';
+
+        for (i = 0; i < 3; i++) {
+            row = document.createElement('tr');
+            for (m = (i * 4); m <= (i * 4) + 3; m++) {
+                month = document.createElement('div');
+                month.innerHTML = gj.core.messages[data.locale].monthShortNames[m];
+                month.addEventListener('click', gj.datepicker.methods.selectMonth(picker, calendar, data, m));
+                cell = document.createElement('td');
+                cell.appendChild(month);
+                row.appendChild(cell);
+            }
+            tbody.appendChild(row);
+        }
+    },
+
+    renderDecade: function (picker, calendar, data) {
+        var year, decade, i, y, year,
+            table = calendar.querySelector('[role="body"] table'),
+            tbody = table.querySelector('tbody');
+
+        table.querySelector('thead').display.style = 'none';
+
+        year = parseInt(calendar.getAttribute('year'), 10);
+        decade = year - (year % 10);
+
+        calendar.setAttribute('type', 'decade');
+        calendar.querySelector('div[role="period"]').innerText = decade + ' - ' + (decade + 9);
+
+        tbody.innerHTML = '';
+
+        for (i = decade - 1; i <= decade + 10 ; i += 4) {
+            row = document.createElement('tr');
+            for (y = i; y <= i + 3; y++) {
+                year = document.createElement('div');
+                year.innerText = y;
+                year.addEventListener('click', gj.datepicker.methods.selectYear(picker, calendar, data, y));
+                cell = document.createElement('td')
+                cell.appendChild(year);
+                row.appendChild(cell);
+            }
+            tbody.appendChild(row);
+        }
+    },
+
+    renderCentury: function (picker, calendar, data) {
+        var year, century, i, d, decade,
+            table = calendar.querySelector('[role="body"] table'),
+            tbody = $table.querySelector('tbody');
+
+        table.querySelector('thead').style.display = 'none';
+
+        year = parseInt(calendar.getAttribute('year'), 10);
+        century = year - (year % 100);
+
+        calendar.setAttribute('type', 'century');
+        calendar.querySelector('div[role="period"]').innerText = century + ' - ' + (century + 99);
+
+        tbody.innerHTML = '';
+
+        for (i = (century - 10); i < century + 100; i += 40) {
+            row = document.createElement('tr');
+            for (d = i; d <= i + 30; d += 10) {
+                decade = document.createElement('div');
+                decade.innerText = d;
+                decade.addEventListener('click', gj.datepicker.methods.selectDecade(picker, calendar, data, d));
+                cell = document.createElement('td')
+                cell.appendChild(decade);
+                row.appendChild(cell);
+            }
+            tbody.appendChild(row);
+        }
+    },
+
+    getWeekNumber: function (date) {
+        var d = new Date(date.valueOf());
+        d.setDate(d.getDate() + 6);
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return weekNo;
+    },
+
+    getMinDate: function (data) {
+        var minDate;
+        if (data.minDate) {
+            if (typeof (data.minDate) === 'string') {
+                minDate = gj.core.parseDate(data.minDate, data.format, data.locale);
+            } else if (typeof (data.minDate) === 'function') {
+                minDate = data.minDate();
+                if (typeof minDate === 'string') {
+                    minDate = gj.core.parseDate(minDate, data.format, data.locale);
+                }
+            } else if (typeof data.minDate.getMonth === 'function') {
+                minDate = data.minDate;
+            }
+        }
+        return minDate;
+    },
+
+    getMaxDate: function (data) {
+        var maxDate;
+        if (data.maxDate) {
+            if (typeof data.maxDate === 'string') {
+                maxDate = gj.core.parseDate(data.maxDate, data.format, data.locale);
+            } else if (typeof data.maxDate === 'function') {
+                maxDate = data.maxDate();
+                if (typeof maxDate === 'string') {
+                    maxDate = gj.core.parseDate(maxDate, data.format, data.locale);
+                }
+            } else if (typeof data.maxDate.getMonth === 'function') {
+                maxDate = data.maxDate;
+            }
+        }
+        return maxDate;
+    },
+
+    isSelectable: function (data, date) {
+        var result = true,
+            minDate = gj.datepicker.methods.getMinDate(data),
+            maxDate = gj.datepicker.methods.getMaxDate(data),
+            i;
+
+        if (minDate && date < minDate) {
+            result = false;
+        } else if (maxDate && date > maxDate) {
+            result = false;
+        }
+
+        if (result) {
+            if (data.disableDates) {
+                if (Array.isArray(data.disableDates)) {
+                    for (i = 0; i < data.disableDates.length; i++) {
+                        if (data.disableDates[i] instanceof Date && data.disableDates[i].getTime() === date.getTime()) {
+                            result = false;
+                        } else if (typeof data.disableDates[i] === 'string' && gj.core.parseDate(data.disableDates[i], data.format, data.locale).getTime() === date.getTime()) {
+                            result = false;
+                        }
+                    }
+                } else if (data.disableDates instanceof Function) {
+                    result = data.disableDates(date);
+                }
+            }
+            if (Array.isArray(data.disableDaysOfWeek) && data.disableDaysOfWeek.indexOf(date.getDay()) > -1) {
+                result = false;
+            }
+        }
+        return result;
+    },
+
+    getPrevMonth: function (month, year) {
+        date = new Date(year, month, 1);
+        date.setMonth(date.getMonth() - 1);
+        return { month: date.getMonth(), year: date.getFullYear() };
+    },
+
+    getNextMonth: function (month, year) {
+        date = new Date(year, month, 1);
+        date.setMonth(date.getMonth() + 1);
+        return { month: date.getMonth(), year: date.getFullYear() };
+    },
+
+    prev: function (picker, data) {
+        return function () {
+            var date, month, year, decade, century,
+                calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+
+            year = parseInt(calendar.getAttribute('year'), 10);
+            switch (calendar.getAttribute('type')) {
+                case 'month':
+                    month = parseInt(calendar.getAttribute('month'), 10);
+                    date = gj.datepicker.methods.getPrevMonth(month, year);
+                    calendar.setAttribute('month', date.month);
+                    calendar.setAttribute('year', date.year);
+                    gj.datepicker.methods.renderMonth(picker, calendar, data);
+                    break;
+                case 'year':
+                    calendar.setAttribute('year', year - 1);
+                    gj.datepicker.methods.renderYear(picker, calendar, data);
+                    break;
+                case 'decade':
+                    decade = year - (year % 10);
+                    calendar.setAttribute('year', decade - 10);
+                    gj.datepicker.methods.renderDecade(picker, calendar, data);
+                    break;
+                case 'century':
+                    century = year - (year % 100);
+                    calendar.setAttribute('year', century - 100);
+                    gj.datepicker.methods.renderCentury(picker, calendar, data);
+                    break;
+            }
+
+            return false;
+        }
+    },
+
+    next: function (picker, data) {
+        return function (e) {
+            var date, month, year, decade, century,
+                calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+
+            year = parseInt(calendar.getAttribute('year'), 10);
+            switch (calendar.getAttribute('type')) {
+                case 'month':
+                    month = parseInt(calendar.getAttribute('month'), 10);
+                    date = gj.datepicker.methods.getNextMonth(month, year);
+                    calendar.setAttribute('month', date.month);
+                    calendar.setAttribute('year', date.year);
+                    gj.datepicker.methods.renderMonth(picker, calendar, data);
+                    break;
+                case 'year':
+                    calendar.setAttribute('year', year + 1);
+                    gj.datepicker.methods.renderYear(picker, calendar, data);
+                    break;
+                case 'decade':
+                    decade = year - (year % 10);
+                    calendar.setAttribute('year', decade + 10);
+                    gj.datepicker.methods.renderDecade(picker, calendar, data);
+                    break;
+                case 'century':
+                    century = year - (year % 100);
+                    calendar.setAttribute('year', century + 100);
+                    gj.datepicker.methods.renderCentury(picker, calendar, data);
+                    break;
+            }
+
+            return false;
+        };
+    },
+
+    changePeriod: function (picker, data) {
+        return function (e) {
+            var calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+
+            switch (calendar.getAttribute('type')) {
+                case 'month':
+                    gj.datepicker.methods.renderYear(picker, calendar, data);
+                    break;
+                case 'year':
+                    gj.datepicker.methods.renderDecade(picker, calendar, data);
+                    break;
+                case 'decade':
+                    gj.datepicker.methods.renderCentury(picker, calendar, data);
+                    break;
+            }
+        };
+    },
+
+    dayClickHandler: function (picker, calendar, data, date) {
+        return function (e) {
+            e && e.stopPropagation();
+            gj.datepicker.methods.selectDay(picker, calendar, data, date);
+            if (data.footer !== true && data.autoClose !== false) {
+                gj.datepicker.methods.change(picker, calendar, data, date);
+            }
+            return picker;
+        };
+    },
+
+    change: function (picker, calendar, data, date) {
+        var day = date.getDate(),
+            month = date.getMonth(),
+            year = date.getFullYear(),
+            value = gj.core.formatDate(date, data.format, data.locale);
+        calendar.setAttribute('month', month);
+        calendar.setAttribute('year', year);
+        picker.element.value = value;
+        gj.datepicker.events.change(picker.element);
+        if (window.getComputedStyle(calendar).display !== 'none') {
+            gj.datepicker.methods.close(picker);
+        }
+    },
+
+    selectDay: function (picker, calendar, data, date) {
+        var cell, day = date.getDate(),
+            month = date.getMonth(),
+            year = date.getFullYear();
+        calendar.setAttribute('selectedDay', year + '-' + month + '-' + day);
+        [].forEach.call(calendar.querySelectorAll('tbody td'), function (el) {
+            el.classList.remove('selected');
+        });
+        cell = calendar.querySelector('tbody td[day="' + day + '"][month="' + month + '"]');
+        if (cell) {
+            cell.classList.add('selected');
+        }
+        gj.datepicker.methods.updateHeader(calendar, data, date);
+        gj.datepicker.events.select(picker.element, 'day');
+    },
+
+    selectMonth: function (picker, calendar, data, month) {
+        return function (e) {
+            calendar.setAttribute('month', month);
+            gj.datepicker.methods.renderMonth(picker, calendar, data);
+            gj.datepicker.events.select(picker.element, 'month');
+        };
+    },
+
+    selectYear: function (picker, calendar, data, year) {
+        return function (e) {
+            calendar.setAttribute('year', year);
+            gj.datepicker.methods.renderYear(picker, calendar, data);
+            gj.datepicker.events.select(picker.element, 'year');
+        };
+    },
+
+    selectDecade: function (picker, calendar, data, year) {
+        return function (e) {
+            calendar.setAttribute('year', year);
+            gj.datepicker.methods.renderDecade(picker, calendar, data);
+            gj.datepicker.events.select(picker.element, 'decade');
+        };
+    },
+
+    open: function (picker, data) {
+        var date,
+            calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+
+        if (window.getComputedStyle(calendar).display === 'none') {
+            if (picker.element.value) {
+                picker.value(picker.element.value);
+            } else {
+                date = new Date();
+                calendar.setAttribute('month', date.getMonth());
+                calendar.setAttribute('year', date.getFullYear());
+            }
+
+            switch (calendar.getAttribute('type')) {
+                case 'month':
+                    gj.datepicker.methods.renderMonth(picker, calendar, data);
+                    break;
+                case 'year':
+                    gj.datepicker.methods.renderYear(picker, calendar, data);
+                    break;
+                case 'decade':
+                    gj.datepicker.methods.renderDecade(picker, calendar, data);
+                    break;
+                case 'century':
+                    gj.datepicker.methods.renderCentury(picker, calendar, data);
+                    break;
+            }
+
+            calendar.style.display = 'block';
+            if (data.modal) {
+                calendar.parentElement.style.display = 'block';
+                gj.core.center(calendar);
+            } else {
+                gj.core.setChildPosition(picker.element, calendar);
+                document.activeElement !== picker.element && picker.element.focus();
+            }
+            clearTimeout(picker.timeout);
+            gj.datepicker.events.open(picker.element);
+        }
+    },
+
+    close: function (picker) {
+        var calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+        if (window.getComputedStyle(calendar).display !== 'none') {
+            calendar.style.display = 'none';
+            if (calendar.parentElement.getAttribute('role') === 'modal') {
+                calendar.parentElement.style.display = 'none';
+            }
+            gj.datepicker.events.close(picker.element);
+        }
+    },
+
+    createKeyDownHandler: function (picker, calendar, data) {
+        return function (e) {
+            var activeCell;
+            e = e || window.event;
+            if (window.getComputedStyle(calendar).display !== 'none') {
+                activeCell = gj.datepicker.methods.getActiveCell(calendar);
+                gj.datepicker.methods.activateNextElement(picker, calendar, data, e.keyCode, activeCell);
+            }
+        };
+    },
+
+    activateNextElement: function (picker, calendar, data, keyCode, cell) {
+        var day, month, year, index, newEl;
+
+        if (keyCode == '38') { // up
+            index = Array.prototype.slice.call(cell.parentElement.children).indexOf(cell);
+            if (cell.parentElement.previousSibling) {
+                newEl = cell.parentElement.previousSibling.children[index];
+            }
+            if (!newEl || !newEl.hasAttribute('day')) {
+                gj.datepicker.methods.prev(picker, data)();
+                nodes = calendar.querySelectorAll('tbody tr');
+                newEl = nodes[nodes.length - 1].querySelectorAll('td')[index];
+            }
+            gj.datepicker.methods.selectElement(picker, calendar, data, keyCode, cell, newEl);
+        } else if (keyCode == '40') { // down
+            index = Array.prototype.slice.call(cell.parentElement.children).indexOf(cell);
+            if (cell.parentElement.nextSibling) {
+                newEl = cell.parentElement.nextSibling.children[index];
+            }
+            if (!newEl || !newEl.hasAttribute('day')) {
+                gj.datepicker.methods.next(picker, data)();
+                newEl = calendar.querySelector('tbody tr').querySelectorAll('td')[index];
+            }
+            gj.datepicker.methods.selectElement(picker, calendar, data, keyCode, cell, newEl);
+        } else if (keyCode == '37') { // left
+            newEl = cell.previousSibling;
+            if (!newEl && cell.parentElement.previousSibling && cell.parentElement.previousSibling.children[6].hasAttribute('day')) { // Go To the previous row/week
+                newEl = cell.parentElement.previousSibling.children[6];
+            }
+            if (!newEl) {
+                gj.datepicker.methods.prev(picker, data)();
+                month = parseInt(calendar.getAttribute('month'), 10);
+                year = parseInt(calendar.getAttribute('year'), 10);
+                day = data.showOtherMonths ? parseInt(cell.getAttribute('day'), 10) - 1 : gj.datepicker.methods.getDaysInMonth(year)[month];
+                newEl = calendar.querySelector('tbody tr td[day="' + day + '"]');
+            }
+            gj.datepicker.methods.selectElement(picker, calendar, data, keyCode, cell, newEl);
+        } else if (keyCode == '39') { // right
+            newEl = cell.nextSibling;
+            if (!newEl && cell.parentElement.nextSibling && cell.parentElement.nextSibling.children[0].hasAttribute('day')) { // Go To the next row/week
+                newEl = cell.parentElement.nextSibling.children[0];
+            }
+            if (!newEl) { // Go To the next month
+                gj.datepicker.methods.next(picker, data)();
+                day = data.showOtherMonths ? parseInt(cell.getAttribute('day'), 10) + 1 : 1;
+                newEl = calendar.querySelector('tbody tr td[day="' + day + '"]');
+            }
+            gj.datepicker.methods.selectElement(picker, calendar, data, keyCode, cell, newEl);
+        } else if (keyCode == '13') { // enter
+            day = parseInt(cell.getAttribute('day'), 10);
+            month = parseInt(cell.getAttribute('month'), 10);
+            year = parseInt(cell.getAttribute('year'), 10);
+            gj.datepicker.methods.dayClickHandler(picker, calendar, data, new Date(year, month, day))();
+        } else if (keyCode == '27') { // esc
+            picker.close();
+        }
+    },
+
+    selectElement: function (picker, calendar, data, keyCode, cell, newEl) {
+        if (newEl) {
+            if (newEl.classList.contains('disabled') || !newEl.hasAttribute('day')) {
+                cell.classList.remove('focused');
+                gj.datepicker.methods.activateNextElement(picker, calendar, data, keyCode, newEl);
+            } else {
+                newEl.classList.add('focused');
+                cell.classList.remove('focused');
+            }
+        }
+    },
+
+    getActiveCell: function (calendar) {
+        var cell = calendar.querySelector('td[day].focused');
+        if (!cell) {
+            cell = calendar.querySelector('td[day].selected');
+            if (!cell) {
+                cell = calendar.querySelector('td[day].today');
+                if (!cell) {
+                    cell = calendar.querySelector('td[day]:not(.disabled)');
+                }
+            }
+        }
+        return cell;
+    },
+
+    value: function (picker, value) {
+        var calendar, date, data = gijgoStorage.get(picker.element, 'gijgo');
+        if (typeof (value) === "undefined") {
+            return picker.element.value;
+        } else {
+            date = gj.core.parseDate(value, data.format, data.locale);
+            if (date && date.getTime()) {
+                calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+                gj.datepicker.methods.dayClickHandler(picker, calendar, data, date)();
+            } else {
+                picker.element.value = '';
+            }
+            return picker;
+        }
+    },
+
+    destroy: function (picker) {
+        var data = gijgoStorage.get(picker.element, 'gijgo'),
+            parent = picker.element.parentElement,
+            calendar = document.body.querySelector('[role="picker"][guid="' + picker.element.getAttribute('data-guid') + '"]');
+        if (data) {
+            //$datepicker.off();
+            if (picker.element.parentElement.getAttribute('role') === 'modal') {
+                picker.element.outerHTML = picker.element.innerHTML;
+            }
+            //$picker.remove();
+            gijgoStorage.remove(picker.element, 'gijgo');
+            picker.element.removeAttribute('data-type');
+            picker.element.removeAttribute('data-guid');
+            picker.element.removeAttribute('data-datepicker');
+            picker.element.removeAttribute('class');
+            picker.element.removeChild(picker.element.querySelector('[role="right-icon"]'));
+        }
+        return picker;
+    }
+};
+
+gj.datepicker.events = {
+    /**
+     * Triggered when the datepicker value is changed.
+     *     */    change: function (el) {
+        return el.dispatchEvent(new Event('change'));
+    },
+
+    /**
+     * Triggered when new value is selected inside the picker.
+     *     */    select: function (el, type) {
+        return el.dispatchEvent(new CustomEvent('select', { 'type': type }));
+    },
+
+    /**
+     * Event fires when the calendar is opened.     */    open: function (el) {
+        return el.dispatchEvent(new Event('open'));
+    },
+
+    /**
+     * Event fires when the calendar is closed.     */    close: function (el) {
+        return el.dispatchEvent(new Event('close'));
+    }
+};
+
+GijgoDatePicker = function (element, jsConfig) {
+    var self = this,
+        methods = gj.datepicker.methods;
+
+    self.element = element;
+
+    /** Gets or sets the value of the datepicker.     */    self.value = function (value) {
+        return methods.value(this, value);
+    };
+
+    /** Remove datepicker functionality from the element.     */    self.destroy = function () {
+        return methods.destroy(this);
+    };
+
+    /** Open the calendar.     */    self.open = function () {
+        return methods.open(this, this.data());
+    };
+
+    /** Close the calendar.     */    self.close = function () {
+        return methods.close(this);
+    };
+
+    if ('true' !== element.getAttribute('data-datepicker')) {
+        methods.init.call(self, jsConfig);
+    }
+
+    return self;
+};
+
+GijgoDatePicker.prototype = new gj.widget();
+GijgoDatePicker.constructor = GijgoDatePicker;
+
+if (typeof (jQuery) !== "undefined") {
+    (function ($) {
+        $.fn.datepicker = function (method) {
+            var $widget;
+            if (this && this.length) {
+                if (typeof method === 'object' || !method) {
+                    return new GijgoDatePicker(this[0], method);
+                } else {
+                    $widget = new GijgoDatePicker(this[0], null);
+                    if ($widget[method]) {
+                        return $widget[method].apply(this[0], Array.prototype.slice.call(arguments, 1));
+                    } else {
+                        throw 'Method ' + method + ' does not exist.';
+                    }
+                }
+            }
+        };
+    })(jQuery);
+}

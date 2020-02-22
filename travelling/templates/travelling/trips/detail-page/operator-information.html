@@ -1,0 +1,11 @@
+{% load i18n %}
+<div class="card">
+    <div class="card-body">
+        <h2>{% trans 'Operator' %}</h2>
+        <p>{% if profile %}
+            {% trans 'Here you see the profile of' %} {{ object.company.name }}
+            </p>{% else %}
+            <p>{% trans 'If you happen to know the operator write them an E-Mail so they can create a profile and supply additional information.' %}</p>
+        {% endif %}
+    </div>
+</div>

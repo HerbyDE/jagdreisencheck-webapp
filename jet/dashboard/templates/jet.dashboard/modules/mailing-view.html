@@ -1,0 +1,27 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <form class="container" action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12">
+                <h3>{% trans 'Send an E-Mail' %}</h3>
+                <hr/>
+                <p>
+                    {% blocktrans %}
+                        Please only write the e-mail body without "Hello" or a similar introduction.
+                        This will be included automatically. Also, do not include "Yours," at the end.
+                        For further questions please contact the admin.
+                    {% endblocktrans %}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                {% include 'jet.dashboard/update_module_fieldset.html' with field=form.target %}
+            </div>
+        </div>
+    </form>
+{% endblock %}
+

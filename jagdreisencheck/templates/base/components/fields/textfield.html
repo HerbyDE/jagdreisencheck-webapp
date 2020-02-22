@@ -1,0 +1,55 @@
+{% load i18n staticfiles sekizai_tags %}
+
+
+{% spaceless %}
+
+<span class="form-group">
+  {% if not field.field.widget.attrs.no_label and not no_label %}
+    <label class="control-label" for="{{ field.id_for_label }}">{{ field.label }}
+
+      {% if field.help_text %}
+      <span><i class="fa fa-info-circle" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{{ field.help_text|safe }}"></i></span>
+      {% endif %}
+
+      {% if field.field.required == True %}<span class="required-indicator">*</span>{% endif %}
+
+    </label>
+    {% if field.field.widget.attrs.warning %}
+      <small><i class="fa fa-exclamation-circle"></i> {{ field.field.widget.attrs.warning }}</small>
+    {% endif %}
+  {% endif %}
+
+  <input type="{% if field.field.widget.input_type == 'date' %}text{% else %}{{ field.field.widget.input_type }}{% endif %}"
+         {% if field.field.widget.input_type == 'date' %}data-type="date"{% endif %}
+         name="{% if custom_name_ext %}form-{{ forloop.counter0 }}-{% elif form.prefix %}{{ form.prefix }}-{% endif %}{{ field.name }}"
+          {% if field.value or custom_value or value %}
+            value="{% spaceless %}
+              {% if not field.field.widget.input_type == 'date' and not custom_value %}
+                {{ field.value }}
+              {% elif custom_value %}
+                {{ custom_value }}
+              {% elif value %}
+                {{ value }}
+              {% else %}
+                {{ field.value|date:"d.m.Y" }}
+              {% endif %}
+            {% endspaceless %}"
+          {% endif %}
+         id="{{ field.id_for_label }}"
+         {% if field.placeholder %}
+          placeholder="{{ field.placeholder }}"
+         {% elif field.field.widget.attrs.placeholder %}
+          placeholder="{{ field.field.widget.attrs.placeholder }}"
+         {% elif field.field.widget.attrs.no_label or no_label %}
+          placeholder="{{ field.label }}"
+         {% endif %} class="form-control" {% if field.field.required %}required{% endif %}
+         {% if field.field.max_length %}maxlength="{{ field.field.max_length }}"{% endif %}
+         {% if field.field.widget.attrs.disabled or custom_value and not enabled %}disabled="disabled"{% endif %}/>
+
+    {% if field.field.widget.input_type == "password" %}
+      <small class="password-error" style="color: red; font-size: .8rem; display: none">{% trans 'The passwords do not match.' %}</small>
+    {% endif %}
+  </span>
+
+
+{% endspaceless %}

@@ -1,0 +1,28 @@
+{% load i18n %}
+<div class="padding">
+    <table>
+        <thead>
+            <tr>
+                <th>{% trans 'Date' %}</th>
+                <th>{% trans 'Subject' %}</th>
+                <th>{% trans 'Recipients' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for child in module.children %}
+            <tr>
+                <td>{{ child.date_created|date }}</td>
+                <td>
+                    <a href="{% url 'jet-dashboard:preview_mail' child.pk %}">
+                        {{ child.title }}
+                    </a>
+                </td>
+                <td>{{ child.target.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div align="right">
+        <a href="{% url 'jet-dashboard:write_mail' %}" class="button">{% trans 'Send an E-Mail' %}</a>
+    </div>
+</div>

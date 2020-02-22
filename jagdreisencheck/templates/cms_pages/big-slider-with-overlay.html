@@ -1,0 +1,14 @@
+{% extends 'base/structure/base.html' %}
+{% load sekizai_tags staticfiles %}
+
+{% block content %}
+  {% include 'cms_pages/index_page/computer.html' %}
+
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" href="{% static 'styles/new-styles/index.css' %}"/>
+  {% endaddtoblock %}
+
+
+
+{% endblock %}

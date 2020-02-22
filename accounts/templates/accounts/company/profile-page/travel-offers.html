@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="page-element" id="trip">
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h2>
+        {% trans 'Travel Offerings' %}
+
+        {% if request.user == object.admin %}
+          <a href="{% url 'travelling:create_trip' %}" style="float: right">
+            <button class="btn btn-outline-darkblue">
+              {% trans 'Add a new trip' %}
+            </button>
+          </a>
+        {% endif %}
+
+      </h2>
+    </div>
+  </div>
+
+  <div class="row">
+
+    {% for object in trips %}
+
+      <div class="col-xs-12 col-lg-6 mb-3">
+          {% include 'travelling/components/trip-thumbnail.html' %}
+      </div>
+    {% empty %}
+      <p>{{ object.company_name.name }} {% trans 'has not listed any trips yet.' %}</p>
+    {% endfor %}
+
+
+
+  </div>
+</div>

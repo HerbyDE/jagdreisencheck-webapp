@@ -1,0 +1,104 @@
+/*
+Title: Trip detail pages
+Description: Sourcefile for the web app's trip detail page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "../../bootstrap/variables";
+@import "../../bootstrap/mixins";
+
+
+// 2. CUSTOM STYLES
+.headline-nav {
+  overflow-y: hidden;
+
+  @include media-breakpoint-down(md) {
+    overflow-x: scroll;
+  }
+
+  .list-inline {
+    position: relative;
+    display: inline-block;
+
+    .list-inline-item {
+      position: relative;
+      padding: 12px 20px;
+      color: $white;
+      cursor: pointer;
+
+      &:hover {
+        background: transparentize(darken($green, 33%), 0.33);
+      }
+
+      &.active {
+        color: $gray-700;
+        background: $white;
+      }
+
+    }
+
+  }
+
+  .action-btn-container {
+    position: relative;
+    float: right;
+    display: inline-block;
+    margin-top: 6px;
+
+    .inner {
+      position: relative;
+      float: none;
+      text-align: center;
+
+      @include media-breakpoint-down(lg) {
+        margin-left: 50%;
+        -webkit-transform: translate(-50%, 0);
+        -moz-transform: translate(-50%, 0);
+        -ms-transform: translate(-50%, 0);
+        -o-transform: translate(-50%, 0);
+        transform: translate(-50%, 0);
+        width: 100vw;
+      }
+
+      .btn {
+
+        @include media-breakpoint-down(sm) {
+          padding: 5px 8px;
+          font-size: $font-size-base * 0.85;
+        }
+
+      }
+
+    }
+
+    @include media-breakpoint-down(lg) {
+      position: fixed;
+      top: auto;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 10;
+      padding: 15px 0;
+      background: $white;
+      -webkit-box-shadow: -1px -3px 5px 0px rgba(0,0,0,0.33);
+      -moz-box-shadow: -1px -3px 5px 0px rgba(0,0,0,0.33);
+      box-shadow: -1px -3px 5px 0px rgba(0,0,0,0.33);
+
+    }
+
+
+  }
+
+}

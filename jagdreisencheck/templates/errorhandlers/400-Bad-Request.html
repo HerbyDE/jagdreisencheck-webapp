@@ -1,0 +1,13 @@
+{% extends 'errorhandlers/base.html' %}
+{% load i18n %}
+
+{% block title %}400 Bad request{% endblock %}
+
+{% block headline %}
+  {% trans 'Error 400: Bad Request' %}
+{% endblock %}
+
+{% block error-message %}
+  {% blocktrans %}You are seeing this because the request you sent is of bad nature. If you have questions please contact us:{% endblocktrans %}
+  <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>
+{% endblock %}

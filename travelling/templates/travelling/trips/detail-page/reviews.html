@@ -1,0 +1,44 @@
+{% load i18n sekizai_tags staticfiles %}
+
+<div class="card rating-overview mb-3">
+  <div class="card-body">
+    {% if ratings %}
+
+      <div class="circle-progress" data-rating="{% if object.overall_rating > 0 %}{{ object.overall_rating|floatformat }}{% else %}0{% endif %}" data-denominator="5" align="center">
+        <span itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+          {% if object.overall_rating > 0 %}
+            <span itemprop="ratingValue">{{ object.overall_rating|floatformat }}</span> / <span>5</span>
+          {% else %}
+            {% trans 'N/A' %}
+          {% endif %}
+        </span>
+        <meta itemprop="reviewCount" content="{{ ratings.count }}"/>
+      </div>
+      <h3>{% blocktrans count ratings=ratings.count %}Total Rating based on {{ ratings }} Rating{% plural %}Total Rating based on {{ ratings }} Ratings{% endblocktrans %}</h3>
+      <p style="text-align: center!important;">{% blocktrans with num=recommendation_rate %}{{ num }}% of hunters recommend this trip{% endblocktrans %}</p>
+      <button class="btn btn-darkblue" data-toggle="modal" data-target="#overallRatingDetails">{% trans 'Rating Details' %}</button>
+      {% include 'travelling/rating/rating-post-detail-popup.html' with object=overall_rating %}
+
+    {% else %}
+
+      <h3>{% trans 'No ratings yet.' %}</h3>
+
+    {% endif %}
+
+  </div>
+</div>
+
+{% for rating in ratings %}
+  {% include 'travelling/rating/trip-rating-post.html' with object=rating trip=object %}
+{% empty %}
+<div class="card">
+  <div class="card-body">
+    <p>{% trans 'There are no ratings yet.' %}</p>
+  </div>
+</div>
+{% endfor %}
+
+{% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/circle-progress.min.js' %}"></script>
+    <script src="{% static 'scripts/components/animated-elements.min.js' %}"></script>
+{% endaddtoblock %}

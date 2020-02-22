@@ -1,0 +1,24 @@
+{% load i18n %}
+
+{% if loyalty_elements %}
+<div class="row mt-3">
+    <div class="col-xs-12 col-lg-8 offset-lg-2 align-content-center">
+        <div class="alert alert-darkblue indissmissable">
+            {% blocktrans with user=request.user.get_short_name %}
+                Hi {{ user }}, <br/>
+                Here you find your rewards for having an active profile on Jagdreisencheck. If you have questions
+                pertaining to this please send us an e-mail to <a href="mailto:brieftaube@jagdreisencheck.de" style="text-decoration: underline">brieftaube@jagdreisencheck.de</a>.
+            {% endblocktrans %}
+            <hr/>
+            {% for file in loyalty_elements %}
+                {% if file.description %}
+                    <hr/>
+                    <p>{{ file.description }}</p>
+                {% endif %}
+                <i class="fa fa-download"></i>
+                <a href="{% if file.file %}{{ file.file.url }}{% else %}#{% endif %}" style="text-decoration: underline" target="_blank">{{ file.link_description }}</a>.
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}

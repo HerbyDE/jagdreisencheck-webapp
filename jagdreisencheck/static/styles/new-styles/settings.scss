@@ -1,0 +1,30 @@
+/*
+Title: Trip detail pages
+Description: Sourcefile for the web app's trip detail page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-page-with-image-headline";
+@import "components/headline-nav";
+@import "components/forms/base";
+@import "components/forms/errors";
+@import "components/bs-select";
+@import "components/forms/datepicker";
+
+
+// 2. CUSTOM STYLES
+.page-element {
+  display: none;
+}

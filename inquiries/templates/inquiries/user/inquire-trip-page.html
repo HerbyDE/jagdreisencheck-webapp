@@ -1,0 +1,88 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n staticfiles sekizai_tags recaptcha3 %}
+
+{% block title %}
+  {% blocktrans with region=trip.region country=trip.country.name company=trip.company.name %}
+    Trip inquiry for {{ region }}, {{ country }} by {{ company }}
+  {% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+  <div class="container nav-padding">
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <h1>{% blocktrans with country=trip.country.name region=trip.region company=trip.company.name %}Inquire your trip offer to {{ region }}, {{ country }} with {{ company }}{% endblocktrans %}</h1>
+      </div>
+    </div>
+
+    {% if form.errors %}
+    <div class="row mb-3">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <div class="card errorlist">
+          <div class="card-body">
+            <h3 class="card-title">{% trans 'Errors' %}</h3>
+            <hr/>
+
+            {% include 'base/components/forms/error-handler/form-error.html' with form=form %}
+
+            {% for err in hunter_data.errors %}
+              {{ err }}
+            {% endfor %}
+
+            {{ form.non_field_errors }}
+
+            {{ hunter_data.non_field_errors }}
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <div class="card">
+          <div class="card-body">
+            <form method="post" action="">
+
+              {% csrf_token %}
+              {{ form.recaptcha }}
+
+              {% include 'inquiries/user/inquire_trip_forms/step-1.html' %}
+
+              {% include 'inquiries/user/inquire_trip_forms/step-2.html' %}
+
+              {% include 'inquiries/user/inquire_trip_forms/step-3.html' %}
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/inquire-trip-page.css' %}"/>
+    {% recaptcha_init %}
+    {% recaptcha_ready action_name='send_inquiry' %}
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'scripts/components/forms.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/bootstrap-select.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/datepicker.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script nonce="{{ request.csp_nonce }}">
+      let datepicker = $('input[data-type=date]');
+      datepicker.each(function () {
+        $(this).datepicker({
+          uiLibrary: 'fontawesome',
+          locale: 'de-de',
+          format: 'dd.mm.yyyy',
+        });
+      })
+    </script>
+  {% endaddtoblock %}
+
+{% endblock %}

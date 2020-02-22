@@ -1,0 +1,36 @@
+{% load i18n %}
+
+<div class="step" id="userdata">
+
+  <h3>{% trans 'Personal Information' %}</h3>
+  <hr/>
+
+  <div class="row">
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=user_form.email %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=user_form.password %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=user_form.confirm_passwd %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=user_form.first_name %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=user_form.last_name %}
+    </div>
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=user_form.country_of_residence %}
+    </div>
+
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' %}
+
+</div>

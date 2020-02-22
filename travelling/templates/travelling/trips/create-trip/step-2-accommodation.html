@@ -1,0 +1,27 @@
+{% load i18n cms_tags %}
+
+<div class="step" id="createTripStep2">
+  <h3>{% trans 'Lodging & Organization' %}</h3>
+  <hr/>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.airport_transfer %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.rifle_rentals %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.staff_languages %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.interpreter_at_site %}
+    </div>
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' %}
+
+</div>

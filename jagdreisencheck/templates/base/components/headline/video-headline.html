@@ -1,0 +1,23 @@
+{% extends 'base/structure/base.html' %}
+{% load cms_tags %}
+
+{% block content %}
+    <div class="probootstrap_cover_v3 overflow-hidden relative text-center" id="section-home" style="overflow: hidden;">
+        <div class="overlay full-height"></div>
+        {% placeholder 'Background Video' %}
+        <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-xs-12">
+                    <h2 class="heading mb-2 probootstrap-animate">
+                        {% placeholder 'Slider Headline' %}{% block overlay-h2 %}{% endblock %}</h2>
+                    <p class="lead mb-5 probootstrap-animate">
+                        {% placeholder 'Slider Sub-Headline' %}{% block overlay-p %}{% endblock %}</p>
+                    <div class="probootstrap-animate">
+                        {% placeholder 'CTA Section & Searchbar' %}{% block cta-section %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% block main-content %}{% endblock %}
+{% endblock %}

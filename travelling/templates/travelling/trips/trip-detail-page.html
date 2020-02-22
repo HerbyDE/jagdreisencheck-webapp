@@ -1,0 +1,135 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n staticfiles travelling_tags faq_tags easy_thumbnails_tags sekizai_tags jrc_seotools %}
+
+{% block title %}{{ object.country.name }}: {{ object.region }}{% endblock %}
+
+{% block headline-img-source %}
+  {% if object.headline_image %}
+    {{ object.headline_image.url }}
+    {% comment %}{% thumbnail object.headline_image 1280x720 crop="center" %}{% endcomment %}
+  {% else %}
+    {% get_placeholder_image object.country 1 %}
+  {% endif %}
+{% endblock %}
+
+{% block headline-content-containerized %}
+  <div class="row">
+
+    <div class="col-xs-12 col-lg-2">
+      <div class="circle">
+        <img class="img-circle" src="{% if object.company.logo %}{{ object.company.logo.url }}{% else %}{% static 'images/placeholder/No_Photo.png' %}{% endif %}" alt="{{ object.company.name }}"/>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-lg-10">
+      <h1>
+        {% if object.name %}
+          {{ object.name }}
+        {% else %}
+          {% if object.country.flag %}
+            <img class="country-flag" data-src="{{ object.country.flag }}" alt="{{ object.country.name }}"/>
+          {% endif %}
+          {% blocktrans with country=object.country.name region=object.region %}Hunting trip to {{ country }}: {{ region }}{% endblocktrans %}
+        {% endif %}
+      </h1>
+      <p>
+        <i class="fa fa-chevron-right"></i>
+        {% trans 'Offered by' %}:
+        {% if object.company.has_profile %}
+          <a href="{% url 'accounts:user_profile' object.company.slug %}">{{ object.company.name }}</a>
+        {% else %}
+          {{ object.company.name }}
+        {% endif %}
+      </p>
+    </div>
+
+  </div>
+{% endblock %}
+
+{% block headline-nav %}
+  <ul class="list-inline on-page-nav">
+    <li class="list-inline-item on-page-nav-element" id="general-nav">{% trans 'General' %}</li>
+    <li class="list-inline-item on-page-nav-element active" id="reviews-nav">{% trans 'Reviews' %}</li>
+    <li class="list-inline-item on-page-nav-element" id="prices-nav">{% trans 'Prices' %}</li>
+    <li class="list-inline-item on-page-nav-element" id="faq-nav">{% trans 'FAQs' %}</li>
+    <li class="list-inline-item on-page-nav-element" id="more-nav">{% trans 'Additional Details' %}</li>
+  </ul>
+  <div class="action-btn-container">
+    <div class="inner">
+      {% if request.user.is_company and profile.admin == request.user %}
+        <a id="modifyTrip" href="{% url 'travelling:modify_trip' object.company.slug object.country|slugify object.region|slugify %}" class="btn btn-highlight" rel="nofollow">
+          {% trans 'Modify trip' %}
+        </a>
+      {% elif not request.user.is_company %}
+        <a href="{% url 'travelling:rate_trip' object.company.slug object.country|slugify object.region|slugify %}?ref=rate_trip" class="btn btn-highlight btn-rate" rel="nofollow">{% trans 'Rate this Trip' %}</a>
+        {% if inquiry %}
+          <a href="{% url 'inquiries:inquiry_list' %}" class="btn btn-highlight" rel="nofollow">{% trans 'View your Inquiries' %}</a>
+        {% elif object.lead_status == 1 %}
+          <a href="{% url 'inquiries:inquire_trip' object.company.slug object.country|slugify object.region|slugify %}{% if not request.user.is_authenticated %}?ref=trip_inquiry{% endif %}" class="btn btn-highlight" rel="nofollow">
+            {% trans 'Contact the Operator' %}
+          </a>
+        {% elif object.lead_status == 2 %}
+          <button class="btn btn-highlight" data-toggle="tooltip" data-content="{{ object.get_lead_status_display }}">
+            <i class="fa fa-exclamation-triangle"></i>
+          </button>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block main-content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-md-5 col-lg-4 d-sm-none d-md-block fixed-on-scroll">
+        {% include 'travelling/trips/detail-page/trip-overview.html' %}
+      </div>
+      <div class="col-12 d-sm-block d-md-none mb-3">
+        <button class="btn btn-darkblue btn-block" data-toggle="collapse" data-target="#overview">
+          {% trans 'Key Facts' %}
+          <i class="fa fa-chevron-down"></i>
+        </button>
+        <div id="overview" class="collapse">
+          {% include 'travelling/trips/detail-page/trip-overview.html' %}
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-7 col-lg-8">
+        <div class="page-element" id="general">
+          {% include 'travelling/trips/detail-page/general-information.html' %}
+        </div>
+
+        <div class="page-element active" id="reviews">
+          {% include 'travelling/trips/detail-page/reviews.html' %}
+        </div>
+
+        <div class="page-element" id="prices">
+          {% include 'travelling/trips/detail-page/price-list.html' %}
+        </div>
+
+        <div class="page-element" id="faq">
+          {% include 'travelling/trips/detail-page/trip-faqs.html' %}
+        </div>
+
+        <div class="page-element" id="more">
+          {% include 'travelling/trips/detail-page/more-details.html' %}
+        </div>
+
+        {% if not user.is_authenticated %}
+          {% include 'inquiries/user/user-has-to-login-for-inquiries.html' %}
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/trip-detail-page.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/owl.carousel.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}

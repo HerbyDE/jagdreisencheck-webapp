@@ -1,0 +1,61 @@
+{% load i18n cms_tags %}
+<div class="card">
+    <div class="card-body">
+        <h2>{% trans 'More Details' %}</h2>
+        <hr/>
+        {% if object.more_details_pdf %}
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    {% blocktrans with company=object.company.name region=object.region %}
+                        The below PDF gives you more detailed information about {{ company }}'s trip to {{ region }}.
+                    {% endblocktrans %}
+                    <br/>
+                    <a href="{{ object.more_details_pdf.url }}" class="btn btn-outline-darkblue" target="_blank">{% trans 'Download PDF' %}</a>
+                </div>
+            </div>
+        </div>
+        <br/>
+        {% endif %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <td>{% trans 'Rifle Rental' %}</td>
+                        <td>{{ object.get_rifle_rentals_display }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Available Meals' %}</td>
+                        <td>{{ object.get_available_meal_options_display|join:", " }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Airport Transfer' %}</td>
+                        <td>{{ object.get_airport_transfer_display }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Staff Languages' %}</td>
+                        <td>{{ object.get_staff_languages_display|join:", " }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Interpreting Service' %}</td>
+                        <td>{{ object.get_interpreter_at_site_display }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Private Parking' %}</td>
+                        <td>{{ object.get_private_parking_display }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Wireless Coverage' %}</td>
+                        <td>{{ object.get_wireless_coverage_display }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans 'Broadband Internet' %}</td>
+                        <td>{{ object.get_broadband_internet_display }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="map"></div>{# TODO: Google Map #}
+    </div>
+</div>

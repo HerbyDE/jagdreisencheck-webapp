@@ -1,0 +1,10 @@
+
+.bootstrap-select {
+  .dropdown-toggle {
+    &::before {
+      content: none;
+      display: none;
+      width: 0;
+    }
+  }
+}

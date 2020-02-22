@@ -1,0 +1,20 @@
+{% load i18n %}
+<form class="form container" id="CreateGameForm" method="post" action="{% url 'travelling:create_game_instance' %}">
+  <h3>{% trans 'Add new game' %}</h3>
+  <hr/>
+  <div class="errorlist game"></div>
+  {% csrf_token %}
+  {% include 'base/components/fields.html' with field=game_form.name %}
+
+  <br/>
+  <div class="row form-navigation">
+    <div class="col-xs-12 col-lg-6">
+        <p><span class="required-indicator">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6 navigator-btn-group">
+        <button class="btn btn-default hide-form" type="button"><i class="fa fa-chevron-left"></i> {% trans 'Back' %}</button>
+        <button class="btn btn-darkblue" type="submit"><i class="fa fa-plus"></i> {% trans 'Create Game' %}</button>
+    </div>
+  </div>
+
+</form>

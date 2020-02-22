@@ -1,0 +1,51 @@
+{% extends "base/structure/base.html" %}
+{% load i18n staticfiles sekizai_tags easy_thumbnails_tags %}
+
+{% block content %}
+    {% include "podcasting/_show_list.html" %}
+
+  {% addtoblock "css" %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/blog.css' %}">
+  {% endaddtoblock %}
+
+{% endblock %}
+
+
+{% block topnav %}
+  <div class="col-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12" style="float: right;">
+          <ul class="list-inline">
+
+            <li class="list-inline-item">
+              <a href="{% url 'newsletter_subscribe_request' 'jagdpost' %}">
+                <i class="fa fa-envelope-square"></i>
+                {% trans 'Newsletter' %}
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="https://fb.me/jagdreisencheck" target="_blank">
+                <i class="fab fa-facebook"></i>
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="https://linkedin.com/company/jagdreisencheck/" target="_blank">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="{% url 'djangocms_blog:posts-latest-feed' %}">
+                <i class="fa fa-rss-square"></i>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

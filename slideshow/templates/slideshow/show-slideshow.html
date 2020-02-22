@@ -1,0 +1,51 @@
+{% load i18n staticfiles sekizai_tags slideshow %}
+
+
+        {% if slideshow %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>
+                            {{ slideshow.name }}
+                            {% add_slideshow_btn "travelling.trip" object.pk %}
+                        </h5>
+                        <hr/>
+                        <div class="owl-carousel">
+                            {% for image in images %}
+                                {% if image.image %}
+                                    <div class="img-container">
+                                        <img src="{{ image.image.url }}" alt="{{ image.image.caption }}" class="img-fluid"/>
+                                        {% if image.caption %}
+                                            <div class="img-caption">
+                                                <p>{{ image.caption }}</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <p>{% trans 'There are no images yet.' %}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif request.user.is_authenticated and request.user == profile.admin  %}
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        {% add_slideshow_btn "travelling.trip" object.pk %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+
+
+{% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'scripts/components/carousel.min.js' %}"></script>
+{% endaddtoblock %}

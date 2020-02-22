@@ -1,0 +1,38 @@
+// Read more function
+$('.read-more-button').click(function () {
+    var $paragraph = $(this).parent().parent()[0];
+    var $rt = $(this).parent().parent().find(".review-text");
+    var $more = $(this).data('more');
+    var $less = $(this).data('less');
+
+    if ($($paragraph).data('expand') === 0) {
+        $($paragraph).data('expand', 1);
+        $($paragraph).css("max-height", "none");
+        $($rt).css("margin-bottom", "45px");
+        $(this).parent().parent().find(".read-more").css("background", "none");
+        $('.read-more-button').html($less + ' <i class="fa fa-chevron-circle-up"></i>');
+        return $($paragraph)
+    }
+    if ($($paragraph).data('expand') === 1) {
+        $($paragraph).data('expand', 0);
+        $($paragraph).css("max-height", "220px");
+        $($rt).css("margin-bottom", "auto");
+        $(this).parent().parent().find(".read-more").css("background", "rgba(255,255,255,.67)");
+        $('.read-more-button').html($more + ' <i class="fa fa-chevron-circle-down"></i>');
+        return $($paragraph)
+    }
+});
+
+// Check for empty paragraphs
+$(document).ready(function () {
+    var paragraphs = $(".rating-reply").find("p");
+
+    paragraphs.each(function () {
+        if ($(this).text().length < 2 && !$(this).hasClass('quill-editor')) {
+            $(this).remove();
+        }
+
+        $(this).css('margin', 0);
+
+    })
+});

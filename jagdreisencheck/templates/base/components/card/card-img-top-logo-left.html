@@ -1,0 +1,15 @@
+{% extends 'base/components/card/card-img-top.html' %}
+
+{% block card-bar %}
+    <div class="col-2">
+        <div class="img-circle-wrapper">
+            <img data-src="{% block card-logo-path %}{% endblock %}" class="img-circle"/>
+        </div>
+    </div>
+    <div class="col-8">
+        {% block card-title %}{% endblock %}
+    </div>
+    <div class="col-2">
+        {% block card-additional-head-col-2 %}{% endblock %}
+    </div>
+{% endblock %}

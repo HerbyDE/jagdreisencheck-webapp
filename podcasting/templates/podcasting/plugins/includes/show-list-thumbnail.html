@@ -1,0 +1,13 @@
+{% load easy_thumbnails_tags i18n %}
+
+<a href="{{ show.get_absolute_url }}" class="item">
+  <div class="show-thumbnail" style="background: url('{% if show.original_image %}{{ show.original_image.url }}{% endif %}') no-repeat center center fixed; background-size: 300px 300px;">
+    <div class="bottom-line">
+      <div class="text">
+        <h3>{{ show.title }}</h3>
+        <h4>{{ show.subtitle }}</h4>
+        {% trans 'more' %} <i class="fa fa-chevron-right"></i>
+      </div>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,55 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n staticfiles %}
+
+{% block title %}
+  {% trans 'Manage Price Lists' %} - {{ object.country.name }}: {{ object.region }}
+{% endblock %}
+
+{% block headline-img-source %}{% static 'assets/../../../../../../jagdreisencheck/static/images/background/Middle_European_Landscape.jpg' %}{% endblock %}
+
+{% block headline-content-containerized %}
+<div class="row">
+    <div class="col-12">
+        <h3>{% trans 'Manage Price Lists' %} - {{ object.country.name }}: {{ object.region }}</h3>
+        <a href="{% url 'travelling:show_trip' object.company.slug object.country.code|slugify object.tech_name  %}" class="btn btn-highlight">{% trans 'View Trip' %}</a>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block headline-nav %}
+    <div class="list-inline on-page-nav">
+        <a href="{% url 'travelling:modify_trip' object.company.slug object.country.code object.tech_name %}" class="list-inline-item on-page-nav-element" id="details-nav">{% trans 'Trip details' %}</a>
+        <span class="list-inline-item on-page-nav-element dropdown-toggle {% block dropdown_active %}{% endblock %}" id="price-nav" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% trans 'Price lists' %}</span>
+        <div class="dropdown-menu">
+            <a class="dropdown-item {% block game_active %}{% endblock %}" href="{% url 'travelling:modify_game_price' object.company.slug object.country.code object.tech_name %}">{% trans 'Prices for game' %}</a>
+            <a class="dropdown-item {% block acc_active %}{% endblock %}" href="{% url 'travelling:modify_acc_price' object.company.slug object.country.code object.tech_name %}">{% trans 'Prices for accommodation' %}</a>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block main-content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3>{% block table_title %}{% endblock %}</h3>
+                <p><i class="fa fa-info-circle"></i> {% block table_hint %}{% endblock %}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive-md">
+                    <table class="table table-hover">
+                        <thead>
+                            {% block table-head %}{% endblock %}
+                        </thead>
+                        <tbody>
+                            {% block table-body %}{% endblock %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

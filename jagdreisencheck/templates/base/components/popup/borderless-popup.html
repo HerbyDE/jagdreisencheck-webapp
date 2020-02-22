@@ -1,0 +1,19 @@
+{% load i18n staticfiles %}
+
+{% spaceless %}
+<div class="modal fade {% block modal-classes %}{% endblock %}" id="{% block modal-id %}{% endblock %}" tabindex="-1"
+     role="dialog" aria-labelledby="{% block modal-label %}{% endblock %}" aria-hidden="false">
+  <div class="modal-dialog modal-dialog-centered mt-5" role="document">
+    <div class="modal-content">
+      <div class="modal-body" style="padding: 0 15px;">
+        <div class="container">
+          <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Close' %}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          {% block modal-body %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endspaceless %}

@@ -1,0 +1,13 @@
+{% extends 'base/components/card/card-img-top-blank-headline.html' %}
+{% load staticfiles thumbnail %}
+
+{% block card-class %}hover-card{% endblock %}
+
+{% block card-header %}{% endblock %}
+
+{% block card-body %}
+    <div class="img-wrapper">
+        <img class="card-mid-img" data-src="{% if instance.image %}{{ instance.image.url }}{% endif %}"/>
+        <a href="{{ instance.link }}" class="btn btn-{{ instance.btn_type }} {% if instance.btn_block %}btn-block{% endif %}">{{ instance.headline }}</a>
+    </div>
+{% endblock %}

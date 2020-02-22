@@ -1,0 +1,43 @@
+{% load i18n %}
+
+<div class="step page-element" id="hunting">
+
+  <h3>{% trans 'Hunt-related Questions' %}</h3>
+  <p>{% blocktrans with country=object.country.name company=object.company.name %}Your trip to {{ country }} with {{ company }}{% endblocktrans %}</p>
+  <hr/>
+
+  <div class="row">
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.check_hunt_license %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.hunting_introduction %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.professional_hunter_quality %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.organization_of_hunt %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.staff_languages %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'travelling/rating/rating-field.html' with field=form.communication_quality %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.check_strike_pos %}
+    </div>
+
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' %}
+
+</div>

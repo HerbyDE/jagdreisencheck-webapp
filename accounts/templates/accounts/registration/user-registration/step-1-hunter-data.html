@@ -1,0 +1,50 @@
+{% load i18n %}
+
+
+<div class="step" id="profiledata">
+
+  <h3>{% trans 'Profile Information' %}</h3>
+  <hr/>
+
+  <div class="row">
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.gender %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.birth_date %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.hunting_license %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=profile_form.years_as_active_hunter %}
+    </div>
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=profile_form.email_newsletter %}
+    </div>
+
+    <br/>
+
+    <div class="col-12">
+      <h5>{% trans 'Legal Terms' %}</h5>
+      <hr/>
+    </div>
+
+    <div class="col-12">
+      {% include 'base/components/fields.html' with field=user_form.agree_to_privacy %}
+      <small><a href="/flat/privacy/" target="_blank"><i class="fa fa-chevron-right"></i> {% trans 'Our Privacy Terms' %}</a></small>
+    </div>
+    <div class="col-12">
+      <br/>
+      {% include 'base/components/fields.html' with field=user_form.agree_to_tos %}
+      <small><a href="/flat/tos/" target="_blank"><i class="fa fa-chevron-right"></i> {% trans 'Our Terms of Service' %}</a></small>
+    </div>
+
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' with final_step=True registration=True %}
+
+</div>

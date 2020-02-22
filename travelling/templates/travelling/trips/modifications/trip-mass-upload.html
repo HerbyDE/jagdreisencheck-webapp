@@ -1,0 +1,32 @@
+{% extends 'base/structure/default-page.html' %}
+{% load i18n staticfiles %}
+
+{% block title %}{% trans 'Upload a list of trips' %}{% endblock %}
+
+{% block headline-img-source %}{% static 'assets/../../../../../jagdreisencheck/static/images/background/landscape-nothern-europe.jpg' %}{% endblock %}
+
+{% block headline-content-containerized %}
+    <div class="row">
+        <div class="col-12">
+            <h3>{% trans 'Upload a list of trips' %}</h3>
+            <p>{% blocktrans with username=request.user.first_name %}
+                {{ username }}, if you have questions regarding the mass upload do not hesitate to drop us an email.
+                You can reach out with us via brieftaube@jagdreisencheck.de and we will help you as soon as possible.
+            {% endblocktrans %}</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block main-content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-lg-offset-4 col-lg-4">
+                <form class="form" action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% include 'base/components/fields.html' with field=form.file %}
+                    <button type="submit" class="btn btn-darkblue">{% trans 'Submit' %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

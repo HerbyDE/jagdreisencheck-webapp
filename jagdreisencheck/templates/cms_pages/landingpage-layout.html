@@ -1,0 +1,18 @@
+{% extends 'base/structure/blank-base.html' %}
+{% load i18n cms_tags sekizai_tags staticfiles %}
+
+{% block content %}
+    <div class="landing-page">
+        <div class="bg-image">
+            {% placeholder "Background Image (Fullscreen)" %}
+        </div>
+        <div class="overlay">
+            {% placeholder "Content" %}
+        </div>
+    </div>
+
+    {% addtoblock 'css' %}
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/scss/components/landingpage.css' %}"/>
+    {% endaddtoblock %}
+
+{% endblock %}

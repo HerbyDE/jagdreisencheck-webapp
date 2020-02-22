@@ -1,0 +1,132 @@
+{% load i18n %}
+
+
+<div class="card">
+  <div class="card-body">
+    <h2>{% trans 'Prices' %}</h2>
+    <hr/>
+    {% if price_list %}
+      <p>
+        <small>
+          <i class="fa fa-info-circle"></i>
+          {% blocktrans with start=price_list.validityFrom|date end=price_list.validityTo|date company=object.company.name %}The price list is valid from {{ start }} until {{ end }}. {{ company }} is solely responsible for the prices. Jagdreisencheck has no influence on the prices.{% endblocktrans %}
+        </small>
+      </p>
+      {% if request.user == profile.admin %}
+        <a class="btn btn-darkblue btn-sm" href="{% url 'pricing:price_list_overview' object.company.slug object.country.code|slugify object.region|slugify %}">
+          <i class="fa fa-plus"></i>
+          {% trans 'Edit price list' %}
+        </a>
+        <br/>
+      {% endif %}
+
+      <br/>
+      <h3>{% trans 'Trophy & Game prices' %}</h3>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>{% trans 'Name' %}</th>
+              <th>{% trans 'Kind' %}</th>
+              <th>{% trans 'Price' %}</th>
+              <th>{% trans 'Unit' %}</th>
+              <th>{% trans 'Range minimum' %}</th>
+              <th>{% trans 'Range maximum' %}</th>
+              <th>{% trans 'Comment' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for list in price_list.plist.all %}
+                {% for game in list.gameprice_set.all %}
+                  <td style="white-space: nowrap">{{ game.game.name }}</td>
+                  <td>{{ game.get_kind_display }}</td>
+                  <td style="white-space: nowrap">{{ list.cost }}</td>
+                  <td style="white-space: nowrap">{% if game.otherRange %}{{ game.otherRange }}{% else %}{{ game.get_billing_range_display }}{% endif %}</td>
+                  <td style="white-space: nowrap; text-align: center;">{{ game.minRange }}</td>
+                  <td style="white-space: nowrap; text-align: center;">{{ game.maxRange }}</td>
+                  <td>{{ game.comment }}</td>
+                {% endfor %}
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <br/>
+      <h3>{% trans 'Accommodation prices' %}</h3>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>{% trans 'Type' %}</th>
+              <th>{% trans 'Price' %}</th>
+              <th>{% trans 'Unit' %}</th>
+              <th>{% trans 'Comment' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for list in price_list.plist.all %}
+                {% for acc in list.accommodationprice_set.all %}
+                  <td style="white-space: nowrap">{{ acc.get_accommodation_display }}</td>
+                  <td style="white-space: nowrap">{{ list.cost }}</td>
+                  <td style="white-space: nowrap">{% if acc.otherPeriod %}{{ acc.otherPeriod }}{% else %}{{ acc.get_period_display }}{% endif %}</td>
+                  <td>{{ acc.comment }}</td>
+                {% endfor %}
+                {% if list.gameprice_set.all|length == 0 and forloop.counter == 1 %}
+                  <td style="white-space: nowrap;">{% trans 'No accommodation prices available' %}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <br/>
+      <h3>{% trans 'Other services' %}</h3>
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>{% trans 'Type' %}</th>
+              <th>{% trans 'Price' %}</th>
+              <th>{% trans 'Unit' %}</th>
+              <th>{% trans 'Range minimum' %}</th>
+              <th>{% trans 'Range maximum' %}</th>
+              <th>{% trans 'Comment' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {% for list in price_list.plist.all %}
+                {% for other in list.otherprice_set.all %}
+                  <td style="white-space: nowrap">{{ other.text }}</td>
+                  <td style="white-space: nowrap">{{ list.cost }}</td>
+                  <td style="white-space: nowrap">{{ other.billing_range }}</td>
+                  <td style="white-space: nowrap">{{ other.minRange }}</td>
+                  <td style="white-space: nowrap">{{ other.maxRange }}</td>
+                  <td>{{ other.comment }}</td>
+                {% endfor %}
+                {% if list.otherprice_set.all|length == 0 and forloop.counter == 2 %}
+                  <td style="white-space: nowrap;">{% trans 'No other services available.' %}</td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    {% else %}
+      <p>
+        {% blocktrans with company=object.company.name %}{{ company }} does not provide prices for this trip yet. For further information contact the company.{% endblocktrans %}
+      </p>
+      {% if request.user == profile.admin %}
+        <a class="btn btn-darkblue" href="{% url 'pricing:price_list_overview' object.company.slug object.country.code|slugify object.region|slugify %}">
+          <i class="fa fa-plus"></i>
+          {% trans 'Edit price list' %}
+        </a>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>

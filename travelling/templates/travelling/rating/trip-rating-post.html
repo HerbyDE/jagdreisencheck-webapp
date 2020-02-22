@@ -1,0 +1,96 @@
+{% load i18n staticfiles travelling_tags sekizai_tags %}
+
+<div class="card rating-anchor mt-3" id="rating-{{ object.user.get_short_name|slugify }}-{{ object.pk }}" itemprop="review" itemscope itemtype="http://schema.org/Review">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-9">
+        <p>
+          <a href="{% if object.user %} {% url 'accounts:user_profile' object.user.pk %} {% else %} # {% endif %}" itemprop="author" rel="nofollow">
+            {% if object.user %}{{ object.user.get_short_name }}{% else %}{% trans 'A User' %}{% endif %}
+          </a>
+          {% trans 'was in' %}
+          <a href="{% url 'travelling:show_trip' object.trip.company.slug object.trip.country.code|slugify object.trip.region|slugify %}">
+            {{ object.trip.region }}, {{ object.trip.country.name }}
+          </a>&#160;
+          <br/>
+          {% if request.user == object.user %}
+            <small class="badge badge-darkblue">{% trans 'Your rating' %}</small>
+          {% endif %}
+          {% if object.nps_indication > 3 %}
+            <small class="badge badge-success"><i class="fa fa-plus-circle"></i> {% trans 'Recommends the Trip' %}</small>
+          {% elif object.nps_indication <= 3 %}
+            <small class="badge badge-light"><i class="fa fa-minus-circle"></i> {% trans 'Recommends the Trip' %} {{ object.get_nps_indication_display }}</small>
+          {% endif %}
+        </p>
+      </div>
+      <div class="col-3">
+        <div class="rating">
+          <div class="circle-xs">
+            <p itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+              {% if object.overall_rating > 0 %}
+                <span itemprop="ratingValue">{{ object.overall_rating|floatformat }}</span>
+                <meta itemprop="bestRating" content="5"/>
+                <meta itemprop="worstRating" content="1"/>
+              {% else %}
+                {% trans 'N/A' %}
+              {% endif %}
+            </p>
+            <i class="icon icon-rating-img"></i>
+            <i class="icon icon-rating-img"></i>
+          </div>
+          <button class="btn btn-outline-darkblue btn-sm" data-toggle="modal" data-target="#rating-details-{{ object.user.get_short_name }}-{{ forloop.counter }}">
+            {% trans 'Rating Details' %}
+          </button>
+          <p class="time"><small><i class="fa fa-clock"></i> <time itemprop="datePublished" content="{{ object.date_created|date:"c" }}">{{ object.date_created|date:'d.m.Y' }}</time></small></p>
+          {% include 'travelling/rating/rating-post-detail-popup.html' %}
+        </div>
+      </div>
+      <div class="col-9">
+        <h4 itemprop="name">{{ object.name }}</h4>
+        <hr/>
+      </div>
+    </div>
+
+
+    <div class="review-main-body" data-expand="0">
+      <div class="review-text" itemprop="description">{{ object.description|render_safe }}</div>
+      {% if object.description|wordcount > 75 %}
+        <div class="read-more">
+          <button class="read-more-button" data-less="{% trans 'Less' %}" data-more="{% trans 'More' %}">
+            {% trans 'More' %} <i class="fa fa-chevron-circle-down"></i>
+          </button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  {% if object.user == request.user or profile.admin == request.user %}
+    <div class="card-footer">
+      {% if object.user == request.user %}
+        <span>{% trans 'Actions' %}:</span>
+        <a href="{% url 'travelling:update_rating' object.trip.company.slug object.trip.country.code|slugify object.trip.region|slugify %}" class="btn btn-outline-darkblue btn-sm">
+          <i class="fa fa-edit"></i>
+          {% trans 'Edit' %}
+        </a>
+      {% endif %}
+
+      {% if profile.admin == request.user and not object.ratingreply %}
+        <span>{% trans 'Actions' %}:</span>
+        <button id="openModal{{ object.pk }}" data-target="#modal-{{ object.pk }}" data-toggle="modal" data-rating="{{ object.pk }}" class="btn btn-outline-darkblue btn-sm">
+          <i class="fa fa-reply"></i>
+          {% trans 'Reply' %}
+        </button>
+        {% include 'travelling/rating/reply-to-rating/reply-modal.html' %}
+      {% endif %}
+
+      {% if object.ratingreply %}
+        {% include 'travelling/rating/reply-to-rating/rating-reply-post.html' %}
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+
+
+{% addtoblock "js" %}
+  <script src="{% static 'scripts/components/read-more.min.js' %}"></script>
+{% endaddtoblock %}

@@ -1,0 +1,114 @@
+{% extends 'travelling/trips/modifications/price-lists/price-list-base.html' %}
+{% load i18n %}
+
+{% block game_active %}active{% endblock %}
+{% block dropdown_active %}active{% endblock %}
+
+{% block table-head %}
+    <tr>
+        <th style="min-width: 160px;">{% trans 'Game' %}</th>
+        <th style="min-width: 160px">{% trans 'Gender' %}</th>
+        <th style="min-width: 160px">{% trans 'Range' %}</th>
+        <th style="min-width: 80px">{% trans 'Trophy costs' %}</th>
+        <th style="min-width: 80px">{% trans 'Wounded costs' %}</th>
+        <th style="min-width: 80px"><i class="fa fa-cogs"></i></th>
+    </tr>
+{% endblock %}
+
+{% block table_title %}
+    {% trans 'Prices for game' %}
+{% endblock %}
+
+{% block table_hint %}
+    {% blocktrans %}Hint: You can provide accommodation prices in the "Prices for accommodation" section in the dropdown above.{% endblocktrans %}
+{% endblock %}
+
+{% block table-body %}
+    {% regroup elements by game.name as game_list %}
+    {% for game in game_list %}
+        {% for element in game.list %}
+            <tr>
+                <td>{% if forloop.first %}{{ game.grouper }}{% endif %}</td>
+                <td>{{ element.type }}</td>
+                <td>{{ element.range }} {{ element.get_calculation_display }}</td>
+                <td>{{ element.trophy_costs }}</td>
+                <td>{{ element.wounded_costs }}</td>
+                <td>
+                    <button type="button" data-toggle="modal" class="btn btn-outline-darkblue" data-target="#price-modal-{{ forloop.counter }}"><i class="fa fa-cog"></i></button>
+                    {% include 'travelling/trips/modifications/price-lists/change-game-price-modal.html' %}
+                </td>
+            </tr>
+        {% endfor %}
+    {% empty %}
+    {% endfor %}
+    <tr>
+        <form action="" method="post">
+        {% csrf_token %}
+            <td>{% include 'base/components/fields.html' with field=form.game %}</td>
+            <td>{% include 'base/components/fields.html' with field=form.type %}</td>
+            <td>
+                <div class="input-group">
+                    {% with form.range as field %}
+                        <input type="text" name="{{ field.name }}" {% if field.value %}value="{{ field.value }}"{% endif %} id="{{ field.id_for_label }}"
+                       {% if field.placeholder %}
+                           placeholder="{{ field.placeholder }}"
+                       {% elif field.field.widget.attrs.placeholder %}
+                           placeholder="{{ field.field.widget.attrs.placeholder }}"
+                       {% elif field.field.widget.attrs.no_label %}
+                           placeholder="{{ field.label }}"
+                       {% endif %}
+                       class="form-control" {% if field.field.required %}required{% endif %}
+                       {% if field.field.max_length %}maxlength="{{ field.field.max_length }}"{% endif %}/>
+                    {% endwith %}
+                    <div class="input-group-append">
+                        {% with form.calculation as field %}
+                            <select type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control selectpicker show-tick"
+                                {% if field.field.required and not field.field.widget.attrs.required == False %}
+                                    required
+                                {% elif field.field.widget.attrs.required == True %}
+                                    required
+                                {% endif %}
+                                {% if field.field.widget.attrs.multiple %}multiple{% endif %}
+                                {% if field.field.widget.choices|length > 10 %}data-live-search="true"{% endif %}>
+                                {% if field.field.widget.attrs.no_label %}
+                                    <option class="option-label" value="">{{ field.label }}</option>
+                                {% endif %}
+                                {% if field_options %}
+                                    {% for option_key, option_value in field_options.items %}
+                                        {% for choice in field.field.widget.choices %}
+                                            {% if not choice.1 == '---------' %}
+                                                {% if choice.0 == option_key %}
+                                                    <option value="{{ choice.0 }}" {% if choice.0 == field.value or choice.1 == country %}selected{% endif %}{% if choice.0 in field.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% else %}
+                                    {% for choice in field.field.widget.choices %}
+                                        {% if not choice.1 == '---------' %}
+                                            <option value="{{ choice.0 }}"
+                                                    {% if choice.0 == field.value %}selected{% endif %}
+                                                    {% if choice.0 in field.value %}selected{% endif %}
+                                                    {% if choice.0 == company.pk %}
+                                                        selected
+                                                    {% elif choice.0 ==  game.pk %}
+                                                        selected
+                                                    {% elif choice.1 == country %}
+                                                        selected
+                                                    {% endif %}>
+                                                {{ choice.1 }}
+                                            </option>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        {% endwith %}
+                    </div>
+                </div>
+            </td>
+            <td>{% include 'base/components/fields.html' with field=form.trophy_costs %}</td>
+            <td>{% include 'base/components/fields.html' with field=form.wounded_costs %}</td>
+            <td><button type="submit" class="btn btn-highlight"><i class="fa fa-plus"></i></button></td>
+        </form>
+    </tr>
+{% endblock %}

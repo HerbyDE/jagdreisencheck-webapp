@@ -1,0 +1,68 @@
+{% load i18n easy_thumbnails_tags %}
+
+<div class="container nav-padding-plus">
+  <div class="row">
+    <div class="col-12">
+      <h1>{% trans 'Jagdreisencheck Podcast Shows' %}</h1>
+      <p>{% blocktrans %}
+        Here you find podcastshows about latest news in the hunting industry as well as basics about hunting travelling.
+        If you wish for a certain format please email us your idea: <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>
+      {% endblocktrans %}</p>
+      <br/>
+      <h2>{% trans 'Shows' %}</h2>
+      <hr/>
+    </div>
+  </div>
+
+{% for show in show_list %}
+  <div class="row">
+    <div class="col-xs-12 col-lg-1 podcast-numerator">
+      #{{ forloop.counter }}
+      <span><a href="{{ show.get_absolute_url }}" class="podcast-numerator">- {{ show.title }}</a></span>
+    </div>
+
+    <div class="col-xs-12 col-lg-11">
+      <div class="row">
+        <div class="col-xs-12 col-lg-4">
+          <div class="podcast-image" style="background-image: url('{% thumbnail show.original_image 300x300 crop %}');">
+            <a href="{{ show.get_absolute_url }}" class="btn btn-darkblue">
+              <i class="fa fa-music"></i>
+              {% trans 'Show episodes' %}
+            </a>
+          </div>
+        </div>
+        <div class="col-xs-12 col-lg-8 podcast-description visible">
+          <h4><a href="{{ show.get_absolute_url }}">{{ show.title }}</a></h4>
+          <h5>{{ show.subtitle }}</h5>
+          <div class="meta">
+            <i class="fa fa-clock"></i> <time>{{ show.published|date:"d. M Y" }}</time>
+            <br/>
+            <i class="fa fa-user"></i> <span class="user">{% trans 'by' context "small" %} {{ show.author_text }}</span>
+            <br/>
+            <i class="fa fa-broadcast-tower"></i> <span class="episodes">{% blocktrans count count=show.episode_set.count %}{{ count }} episode{% plural %}{{ count }} episodes{% endblocktrans %}</span>
+            <br/><br/>
+            <p>
+              {{ show.description|truncatechars:140 }}
+              <br/>
+              <a href="{{ show.get_absolute_url }}">{% trans 'More details' %}</a>
+            </p>
+            <p style="text-align: left;">{% trans 'Feedback to' %}: <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a></p>
+            <p>
+              {% for enclosure in episode.enclosure_set.all %}
+                {% if enclosure.mime == 'mp3' %}
+                  <i class="fa fa-download"></i> <a href="{{ enclosure.file.url }}">{% trans "Download / Stream" %}</a>
+                {% endif %}
+              {% endfor %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr/>
+  <br/>
+{% empty %}
+  <h5>{% trans "There will be shows soon. Stay tuned!" %}</h5>
+{% endfor %}
+
+</div>

@@ -1,0 +1,84 @@
+{% load i18n staticfiles %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>{{ title }}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}{% static 'styles/scss/style.css' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}{% static 'styles/scss/components/email.css' %}"/>
+
+    </head>
+
+    <body>
+        <div class="mail">
+
+            <div id="header" class="container">
+                <hr/>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-1">
+                        <img src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}{% static 'assets/../../../static/images/logos/logo.png' %}" alt="{% trans 'Jagdreisencheck' %}" height="50"/>
+                    </div>
+                    <div class="col-xs-12 col-lg-11">
+                        <h1>
+                            {% block headline %}{% endblock %}
+                        </h1>
+                    </div>
+                </div>
+                <hr/>
+            </div>
+
+            <div id="body" class="container">
+                {% block body %}{% endblock %}
+
+                {% block body-greeting %}
+                    <p>{% trans 'Sincerely' %},</p>
+                    <p>{% trans 'Your Jagdreisencheck Team' context 'user' %}</p>
+                {% endblock %}
+
+                <br/>
+                <small>
+                    {% blocktrans %}
+                        P.S.: We're always happy to receive your feedback! If you have critique or suggestions please
+                        answer to this email and tell us how we may improve.
+                    {% endblocktrans %}
+                </small>
+                <br/>
+                <small>
+                    <b>{% trans 'Disclaimer' %}:</b>
+                    {% trans 'If you have received this email by accident please inform us (brieftaube@jagdreisencheck.de) and delete this email afterwards.' %}
+                </small>
+
+            </div>
+
+            <small id="footnotes">{% block footnotes %}{% endblock %}</small>
+
+            <div id="footer" class="container">
+                <hr/>
+                <div class="row">
+                    <div class="col-12">
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                <a href="{{ request.get_host }}">&copy; {% trans 'Jagdreisencheck' %} 2019</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="{{ request.get_host }}{% if user.pk %}{% url 'accounts:user_profile' user.pk %}{% endif %}">{% trans 'Account' context user.is_company %}</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="{{ request.get_host }}/flat/imprint/">{% trans 'Imprint' %}</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="{{ request.get_host }}/flat/tos/">{% trans 'Terms of Service' context 'footer' %}</a>
+                            </li>
+                            <li class="list-inline-item">
+                                <a href="{{ request.get_host }}/flat/privacy/">{% trans 'Privacy Statement' %}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,6 @@
+
+{% for form in hunter_forms %}
+  {% if forloop.last %}
+    {% include 'inquiries/user/inquire_trip_forms/hunter-data-form.html' with hunter_form=form %}
+  {% endif %}
+{% endfor %}

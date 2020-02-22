@@ -1,0 +1,17 @@
+{% load i18n sekizai_tags %}
+
+{% if request.user.is_authenticated %}
+<h5>{% trans 'Ask a question' %}</h5>
+<form class="row" action="{% url 'faq:post_question' %}" method="post">
+    {% csrf_token %}
+    <div class="col-xs-12 col-lg-10">
+        {% include 'base/components/fields.html' with field=form.name no_label=True %}
+        <input type="hidden" name="model" value="{{ model }}">
+        <input type="hidden" name="identifier" value="{{ identifier }}">
+        <input type="hidden" name="redirect" value="{{ request.path }}">
+    </div>
+    <div class="col-xs-12 col-lg-2" style="display: flex; flex-direction: column-reverse">
+        <button class="btn btn-darkblue" style="display: block; padding: 6px 0; margin-bottom: 1px;">{% trans 'Submit' %}</button>
+    </div>
+</form>
+{% endif %}

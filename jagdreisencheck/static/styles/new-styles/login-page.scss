@@ -1,0 +1,89 @@
+/*
+Title: Login Page of Jagdreisencheck
+Description: Sourcefile for the web app's login page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "base";
+@import "components/search-bar";
+
+
+// 2. CUSTOM STYLES
+.img-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: none;
+
+    @include media-breakpoint-down(lg) {
+      width: auto;
+      height: 100%;
+      max-width: none;
+    }
+
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: transparentize($gray-700, 0.33);
+
+  .text {
+    margin: 10px 0;
+    text-align: center;
+    color: white;
+  }
+
+}
+
+
+.login-widget {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+
+  .btn-group {
+    float: right;
+  }
+
+  > .container {
+    margin-top: 90px;
+    > .row {
+      position: relative;
+      height: auto;
+      min-height: 1px;
+
+      > .col-xs-12, .col-lg-4 {
+        margin-left: 50%;
+        transform: translate(-50%, 0);
+        padding: 15px;
+        background-color: $white;
+        border: 2px $gray-600 solid;
+        border-radius: $border-radius-lg;
+
+      }
+    }
+  }
+}

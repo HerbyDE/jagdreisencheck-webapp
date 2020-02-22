@@ -1,0 +1,110 @@
+{% load i18n staticfiles sekizai_tags travelling_tags %}
+
+
+{% spaceless %}
+
+<div class="form-group">
+    {% if not field.field.widget.attrs.no_label %}
+        <label class="control-label" for="{{ field.id_for_label }}">
+            {{ field.label }}
+            {% if field.field.widget.attrs.multiple %}
+                <span style="font-size: 0.6rem;">({% trans 'multiple choice possible.' %})</span>
+            {% endif %}
+
+            {% if field.help_text %}
+                <span><i class="fa fa-info-circle" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{{ field.help_text|safe }}"></i></span>
+            {% endif %}
+
+            {% if field.field.required == True or field.field.widget.attrs.required == True %}<span class="required-indicator">*</span>{% endif %}
+        </label>
+        {% if field.field.widget.attrs.warning %}
+            <small><i class="fa fa-exclamation-circle"></i> {{ field.field.widget.attrs.warning }}</small>
+        {% endif %}
+    {% endif %}
+    <select name="{% if form.prefix %}{{ form.prefix }}-{% endif %}{{ field.name }}" id="{{ field.id_for_label }}"
+            class="form-control selectpicker" data-nothing-selected="{% trans 'Nothing selected' %}"
+            data-nothing-found="{% trans 'Nothing found for' %}"
+            {% if field.field.required and not field.field.widget.attrs.required == False %}
+                required
+            {% elif field.field.widget.attrs.required == True %}
+                required
+            {% endif %}
+            {% if field.field.widget.attrs.multiple %}multiple{% endif %}
+            {% if field.field.widget.choices|length > 10 %}data-live-search="true"{% endif %}
+            {% if field.field.widget.attrs.disabled %}disabled="disabled"{% elif field.name == 'company' and request.user.is_company %}
+            disabled="disabled" {% elif disabled %}disabled="disabled"{% endif %}
+            {% if field.field.widget.attrs.is_submit or is_submit %}type="submit"{% endif %}>
+
+            {% if field.field.widget.attrs.no_label %}
+              <option class="option-label" value="" {% if disable_empty %}disabled{% endif %}>
+                {% if field.field.widget.attrs.label %}
+                  {{ field.field.widget.attrs.label }}
+                {% else %}
+                  {{ field.label }}
+                {% endif %}
+              </option>
+            {% endif %}
+
+            {% if field.name == 'company' and request.user.is_company %}
+              <option value="{{ request.user.pk }}" selected="selected">{{ request.user.get_short_name }}</option>
+            {% endif %}
+
+            {% if field.name == 'traveller_status' %}
+
+              {% for choice in field.field.widget.choices %}
+                {% if choice.0 == object.traveller_status %}
+                  <option value="{{ choice.0 }}" selected="selected">{{ choice.1 }}</option>
+                {% endif %}
+              {% endfor %}
+
+            {% endif %}
+
+            {% if not field.name == 'traveller_status' and not field_options and not field.value|is_list %}
+
+              {% for choice in field.field.widget.choices %}
+                {% if not choice.1 == '---------' and not choice.1 == '' %}
+                  <option value="{{ choice.0 }}" {% if choice.0 == field.value or choice.0 == custom_value.pk %}selected="selected"{% endif %}>{{ choice.1 }}</option>
+                {% endif %}
+              {% endfor %}
+
+            {% endif %}
+
+            {% if not field.name == 'traveller_status' and not field_options and field.value|is_list %}
+
+              {% for choice in field.field.widget.choices %}
+                {% if choice.1 != '---------' or choice.1 != '' %}
+                  <option value="{{ choice.0 }}" {% if choice.0 in field.value %}selected="selected"{% endif %}>{{ choice.1 }}</option>
+                {% endif %}
+              {% endfor %}
+
+            {% endif %}
+
+            {% if field_options %}
+              {% if field.value|is_list %}
+
+                {% for option in field_options %}
+                  {% for key in field.value %}
+                    <option value="{{ option.pk }}" {% if option.pk == key %}selected="selected"{% endif %}>{{ option.name }}</option>
+                  {% endfor %}
+                {% endfor %}
+
+              {% else %}
+
+                {% for option in field_options %}
+                  <option value="{{ option.pk }}" {% if option.pk == field.value or option.pk == custom_value.pk %}selected="selected"{% endif %}>{{ option.name }}</option>
+                {% endfor %}
+
+              {% endif %}
+            {% endif %}
+
+    </select>
+</div>
+{% endspaceless %}
+
+{% comment %}
+{% if choice.0 == field.value and choice.0 != None %}selected{% elif choice.0 in field.value and not field.value == "None" %}selected{% endif %}
+{% if choice.0 in element.acc_type or choice.0 in element.game or choice.0 in element.calculation and not choice.0 == None %}selected{% endif %}
+{% if choice.0 == company.pk and not choice.0 == None %}selected
+{% elif choice.0 ==  game.pk and not choice.0 == None %}selected
+{% elif choice.1 == country and not choice.0 == None %}selected{% endif %}
+{% endcomment %}

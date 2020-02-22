@@ -1,0 +1,11 @@
+{% load cms_tags %}
+
+<div class="container">
+    <div class="row">
+        {% with instance.num_children as width %}
+            {% for plugin in instance.child_plugin_instances %}
+                {% render_plugin plugin %}
+            {% endfor %}
+        {% endwith %}
+    </div>
+</div>

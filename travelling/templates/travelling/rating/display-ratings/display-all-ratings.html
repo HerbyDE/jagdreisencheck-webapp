@@ -1,0 +1,39 @@
+{% load i18n sekizai_tags staticfiles %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-lg-4">
+           <div class="card highlight-card">
+                <div class="card-body" align="center">
+                    <div class="animated-circle" data-value="1" data-counter="{{ trip_count }}" data-init="false"></div>
+                    <h5>{% trans 'Trips on Jagdreisencheck' %}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-4">
+            <div class="card highlight-card">
+                <div class="card-body" align="center">
+                    <div class="animated-circle" data-value="1" data-counter="{{ rating_count }}" data-init="false"></div>
+                    <h5>{% trans 'Ratings on Jagdreisencheck' %}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-lg-4">
+            <div class="card highlight-card">
+                <div class="card-body" align="center">
+                    <div class="animated-circle" data-value="1" data-counter="{{ country_count }}" data-init="false"></div>
+                    <h5>{% trans 'Countries on Jagdreisencheck' %}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% addtoblock 'css' %}
+    <link type="text/css" rel="stylesheet" href="{% static 'styles/scss/components/animated-elements.css' %}"/>
+{% endaddtoblock %}
+
+{% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/circle-progress.min.js' %}"></script>
+    <script src="{% static 'scripts/components/animated-elements.min.js' %}"></script>
+{% endaddtoblock %}

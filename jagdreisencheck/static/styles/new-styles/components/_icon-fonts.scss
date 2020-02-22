@@ -1,0 +1,75 @@
+@function unicode($str) {
+  @return unquote("\"")+unquote(str-insert($str, "\\", 1))+unquote("\"")
+}
+
+@font-face {
+  font-family: "Ionicons";
+  src: url("../../fonts/ionicons/fonts/ionicons.eot?v=2.0.0");
+  src: url("../../fonts/ionicons/fonts/ionicons.eot?v=2.0.0#iefix") format("embedded-opentype"), url("../../fonts/ionicons/fonts/ionicons.ttf?v=2.0.0") format("truetype"), url("../../fonts/ionicons/fonts/ionicons.woff?v=2.0.0") format("woff"), url("../../fonts/ionicons/fonts/ionicons.svg?v=2.0.0#Ionicons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@mixin Ionicons() {
+
+  font-family: 'Ionicons';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+}
+
+@font-face {
+  font-family: 'icomoon';
+  src: url('../../fonts/custom/icomoon.eot?80r6o8');
+  src: url('../../fonts/custom/icomoon.eot?80r6o8#iefix') format('embedded-opentype'),
+  url('../../fonts/custom/icomoon.ttf?80r6o8') format('truetype'),
+  url('../../fonts/custom/icomoon.woff?80r6o8') format('woff'),
+  url('../../fonts/custom/icomoon.svg?80r6o8#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-perch {
+  &:before {
+    content: unicode("e900");
+  }
+}
+
+.icon-rifle {
+  &:before {
+    content: unicode("e901");
+  }
+}
+
+.icon-rating-img {
+  &:before {
+    content: unicode("e902");
+  }
+}
+
+.icon-rating-img-o {
+  &:before {
+    content: unicode("e903");
+  }
+}

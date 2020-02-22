@@ -1,0 +1,39 @@
+/*
+Title: Create a Trip page
+Description: Sourcefile for the web app's index page.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "cms-default-page";
+@import "components/forms/errors";
+@import "components/forms/base";
+// @import "components/search-bar";
+
+
+// 2. CUSTOM STYLES
+.step {
+  display: none;
+
+  &:first-of-type {
+    display: block;
+  }
+}
+
+#CreateCompanyForm {
+  display: none;
+}
+#CreateGameForm {
+  display: none;
+}

@@ -1,0 +1,76 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n sekizai_tags staticfiles %}
+
+{% block title %}
+  {% trans 'Price lists' %}
+{% endblock %}
+
+{% block content %}
+  <div class="container nav-padding" style="text-align: center">
+    <p>
+      <a href="{% url 'accounts:console_trip_list' %}">
+        <i class="fa fa-chevron-left"></i>
+        {% trans 'Back to trip list' %}
+      </a>
+    </p>
+    <h1>{% blocktrans with region=trip.region country=trip.country.name %}Overview of all price lists for your trip to {{ region }}, {{ country }}{% endblocktrans %}</h1>
+    <p>
+      <i class="fa fa-info-circle"></i>
+      {% blocktrans %}Here you see an overview of all price lists for your trip. If you want to add a new list please click on the "New price list" button and please note that only one price list can be active at the same time. Should you have questions please contact us via e-mail:{% endblocktrans %}
+      <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>
+    </p>
+    <a href="{% url 'pricing:new_price_list' trip.company.slug trip.country.code|slugify trip.region|slugify %}" class="btn btn-darkblue">
+      <i class="fa fa-plus"></i>
+      {% trans 'New price list' %}
+    </a>
+    <br/><br/>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>{% trans 'Valid from' %}</th>
+            <th>{% trans 'Valid until' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans '# of prices' %}</th>
+            <th>{% trans '# of package tours' %}</th>
+            <th>{% trans 'Actions' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for object in price_lists %}
+            <tr>
+              <td>{{ object.validityFrom }}</td>
+              <td>{{ object.validityTo }}</td>
+              <td>{{ object.title }}</td>
+              <td>{% if object.is_active %}{% trans 'Active' %}{% else %}{% trans 'Inactive' %}{% endif %}</td>
+              <td>{{ object.plist.all.count }}</td>
+              <td>{{ object.price_list.all.count }}</td>
+              <td>
+                <a href="{% url 'pricing:update_price_list' trip.company.slug trip.country.code|slugify trip.region|slugify object.pk %}" class="btn btn-darkblue" data-toggle="tooltip" data-content="{% trans 'Settings' %}">
+                  <i class="fa fa-cogs"></i>
+                </a>
+                <span data-toggle="modal" data-target="#package-tours-{{ forloop.counter }}">
+                  <a href="#" class="btn btn-outline-darkblue" data-toggle="tooltip" data-content="{% trans 'Package Tours' %}">
+                    <i class="fa fa-star"></i>
+                  </a>
+                </span>
+                {% include 'pricing/company/includes/package-tour-overview.html' %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <a href="{% url 'accounts:console_trip_list' %}">
+        <i class="fa fa-chevron-left"></i>
+        {% trans 'Back to trip list' %}
+      </a>
+    </p>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/price-lists.css' %}">
+  {% endaddtoblock %}
+{% endblock %}

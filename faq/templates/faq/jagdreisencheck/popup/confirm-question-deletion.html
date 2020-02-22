@@ -1,0 +1,27 @@
+{% extends 'base/components/popup/modal.html' %}
+{% load i18n %}
+
+{% block modal-id %}deleteQuestion{{ question.pk }}{% endblock %}
+
+
+{% block modal-label %}{% endblock %}
+
+
+{% block modal-title %}{% trans 'Confirm Deletion' %}{% endblock %}
+
+
+{% block modal-body %}
+    <p>{% blocktrans %}
+        Please confirm that you intend to delete the question.
+    {% endblocktrans %}</p>
+{% endblock %}
+
+
+{% block modal-footer %}
+    <form action="{% url 'faq:delete_question' question.pk %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="redirect" value="{{ request.path }}#faq"/>
+        <input type="hidden" name="instance" value="{{ question.pk }}"/>
+        <button type="submit" class="btn btn-darkblue">{% trans 'Delete Question' %}</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% load i18n staticfiles sekizai_tags %}
+{% spaceless %}
+  <div class="field">
+
+    {% if field.field.widget.input_type == 'text' or field.field.widget.input_type == 'email' or field.field.widget.input_type == 'date' or field.field.widget.input_type == 'number' or field.field.widget.input_type == 'url' or field.field.widget.input_type == 'password' %}
+      {% include 'base/components/fields/textfield.html' %}
+    {% elif field.field.widget.input_type == 'select' %}
+      {% include 'base/components/fields/select.html' %}
+    {% elif field.field.widget.input_type == 'checkbox' %}
+      {% include 'base/components/fields/checkbox.html' %}
+    {% elif field.field.widget.tag == 'textarea' %}
+      {% include 'base/components/fields/textarea.html' %}
+    {% elif field.field.widget.input_type == 'file' %}
+      {% include 'base/components/fields/file.html' %}
+    {% elif field.field.widget.input_type == 'hidden' %}
+      {% include 'base/components/fields/hidden.html' %}
+    {% elif field.name == 'trophy_costs' or field.name == 'wounded_costs' or field.name == 'price_hunter' or field.name == 'price_non_hunter' %}
+      {{ field }}
+    {% else %}
+      {% include 'base/components/fields/textarea.html' %}
+    {% endif %}
+
+    <div class="row info-section-small">
+      {% if field.errors %}
+        <div class="col-xs-8">
+          <div class="error">
+            {% for err in field.errors %}
+              <small><b>{{ err.as_text }}</b></small>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% if not field.field.widget.attrs.hide_add_btns and not hide_add_btns %}
+        <div class="col-12">
+          {% if field.name == 'company' and not request.user.is_company %}
+            <span id="newCompany" class="btn btn-mini btn-outline-darkblue add-btn">
+              <i class="fa fa-plus"></i>
+              {% trans 'Add a new Company' %}
+            </span>
+          {% elif field.name == 'game' %}
+            <span id="newGame" class="btn btn-mini btn-outline-darkblue add-btn">
+              <i class="fa fa-plus"></i>
+              {% trans 'Add a new Game' %}
+            </span>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+{% endspaceless %}

@@ -1,0 +1,29 @@
+{% load i18n %}
+
+<form class="row" action="" method="post" id="packageTourForm">
+  <div class="col-12">
+    {% include 'base/components/fields.html' with field=pack_form.name %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=pack_form.validityFrom %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=pack_form.validityTo %}
+  </div>
+  <div class="col-12">
+    {% include 'base/components/fields.html' with field=pack_form.description %}
+  </div>
+  <div class="col-12">
+    <br/>
+    <div class="active-submit-combo">
+      {% include 'base/components/fields.html' with field=pack_form.is_active %}
+      <input type="hidden" name="form" value="package"/>
+      {% csrf_token %}
+      <button class="btn btn-darkblue" type="submit">{% trans 'Continue' %}</button>
+    </div>
+  </div>
+  <div class="col-12">
+    <small style="float: right">{% trans 'Please save each section separately.' %}</small>
+  </div>
+
+</form>

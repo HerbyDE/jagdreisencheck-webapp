@@ -1,0 +1,8 @@
+{% load cms_tags menu_tags %}
+
+{% for c in child.children %}
+    <a {% spaceless %}href="{{ c.attr.redirect_url|default:c.get_absolute_url }}"{% endspaceless %}
+       class="dropdown-item {% if c.selected %}selected active{% endif %}">
+        {{ c.get_menu_title }}
+    </a>
+{% endfor %}

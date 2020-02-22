@@ -1,0 +1,54 @@
+{% load i18n sekizai_tags staticfiles %}
+
+<div class="rating-table">
+  <div class="row">
+
+    <div class="col-xs-12 col-lg-4">
+      <div class="rating-circle">
+        <p>
+          {% if object.overall_rating > 0 %}{{ object.overall_rating|floatformat }}{% else %}{% trans 'N/A' %}{% endif %}
+        </p>
+        <i class="icon icon-rating-img"></i>
+        <i class="icon icon-rating-img"></i>
+      </div>
+      <p class="rating-criterion">{% trans 'Total Rating' %}</p>
+    </div>
+
+    <div class="col-xs-6 col-lg-4">
+      <div class="rating-circle xs">
+        <p>
+          {% if object.ecologic_rating > 0 %}{{ object.ecologic_rating|floatformat }}{% else %}{% trans 'N/A' %}{% endif %}
+        </p>
+        <i class="icon icon-rating-img"></i>
+        <i class="icon icon-rating-img"></i>
+      </div>
+      <p class="rating-criterion" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{% blocktrans %}In this category we focus on ecologic sustainability. Sustainability is divided into three focal areas: ecology, economy and socio-culture. More information may be found in the academy.{% endblocktrans %}">
+        <i class="fa fa-hand-point-right"></i>
+        {% trans 'Hunt' %}
+      </p>
+    </div>
+
+    <div class="col-xs-6 col-lg-4">
+      <div class="rating-circle xs">
+        <p>
+          {% if object.social_rating > 0 %}{{ object.social_rating|floatformat }}{% else %}{% trans 'N/A' %}{% endif %}
+        </p>
+        <i class="icon icon-rating-img"></i>
+        <i class="icon icon-rating-img"></i>
+      </div>
+      <p class="rating-criterion" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{% blocktrans %}In this category we focus on socio-cultural sustainability. Sustainability is divided into three focal areas: ecology, economy and socio-culture. More information may be found in the academy.{% endblocktrans %}">
+        <i class="fa fa-hand-point-right"></i>
+        {% trans 'Service' %}
+      </p>
+    </div>
+
+    <div class="col-12 mt-3">
+      <p>{% blocktrans %}
+          Where are the economic factors? The economic factors may not be rated by hunting travellers because in
+          this cause it would be necessary to have in-depth knowledge about processes within the operating company
+          in order to gain knowledge about sustainability.
+      {% endblocktrans %}</p>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,81 @@
+{% extends 'base/structure/base.html' %}
+{% load staticfiles i18n sekizai_tags %}
+
+{% block title %}{% trans 'Create a trip' %}{% endblock %}
+
+
+{% block content %}
+  <div class="container nav-padding">
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <h1>{% trans 'Here you can easily create a trip' %}</h1>
+        <p style="text-align: center">{% blocktrans %}If you have questions on how to create a trip or a wish for improvement please contact us via e-mail: <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a>.{% endblocktrans %}</p>
+      </div>
+    </div>
+
+    {% if form.errors or form.non_field_errors %}
+    <div class="row">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <div class="card errorlist">
+          <div class="card-body">
+            <h3 class="card-title">{% trans 'Errors' %}</h3>
+            <hr/>
+
+            {% include 'base/components/forms/error-handler/form-error.html' with form=form %}
+            {{ form.non_field_errors }}
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-8 offset-lg-2">
+        <div class="card">
+          <div class="card-body">
+
+            <form action="" method="post" id="createTripForm">
+              {% csrf_token %}
+
+              {% include 'travelling/trips/create-trip/step-0-intro.html' %}
+
+              {% include 'travelling/trips/create-trip/step-1-general.html' %}
+
+              {% include 'travelling/trips/create-trip/step-2-accommodation.html' %}
+
+              {% include 'travelling/trips/create-trip/step-3-confirmation.html' %}
+
+            </form>
+
+            {% include 'travelling/trips/components/create-company-form.html' %}
+            {% include 'travelling/trips/components/create-game-form.html' %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% addtoblock 'css' %}
+  <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/create-a-trip-page.css' %}"/>
+{% endaddtoblock %}
+
+{% addtoblock "js" %}
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" nonce="{{ request.csp_nonce }}"></script>
+  <script src="{% static 'scripts/components/bootstrap-select.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script src="{% static 'scripts/components/forms.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  <script src='https://www.google.com/recaptcha/api.js' nonce="{{ request.csp_nonce }}"></script>
+  <script src='https://www.google.com/recaptcha/api.js?render=6LeSO4EUAAAAAHe-rvZnboRVU_WbKhaivHpx9UXK' nonce="{{ request.csp_nonce }}"></script>
+  <script nonce="{{ request.csp_nonce }}">
+    $(document).ready(function () {
+      $('input[type=date]').datepicker({
+        format: "dd/mm/yyyy",
+        startDate: "0d"
+      })
+    });
+  </script>
+{% endaddtoblock %}
+
+{% endblock %}

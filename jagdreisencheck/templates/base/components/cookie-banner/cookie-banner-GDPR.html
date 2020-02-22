@@ -1,0 +1,47 @@
+{% load i18n %}
+
+<div id="gdpr-banner" class="card">
+  <div class="card-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <span class="card-title">{% trans 'We use Cookies' %}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 col-lg-7">
+          <p>{% blocktrans %}
+            Cookies are small pieces of text that are saved to your computer to optimize the performance of our website.
+            This includes mandatory cookies that do NOT leave any trace at your device and cookies that are of analytical
+            nature that capture anonymous data about users' behavior only on our page.
+            {% endblocktrans %}
+            <a href="/flat/privacy/" style="text-decoration: underline">{% trans 'More Information' %}</a>.
+          </p>
+        </div>
+        <div class="col-xs-12 col-lg-5">
+          {% comment %}
+          <ul class="list-inline">
+            <li class="list-inline-item">
+              <input type="checkbox" name="gdpr[]" value="necessary" checked="checked" disabled="disabled">
+              <label title="{% trans 'Required Cookies' %}">{% trans 'Required Cookies' %}</label>
+            </li>
+            <li class="list-inline-item">
+              <input type="checkbox" name="gdpr[]" value="preferences" checked="checked" data-auto="on">
+              <label title="{% trans 'Site Preferences' %}">{% trans 'Site Preferences' %}</label>
+            </li>
+            <li class="list-inline-item">
+              <input type="checkbox" name="gdpr[]" value="analytics" checked="checked" data-auto="on">
+              <label title="{% trans 'Analytics' %}">{% trans 'Analytics' %}</label>
+            </li>
+          </ul>
+          {% endcomment %}
+          <button id="gdpr-cookie-accept" type="button" class="btn btn-darkblue">{% trans 'Got it!' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

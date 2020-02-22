@@ -1,0 +1,68 @@
+{% load i18n %}
+
+<div class="step page-element" id="trophies">
+    <div class="row">
+        <div class="col-xs-12">
+            <h3>{% trans 'Your Trophies' %}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="table-responsive">
+                <table class="table table-hover trophy-table">
+                    <thead>
+                    <tr>
+                        <td>#</td>
+                        <td>{% trans 'Name' %}</td>
+                        <td>{% trans 'Weight' %}</td>
+                        <td>{% trans 'Length' %}</td>
+                        <td>{% trans 'CIC Pt.' %}</td>
+                        <td>{% trans 'Actions' %}</td>
+                    </tr>
+                    </thead>
+                    <tbody class="trophy-table-body">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-6 col-md-3">
+            {% with trophy_form.name as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-xs-6 col-md-3">
+            {% with trophy_form.weight as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-xs-6 col-md-3">
+            {% with trophy_form.length as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+        <div class="col-xs-6 col-md-3">
+            {% with trophy_form.cic_pt as field %}
+                {% include 'base/components/fields.html' %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row">
+        <button type="button" class="btn btn-outline-success add-trophy-btn">{% trans 'Add Trophy' %}</button>
+    </div>
+    <div class="row">
+        <div class="col-xs-12" align="right">
+            <button type="button" class="btn btn-secondary prev-btn">{% trans 'Previous Step' %}</button>
+            <button type="button" class="btn btn-primary next-btn">{% trans 'Next' %}</button>
+        </div>
+    </div>
+</div>

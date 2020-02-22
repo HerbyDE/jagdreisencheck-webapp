@@ -1,0 +1,119 @@
+{% extends 'base/structure/base.html' %}
+{% load cms_tags staticfiles sekizai_tags i18n easy_thumbnails_tags %}
+
+{% block content %}
+  {% if not category %}
+    <div class="row nav-padding">
+      {% placeholder "Blog Article Slider" %}
+    </div>
+
+    <div class="container">
+      {% placeholder "Content-Containerized" %}
+    </div>
+  {% else %}
+
+    <div class="container nav-padding">
+      <div class="row">
+        <div class="col-12">
+          <h1 class="mt-2">{{ category.name }}</h1>
+          <h2>{% blocktrans count entries=category.blog_posts.all.count %}{{ entries }} entry found{% plural %}{{ entries }} entries found{% endblocktrans %}</h2>
+          <hr/>
+        </div>
+      </div>
+
+      {% for entry in category.blog_posts.all %}
+        <div class="row">
+          <div class="col-xs-12 col-lg-1 podcast-numerator">
+            #{{ forloop.counter }}
+            <span><a href="{{ entry.get_absolute_url }}" class="podcast-numerator">- {{ entry.title }}</a></span>
+          </div>
+
+          <div class="col-xs-12 col-lg-11">
+            <div class="row">
+              <div class="col-xs-12 col-lg-4">
+                <div class="podcast-image" style="background-image: url('{% thumbnail entry.main_image 300x300 crop %}');">
+                  <a href="{{ entry.get_absolute_url }}" class="btn btn-darkblue">
+                    <i class="fa fa-book"></i>
+                    {% trans 'Read article' %}
+                  </a>
+                </div>
+              </div>
+              <div class="col-xs-12 col-lg-8 podcast-description visible">
+                <h4><a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a></h4>
+                <h5>{{ entry.subtitle }}</h5>
+                <div class="meta">
+                  <i class="fa fa-clock"></i> <time>{{ entry.date_published|date:"d. M Y" }}</time>
+                  <br/>
+                  <i class="fa fa-user"></i> <span class="user">{% trans 'by' context "small" %} {{ entry.author.get_short_name }}</span>
+                  <br/>
+                  <p>
+                    {{ entry.abstract|truncatechars:140 }}
+                    <br/>
+                    <a href="{{ entry.get_absolute_url }}">{% trans 'More details' %}</a>
+                  </p>
+                  <p style="text-align: left;">{% trans 'Feedback to' %}: <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr/>
+        <br/>
+      {% empty %}
+        <h5>{% trans "There will be shows soon. Stay tuned!" %}</h5>
+      {% endfor %}
+
+
+    </div>
+
+
+  {% endif %}
+
+  {% addtoblock "css" %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/blog.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock "js" %}
+    <script src="{% static 'scripts/components/blog-scripts.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}
+
+{% block topnav %}
+  <div class="col-12">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12" style="float: right;">
+          <ul class="list-inline">
+
+            <li class="list-inline-item">
+              <a href="{% url 'newsletter_subscribe_request' 'jagdpost' %}">
+                <i class="fa fa-envelope-square"></i>
+                {% trans 'Newsletter' %}
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="https://www.facebook.com/Jagdreisencheck-193771768189829/">
+                <i class="fab fa-facebook"></i>
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="https://linkedin.com/company/jagdreisencheck/">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </li>
+
+            <li class="list-inline-item">
+              <a href="{% url 'djangocms_blog:posts-latest-feed' %}">
+                <i class="fa fa-rss-square"></i>
+              </a>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

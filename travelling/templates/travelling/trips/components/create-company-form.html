@@ -1,0 +1,18 @@
+{% load i18n %}
+<form class="form" id="CreateCompanyForm" method="post" action="{% url 'accounts:create_company_name' %}">
+  <h3>{% trans 'Add a new Company' %}</h3>
+  <hr/>
+  <div class="errorlist company"></div>
+  {% csrf_token %}
+  {% include 'base/components/fields.html' with field=company_name_form.name %}
+  <br/>
+  <div class="row form-navigation">
+    <div class="col-xs-12 col-lg-6">
+        <p><span class="required-indicator">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6 navigator-btn-group">
+        <button class="btn btn-default hide-form" type="button"><i class="fa fa-chevron-left"></i> {% trans 'Back' %}</button>
+        <button class="btn btn-darkblue" type="submit"><i class="fa fa-plus"></i> {% trans 'Create Company' %}</button>
+    </div>
+  </div>
+</form>

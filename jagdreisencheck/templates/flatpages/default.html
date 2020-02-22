@@ -1,0 +1,22 @@
+{% extends 'base/structure/base.html' %}
+{% load sekizai_tags staticfiles %}
+
+{% block title %}{{ flatpage.title }}{% endblock %}
+
+{% block content %}
+  <div class="container nav-padding">
+    <div class="row">
+      <div class="col-12">
+
+        <h1>{{ flatpage.title }}</h1>
+        <p>{{ flatpage.content|safe }}</p>
+
+      </div>
+    </div>
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/cms-default-page.css' %}"/>
+  {% endaddtoblock %}
+
+{% endblock %}

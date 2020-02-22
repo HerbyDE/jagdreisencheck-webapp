@@ -1,0 +1,42 @@
+{% load i18n %}
+
+<div class="step page-element" id="territory">
+  <h3>{% trans 'Territory-related Questions' %}</h3>
+  <p>{% blocktrans with country=object.country.name company=object.company.name %}Your trip to {{ country }} with {{ company }}{% endblocktrans %}</p>
+  <hr/>
+
+  <div class="row">
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.hunt_in_wilderness %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.use_of_dogs %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6 dog-use">
+      {% include 'base/components/fields.html' with field=form.dog_purpose %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6 dog-use">
+      {% include 'travelling/rating/rating-field.html' with field=form.dog_quality %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.game_density %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.game_age_dist %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.game_gender_dist %}
+    </div>
+
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' %}
+
+</div>

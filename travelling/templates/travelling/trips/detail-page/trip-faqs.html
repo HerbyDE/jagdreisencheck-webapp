@@ -1,0 +1,23 @@
+{% load i18n faq_tags %}
+<div class="card">
+    <div class="card-body" style="width: 100%;">
+        <h2 style="width: 100%">{% trans 'FAQs' %}</h2>
+        <hr/>
+        <p>
+            {% if request.user == profile.admin %}
+                {% blocktrans %}
+                    Here you can post questions that your customers ask frequently. This helps you saving time and money
+                    when acquiring customers. You can answer your questions right afterwards. Questions posted by you as
+                    the trip owner will be placed on top. Later you can also "highlight" questions from hunters.
+                {% endblocktrans %}
+            {% else %}
+                {% blocktrans %}Here you find FAQs posted by the operator and also questions of your fellow hunters. If you have further
+                questions related to an existing topic just post it below the original thread. The operator will then
+                answer.{% endblocktrans %}
+            {% endif %}
+        </p>
+        <br/>
+        {% create_question_form model='travelling.Trip' identifier=object.pk %}
+    </div>
+</div>
+{% render_questions model='travelling.Trip' identifier=object.pk %}

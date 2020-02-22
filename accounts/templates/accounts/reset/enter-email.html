@@ -1,0 +1,67 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n sekizai_tags staticfiles recaptcha3 %}
+
+{% block title %}{% trans 'Reset password' %}{% endblock %}
+
+{% block headline-content-containerized %}
+    <div class="row">
+        <div class="col-12">
+            <h3>{% trans 'Reset your password' %}</h3>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+  <div class="container nav-padding">
+
+    {% if form.errors or form.non_field_errors %}
+    <div class="row mb-3">
+      <div class="col-xs-12 col-lg-6 offset-lg-3 errorlist">
+        <div class="card errorlist">
+          <div class="card-body">
+            <h3 class="card-title">{% trans 'Errors' %}</h3>
+            <hr/>
+
+            {% include 'base/components/forms/error-handler/form-error.html' %}
+            {{ form.non_field_errors }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+    <div class="row">
+      <div class="col-xs-12 col-lg-6 offset-lg-3">
+        <div class="card">
+          <form class="card-body" action="" method="post">
+            <h1 style="font-size: 1.3rem;">{% trans 'Reset your password' %}</h1>
+            <hr/>
+            {% csrf_token %}
+
+            {% include 'base/components/fields.html' with field=form.email %}
+            {{ form.recaptcha }}
+
+            {% include 'base/components/forms/form-navigation.html' with final_step=True reset_pw=True first_step=True %}
+
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+    {% addtoblock "js" %}
+        <script src="{% static 'scripts/components/forms.min.js' %}"></script>
+    {% endaddtoblock %}
+
+    {% addtoblock 'css' %}
+        {% recaptcha_init %}
+        {% recaptcha_ready action_name='reset_password_step_1_enter_email' %}
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/cms-default-page.css' %}">
+    {% endaddtoblock %}
+
+
+{% endblock %}

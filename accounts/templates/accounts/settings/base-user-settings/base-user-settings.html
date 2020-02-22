@@ -1,0 +1,45 @@
+{% load i18n accounts_tags staticfiles sekizai_tags %}
+
+<div class="container">
+  <h3 class="card-title">{% trans 'Login settings' %}</h3>
+  <p>{% blocktrans with request.user.first_name as user_name %}
+    Hi {{ user_name }},
+    here you can make changes to your personal login settings. Public settings can be altered in the
+    following tabs. If you have any questions concerning the settings just drop us an e-mail at
+    brieftaube@jagdreisencheck.de{% endblocktrans %}.
+  </p>
+  <hr/>
+
+
+  {% include 'base/components/fields.html' with field=base_form.email %}
+
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=base_form.first_name %}
+    </div>
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=base_form.last_name %}
+    </div>
+  </div>
+
+  {% include 'base/components/fields.html' with field=base_form.country_of_residence %}
+
+  <div class="row mt-3">
+    <div class="col-xs-12 col-lg-6">
+      <p style="margin-top: 10px;"><span style="color: red;">*</span> {% trans 'marks required inputs.' %}</p>
+    </div>
+    <div class="col-xs-12 col-lg-6">
+
+      <button class="btn btn-darkblue" type="submit" style="float: right">
+        <i class="fa fa-save"></i>
+        {% trans 'Save' %}
+      </button>
+    </div>
+  </div>
+</div>
+
+{% addtoblock "js" %}
+    <script src="{% static 'scripts/components/headline.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+    <script src="{% static 'scripts/components/forms.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+{% endaddtoblock %}

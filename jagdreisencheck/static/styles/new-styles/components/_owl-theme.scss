@@ -1,0 +1,122 @@
+/*
+Title: Owl carousel of Jagdreisencheck
+Description: Sourcefile for the web app's owl carousel styles.
+Author: Herbert Woisetschläger
+Date: 09.05.2019
+ */
+
+/* TABLE OF CONTENTS
+
+1. IMPORT SECTION
+2. CUSTOM STYLES
+
+
+*/
+
+
+// 1. IMPORT SECTION
+@import "../../bootstrap/variables";
+
+
+// 2. CUSTOM STYLES
+.owl-carousel {
+  position: relative;
+  margin: 15px 0;
+  padding: 0 10px;
+  height: 500px;
+  max-height: 100%;
+  width: 100%;
+  max-width: 100%;
+
+  .owl-stage-outer {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .owl-stage{
+    width: 100%;
+  }
+
+  .owl-item {
+    padding: 0 15px;
+    display: inline-block;
+
+    .img-container {
+      position: relative;
+      .img-caption {
+        position: absolute;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(63, 63, 63, 0.66);
+        padding: 5px 10px;
+        color: white;
+        p {
+          color: white;
+        }
+      }
+    }
+
+  }
+
+  .owl-nav {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    bottom: auto;
+    left: 0;
+
+    &.disabled {
+      display: none !important;
+    }
+
+    .owl-prev, .owl-next {
+      position: absolute;
+      top: auto;
+      bottom: auto;
+      height: 40px;
+      width: 40px;
+      background: $darkblue;
+      color: $white;
+      border: 1px solid transparent;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .owl-prev {
+      left: -20px;
+    }
+
+    .owl-next {
+      right: -20px;
+    }
+
+  }
+
+  .owl-dots {
+    position: relative;
+    margin: 5px 10px;
+    text-align: center;
+
+    &.disabled {
+      display: none !important;
+    }
+
+    .owl-dot {
+      position: relative;
+      margin: 10px 5px;
+      padding: 4px;
+      border: 1px solid transparent;
+      border-radius: 50%;
+      background: $darkblue;
+      text-align: center;
+
+      &.active {
+        background: $yelloworange;
+      }
+
+    }
+
+  }
+}

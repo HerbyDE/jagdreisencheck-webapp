@@ -1,0 +1,220 @@
+{% extends 'base/structure/base.html' %}
+{% load i18n staticfiles sekizai_tags %}
+
+{% block title %}
+  {% trans 'Your Trip Inquiries' %}
+{% endblock %}
+
+{% block headline-img-source %}
+  {% static 'assets/../../../../jagdreisencheck/static/images/background/Hilly_Landscape.jpg' %}
+{% endblock %}
+
+{% block headline-content-containerized %}
+  <div class="row">
+    <div class="col-12">
+      <h1>{% trans 'Your Trip Inquiries' %}</h1>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block content %}
+
+  {% regroup inquiries by read as inquiry_list %}
+
+  <div class="container nav-padding">
+    <h1>{% trans 'Your Trip Inquiries' %}</h1>
+    <hr/>
+
+    <p>
+      <i class="fa fa-exclamation-circle"></i>
+      {% blocktrans %}
+        Here you can view all your inquiries. The inquiries will be sorted based on their status. If you open an inquiry it will be marked as read.
+        Please note that the status is also visible to the inquiring hunter so he may follow up.
+        If you experience any issues please contact us via e-mail:
+      {% endblocktrans %}
+      <a href="mailto:brieftaube@jagdreisencheck.de" style="text-decoration: underline;">brieftaube@jagdreisencheck.de</a>.
+    </p>
+
+    {% for status in inquiry_list %}
+      <h2>{% if status.grouper == True %}{% trans 'Read inquiries' context 'inquiries' %}{% else %}{% trans 'Unread inquiries' context 'inquiries' %}{% endif %}</h2>
+
+      <div id="accordion-{{ forloop.counter }}" class="accordion mb-3">
+        {% for inquiry in status.list %}
+          <div class="card mb-3">
+            <div class="card-header" id="headingOne">
+              <h3>
+                <button class="btn btn-link btn-inquiry" data-toggle="collapse" data-target="#{{ status.grouper }}-{{ forloop.counter }}" aria-expanded="false" data-read="{{ inquiry.read }}" data-url="{% url 'inquiries:update_inquiry' %}" data-id="{{ inquiry.iq }}" style="white-space: normal">
+                  <i class="fa fa-chevron-right"></i>
+                  {% blocktrans with region=inquiry.trip.region country=inquiry.trip.country.name company=inquiry.trip.company.name %}
+                    Your inquiry for a trip to {{ region }}, {{ country }} offered by {{ company }}.
+                  {% endblocktrans %}
+                </button>
+                <small style="float: right; font-size: 0.9rem; margin: 5px 0;">
+                  {% trans 'Date' %}: {{ inquiry.date|date }}<br/>
+                  {% trans 'ID' %}: {{ inquiry.iq }}<br>
+                  {% trans 'Status' %}: {% if inquiry.read %}{% trans 'Read' %}{% else %}{% trans 'Unread' %}{% endif %}
+                </small></h3>
+            </div>
+
+            <div id="{{ status.grouper }}-{{ forloop.counter }}" class="collapse" data-parent="#accordion">
+              <div class="card-body">
+                <h4>
+                  <i class="fa fa-sort"></i>
+                  {% trans 'Key facts' %}
+                </h4>
+
+                <div class="row">
+
+                  <div class="col-xs-12 col-lg-6">
+                    <div class="table-responsive">
+                      <table class="table table-hover">
+                        <tr>
+                          <td>{% trans 'Trip' %}</td>
+                          <td>
+                            <a href="{% url 'travelling:show_trip' inquiry.trip.company.slug inquiry.trip.country.code|slugify inquiry.trip.region|slugify %}">
+                              {{ inquiry.trip.region }}, {{ inquiry.trip.country.name }}
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Main contact' %}</td>
+                          <td>
+                            <a href="{% url 'accounts:user_profile' inquiry.trip.company.slug %}">
+                              {{ inquiry.user.get_full_name }}
+                            </a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Travel dates' %}</td>
+                          <td>
+                            {{ inquiry.time_start }} - {{ inquiry.time_end }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Contact info' %}</td>
+                          <td>
+                            <phone>{{ inquiry.phone }}</phone><br/>
+                            <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                          </td>
+                        </tr>
+
+                      </table>
+                    </div>
+                  </div>
+
+                  <div class="col-xs-12 col-lg-6">
+                    <div class="table-responsive">
+
+                      <table class="table table-hover">
+                        <tr>
+                          <td>{% trans 'Accommodation' %}</td>
+                          <td>
+                            {{ inquiry.get_accommodation_display }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Hunting type' %}</td>
+                          <td>
+                            {{ inquiry.get_hunting_type_display }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Number of persons' %}</td>
+                          <td>
+                            Hunters: {{ inquiry.hunterdata_set.all|length }},<br/>
+                            Companions: {{ inquiry.num_of_non_hunters }}
+                          </td>
+                        </tr>
+                      </table>
+
+                    </div>
+                  </div>
+                </div>
+
+                <h4>
+                  <i class="fa fa-comments"></i>
+                  {% trans 'Inquiry details' %}
+                </h4>
+                <hr/>
+                <p>{% trans 'The hunters inquiry' %}: {{ inquiry.inquiry }}</p>
+                <br/>
+
+                <h4>
+                  <i class="fa fa-user"></i>
+                  {% trans 'Hunters' %}
+                </h4>
+                <hr/>
+
+                <div class="row">
+                  {% for hunter in inquiry.hunterdata_set.all %}
+                    <div class="col-xs-12 col-lg-6">
+                      <h5>{% trans 'Hunter' %} {{ forloop.counter }}:
+                        {% if forloop.first %}{{ inquiry.user.get_full_name }}{% else %}{{ hunter.name }}{% endif %}
+                      </h5>
+                      <table class="table table-hover">
+                        <tr>
+                          <td>{% trans 'Desired game' %}</td>
+                          <td>{{ hunter.game.all|join:", " }}</td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'License' %}</td>
+                          <td>{{ hunter.license_since }}</td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Max. shot distance' %}</td>
+                          <td>{{ hunter.shooting_experience }} {% trans 'm' context 'meter' %}</td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Physical fitness' %}</td>
+                          <td>{{ hunter.get_physical_fitness_display }}</td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Age' %}</td>
+                          <td>{{ hunter.age }}</td>
+                        </tr>
+                        <tr>
+                          <td>{% trans 'Budget' %}</td>
+                          <td>{{ hunter.budget }}</td>
+                        </tr>
+
+                      </table>
+                    </div>
+                  {% endfor %}
+                </div>
+
+                <h4>
+                  <i class="fa fa-cogs"></i>
+                  {% trans 'Actions' %}
+                </h4>
+                <hr/>
+
+                <a href="mailto:{{ inquiry.user.email }}?subject={% blocktrans with region=inquiry.trip.region country=inquiry.trip.country.name date=inquiry.date|date %}Your inquiry for our trip offer to {{ region }}, {{ country }} from {{ date }} on Jagdreisencheck{% endblocktrans %}" class="btn btn-darkblue">
+                  <i class="fa fa-envelope"></i>
+                  {% trans 'Contact the hunter' %}
+                </a>
+                &nbsp;
+                <a href="mailto:brieftaube@jagdreisencheck.de?subject={% blocktrans with iq=inquiry.iq %}Issue with the inquiry ID: {{ iq }}{% endblocktrans %}" class="btn btn-outline-darkblue">
+                  <i class="fa fa-exclamation-triangle"></i>
+                  {% trans 'Report an issue' %}
+                </a>
+
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+  {% addtoblock 'css' %}
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/new-styles/inquire-trip-page.css' %}"/>
+  {% endaddtoblock %}
+
+  {% addtoblock 'js' %}
+    <script src="{% static 'scripts/components/inquiry-scripts.min.js' %}"></script>
+  {% endaddtoblock %}
+
+{% endblock %}

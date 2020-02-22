@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<button id="info-trigger" class="btn btn-highlight"><i class="fa fa-info"></i></button>
+
+<div class="trigger-content hidden" id="info-trigger-content">
+    <h5><span class="close"><i class="fa fa-times"></i></span></h5>
+    <p>{% blocktrans %}
+        Hello there,
+        we are happy to have you on Jagdreisencheck!<br/>
+        Our page is currently in testing phase, as such only few people know we exist.
+        That is why we need your help to learn because you are our users and Jagdreisencheck is only for you!
+        Please give us feedback via this <a href="https://goo.gl/forms/ecWShXmaTdpfuq5E3">Link</a>.
+    {% endblocktrans %}</p>
+    <a href="https://goo.gl/forms/ecWShXmaTdpfuq5E3" class="btn btn-darkblue btn-block" target="_blank">{% trans 'Give feedback' %}</a>
+</div>

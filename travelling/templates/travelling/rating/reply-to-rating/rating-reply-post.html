@@ -1,0 +1,31 @@
+{% load i18n %}
+
+<button class="btn btn-darkblue btn-sm" type="button" data-toggle="collapse" data-target="#reply-{{ object.ratingreply.pk }}" aria-expanded="false">
+  <i class="fa fa-chevron-down"></i>
+  {% blocktrans with company=profile.company_name.name %}
+    {{ company }} has replied to this rating
+  {% endblocktrans %}
+</button>
+
+<div class="rating-reply collapse" id="reply-{{ object.ratingreply.pk }}">
+  <hr/>
+  <h5>{% blocktrans with company=profile.company_name.name %}Reply of {{ company }}:{% endblocktrans %}</h5>
+  <span>
+    {{ object.ratingreply.text|safe }}
+  </span>
+  <hr/>
+  {% if object.user == request.user %}
+    <span>{% trans 'Actions' %}:</span>
+    <a href="mailto:{{ profile.company_name.contact_email }}" class="btn btn-outline-darkblue btn-sm">
+      <i class="fa fa-envelope"></i>
+      {% trans 'Contact' %}
+    </a>
+  {% elif object.ratingreply.author == request.user or profile.admin == request.user %}
+    <span>{% trans 'Actions' %}:</span>
+    <a href="#" class="btn btn-outline-darkblue btn-sm" id="openModal{{ object.pk }}" data-target="#modal-{{ object.pk }}" data-toggle="modal">
+      <i class="fa fa-edit"></i>
+      {% trans 'Edit' %}
+    </a>
+    {% include 'travelling/rating/reply-to-rating/reply-modal.html' with value=object.ratingreply.text %}
+  {% endif %}
+</div>

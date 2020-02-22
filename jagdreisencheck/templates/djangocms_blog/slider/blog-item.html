@@ -1,0 +1,37 @@
+{% load i18n easy_thumbnails_tags cms_tags %}
+
+<article id="post-{{ post.slug }}" class="post-item slider" data-slide="{{ forloop.counter }}">
+
+  {% if image and post.main_image %}
+    {% thumbnail post.main_image 1200x585 crop="-50, -50" upscale=post.thumbnail_options.upscale subject_location=post.main_image.subject_location as thumb %}
+    <img src="{{ thumb.url }}" alt="{{ post.main_image.default_alt_text }}" height="{{ thumb.height }}"/>
+  {% endif %}
+
+  <div class="post-item-content">
+    <h3>
+      <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+    </h3>
+    {% if post.subtitle %}
+      <h4>{{ post.subtitle }}</h4>
+    {% endif %}
+
+    <a href="{{ post.get_absolute_url }}" class="read-more">
+      {% trans "read more" %} &raquo;
+    </a>
+
+    <div class="blog-lead" style="display: none;">
+      {% if not TRUNCWORDS_COUNT %}
+        {% render_model post "abstract" "" "" "safe" %}
+      {% else %}
+        {% render_model post "abstract" "" "" "truncatewords_html:TRUNCWORDS_COUNT|safe"  %}
+      {% endif %}
+    </div>
+
+    <div class="blog-meta" style="display: none">
+      {% block blog_meta %}
+        {% include "djangocms_blog/slider/blog-meta.html" %}
+      {% endblock %}
+    </div>
+
+  </div>
+</article>

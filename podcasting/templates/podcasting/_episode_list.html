@@ -1,0 +1,49 @@
+{% load i18n easy_thumbnails_tags %}
+
+{% for episode in episode_list %}
+  <div class="row">
+    <div class="col-xs-12 col-lg-1 podcast-numerator">
+      #{{ forloop.counter }}
+      <span>- {{ episode.title }}</span>
+    </div>
+      <div class="col-xs-12 col-lg-11">
+        <div class="row">
+          <div class="col-xs-12 col-lg-4">
+            <div class="podcast-image" style="background-image: url('{% thumbnail episode.original_image 300x300 crop %}');">
+              <audio controls>
+                {% for enclosure in episode.enclosure_set.all %}
+                  <source src="{{ enclosure.file.url }}" type="audio/{{ enclosure.mime }}">
+                {% endfor %}
+                {% trans 'Your browser does not support the audio element.' %}
+              </audio>
+            </div>
+          </div>
+          <div class="col-xs-12 col-lg-8 podcast-description">
+            <h4>{{ episode.title }}</h4>
+            <h5>{{ episode.subtitle }}</h5>
+            <div class="meta">
+              <i class="fa fa-clock"></i> <time>{{ episode.published|date:"d. M Y" }}</time>
+              <br/>
+              <i class="fa fa-user"></i> <span class="user">{% trans 'by' context "small" %} {{ episode.author_text }}</span>
+              <br/><br/>
+              <p>
+                {{ episode.description|truncatechars:140 }} <br/>
+                {% trans 'Feedback to' %}: <a href="mailto:brieftaube@jagdreisencheck.de">brieftaube@jagdreisencheck.de</a> ({% trans 'Comments will be there soon.' %})
+              </p>
+              <p>
+                {% for enclosure in episode.enclosure_set.all %}
+                  {% if enclosure.mime == 'mp3' %}
+                    <i class="fa fa-download"></i> <a href="{{ enclosure.file.url }}">{% trans "Download / Stream" %}</a>
+                  {% endif %}
+                {% endfor %}
+              </p>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <hr/>
+  <br/>
+{% empty %}
+  <h5>{% trans "There will be episodes soon. Stay tuned!" %}</h5>
+{% endfor %}

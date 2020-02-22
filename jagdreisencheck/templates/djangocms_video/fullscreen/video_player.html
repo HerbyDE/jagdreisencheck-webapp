@@ -1,0 +1,23 @@
+{% load i18n cms_tags %}
+
+{% if instance.embed_link %}
+  <video autoplay muted loop id="Video{{ instance.pk }}" class="fullscreen video">
+    <source src="{{ instance.embed_link }}">
+  </video>
+  {% else %}
+  {# render <source> or <track> plugins #}
+
+  {% if request.user_agent.is_mobile or request.user_agent.is_tablet %}
+    <img src="{{ instance.poster.url }}" alt="{% trans 'Jagdreisencheck' %}">
+  {% else %}
+    <video autoplay muted loop {{ instance.attributes_str }}
+      {% if instance.poster %} poster="{{ instance.poster.url }}"{% endif %} class="fullscreen video">
+      {% for plugin in instance.child_plugin_instances %}
+        {% render_plugin plugin %}
+      {% endfor %}
+      {% trans "Your browser doesn't support this video format." %}
+    </video>
+  {% endif %}
+
+
+{% endif %}

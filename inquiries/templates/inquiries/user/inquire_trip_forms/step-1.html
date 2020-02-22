@@ -1,0 +1,47 @@
+{% load i18n inquiries %}
+
+{% get_db_list trip.available_accommodation_types "ACCOMODATION_LIST" as acc %}
+{% get_db_list trip.available_hunting_types "HUNTING_TYPE_LIST" as aht %}
+
+
+<div class="step" id="general">
+  <h3>{% trans 'General Information on your Inquiry' %}</h3>
+  <hr/>
+
+  <div class="row">
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.name custom_value=request.user.get_full_name %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.email custom_value=request.user.email %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.phone %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.accommodation field_options=acc %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.hunting_type field_options=aht %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.num_of_non_hunters %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.time_start %}
+    </div>
+
+    <div class="col-xs-12 col-lg-6">
+      {% include 'base/components/fields.html' with field=form.time_end %}
+    </div>
+  </div>
+
+  {% include 'base/components/forms/form-navigation.html' with first_step=True %}
+
+</div>

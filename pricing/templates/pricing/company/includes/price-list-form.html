@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<form class="row" action="" method="post">
+  <div class="col-12">
+    {% include 'base/components/fields.html' with field=list_form.title %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=list_form.validityFrom %}
+  </div>
+  <div class="col-xs-12 col-lg-6">
+    {% include 'base/components/fields.html' with field=list_form.validityTo %}
+  </div>
+  <div class="col-12">
+    <br/>
+    <div class="active-submit-combo">
+      {% include 'base/components/fields.html' with field=list_form.is_active %}
+      <input type="hidden" name="form" value="list"/>
+      {% csrf_token %}
+      <button class="btn btn-darkblue" type="submit">{% trans 'Save' %}</button>
+    </div>
+  </div>
+  <div class="col-12">
+    <small style="float: right">{% trans 'Please save each section separately.' %}</small>
+  </div>
+
+</form>

@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% if country_descriptor %}
+
+  <h4>{% blocktrans with country=country_descriptor.country.name %}Information about hunting trips to {{ country }}{% endblocktrans %}</h4>
+  <hr/>
+
+  <p>
+    <small>{{ country_descriptor.description|safe }}</small>
+  </p>
+{% endif %}

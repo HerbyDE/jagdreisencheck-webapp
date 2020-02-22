@@ -1,0 +1,39 @@
+{% load i18n staticfiles sekizai_tags %}
+<div class="field mb-2">
+  {% if field.field.widget.input_type == 'select' %}
+    <div class="rating-container form-field align-left">
+      <label class="control-label" for="{{ field.id_for_label }}">
+        {{ field.label }}
+        {% if field.help_text %}
+          <span><i class="fa fa-info-circle" data-toggle="tooltip" title="{% trans 'Info' %}" data-content="{{ field.help_text|safe }}"></i></span>
+        {% endif %}
+        {% if field.field.required == True %}<span class="required-indicator">*</span>{% endif %}
+      </label>
+      <br/>
+      <input type="hidden" name="{{ field.name }}" id="{{ field.id_for_label }}" class="rating rating-element"
+             {% if field.field.required %}required{% endif %}
+             {% if variant == 'readonly' or variant == 'read-only' %}data-readonly{% endif %}
+             data-filled="icon icon-rating-img" data-empty="icon icon-rating-img-o"
+             {% if field.value %}value="{{ field.value }}"{% endif %}/>
+    </div>
+  {% else %}
+    <p>Invalid Field...</p>
+    {{ field.field.widget.input_type }}
+  {% endif %}
+
+  <div class="row info-section-small">
+    <div class="col-xs-8">
+      {% if field.errors %}
+        <div class="error">
+          {% for err in field.errors %}
+            <small><b>{{ err|escape }}</b></small>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% addtoblock "js" %}
+    <script src="{% static 'scripts/components/bootstrap-rating.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+{% endaddtoblock %}
