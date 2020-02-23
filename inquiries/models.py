@@ -79,6 +79,6 @@ class HunterData(models.Model):
     name = models.CharField(verbose_name=_('Name'), max_length=75, null=True, blank=True)
 
     def __str__(self):
-        return u'%s' % self.inquiry.user.user.get_full_name
+        return u'%s' % self.inquiry.user.get_full_name
 
 
