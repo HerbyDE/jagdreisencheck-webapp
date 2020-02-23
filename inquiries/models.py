@@ -55,9 +55,8 @@ class TripInquiry(models.Model):
     def __str__(self):
         string = ""
         try:
-            if "name" in self.trip:
-                string = "{}".format(self.trip.name)
-        except TypeError:
+            string = "{}".format(self.trip.name)
+        except TypeError or AttributeError or ValueError:
             pass
         
         try:
