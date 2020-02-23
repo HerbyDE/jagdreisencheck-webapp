@@ -54,7 +54,7 @@ class TripInquiry(models.Model):
 
     def __str__(self):
         string = ""
-        if self.trip.name:
+        if "name" in self.trip:
             string = "{}".format(self.trip.name)
         try:
             string = "{} {}".format(string, self.user.user.email)
