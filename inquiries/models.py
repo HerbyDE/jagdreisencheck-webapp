@@ -53,7 +53,9 @@ class TripInquiry(models.Model):
         return super(TripInquiry, self).save(force_insert, force_insert, using, update_fields)
 
     def __str__(self):
-        string = "{}".format(self.trip.name)
+        string = ""
+        if self.trip.name:
+            string = "{}".format(self.trip.name)
         try:
             string = "{} {}".format(string, self.user.user.email)
         except AttributeError or ValueError:
