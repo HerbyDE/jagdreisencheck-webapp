@@ -1,0 +1,14 @@
+.idea/*
+venv/*
+media/*
+jagdreisencheck/static/ckeditor/*
+static/*
+.coverage
+src/*
+node_modules/*
+package-lock.json
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
