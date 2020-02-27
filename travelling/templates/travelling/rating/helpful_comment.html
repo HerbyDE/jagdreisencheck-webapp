@@ -1,0 +1,18 @@
+{% load i18n sekizai_tags staticfiles %}
+
+<span class="d-md-block d-lg-inline-block">{% trans 'Is this review helful?' %}</span>
+<ul id="helpfulness-{{ object.pk }}" class="list-inline d-md-block d-lg-inline-block" style="margin-left: 10px;">
+  <li class="list-inline-item">
+    <button class="btn btn-default btn-xs btn-vote" aria-label="Thumbs up!" data-target="{{ object.pk }}" data-direction="up" data-url="{% url 'travelling:rate_review' %}">
+      <i class="fa fa-thumbs-up"></i>
+    </button>
+    <span class="thumbs-up">{{ object.likes }}</span>
+  </li>
+  <li class="list-inline-item">:</li>
+  <li class="list-inline-item">
+    <span class="thumbs-down">{{ object.dislikes }}</span>
+    <button class="btn btn-default btn-xs btn-vote" aria-label="Thumbs down!" data-target="{{ object.pk }}" data-direction="down" data-url="{% url 'travelling:rate_review' %}">
+      <i class="fa fa-thumbs-down"></i>
+    </button>
+  </li>
+</ul>

@@ -6,7 +6,7 @@ from django.conf.urls import url
 from travelling.views import (create_a_trip, retrieve_trip_details, create_game_instance, rate_trip, modify_trip,
                               return_options_for_rating, align_headline_image, reply_to_rating,
                               update_trip_rating, request_trip_deletion, revise_trip_deletion, delete_a_trip,
-                              approve_trip)
+                              approve_trip, rate_review)
 
 
 app_name = 'travelling'
@@ -32,4 +32,5 @@ urlpatterns = [
 
     url(r'^update/trip/headline-image/$', align_headline_image, name='change_headline_y_position'),
     url(r'^reply/rating/$', reply_to_rating, name='reply_to_rating'),
+    url(r'^rate_review/$', rate_review, name='rate_review'),
 ]

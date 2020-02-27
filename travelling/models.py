@@ -347,9 +347,22 @@ class Rating(models.Model):
                                         max_digits=5)
 
     overall_rating = models.DecimalField(verbose_name=_('Total Rating'), null=True, decimal_places=4, max_digits=5)
+    
+    # Peer rating regarding value
+    likes = models.IntegerField(verbose_name=_('Review Likes'), null=True, blank=True, default=0)
+    dislikes = models.IntegerField(verbose_name=_('Review Dislikes'), null=True, blank=True, default=0)
+    
+    def __str__(self):
+        return u"{} - {}: {} - ID: {}".format(
+            self.user.get_full_name(),
+            self.trip.country.name,
+            self.trip.region,
+            self.pk)
 
     class Meta:
         unique_together = (('user', 'trip'),)
+        verbose_name = _('Review')
+        verbose_name_plural = _('Reviews')
 
 
 class RatingReply(models.Model):
