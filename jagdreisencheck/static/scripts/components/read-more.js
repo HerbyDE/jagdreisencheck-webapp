@@ -34,5 +34,61 @@ $(document).ready(function () {
 
         $(this).css('margin', 0);
 
-    })
+    });
+
+    renderReviewLikes();
+
+});
+
+// Vote for the usefulness of reviews
+function renderReviewLikes(){
+    var cookie = JSON.parse(getCookie('jagdreisencheck_review')) || {};
+    var helpful_reviews = [$('.btn-vote').data('target')];
+
+    for(var k in cookie) {
+        if(cookie.hasOwnProperty(k)) {
+            if(helpful_reviews.includes(parseInt(k))) {
+                var containerID = "#helpfulness-".concat(k);
+
+                $(''.concat(containerID, ' .fa-thumbs-up')).parent().attr('disabled', 'disabled');
+                $(''.concat(containerID, ' .fa-thumbs-down')).parent().attr('disabled', 'disabled');
+
+                if(cookie[k]['direction'] === "up") {
+                    $(''.concat(containerID, ' .fa-thumbs-up')).parent().removeClass('btn-default').addClass('btn-success');
+                } else {
+                    $(''.concat(containerID, ' .fa-thumbs-down')).parent().removeClass('btn-default').addClass('btn-danger');
+                }
+            }
+        }
+
+    }
+}
+
+
+
+$(".btn-vote").click(function () {
+    var btn = $(this);
+    var url = $(this).data('url');
+    var target = $(this).data('target');
+    var direction = $(this).data('direction');
+    
+    var cookie = JSON.parse(getCookie('jagdreisencheck_review')) || {};
+
+    if(!cookie.hasOwnProperty(target)) {
+        $.ajax({
+            url: url,
+            data: {target: target, direction: direction},
+            method: "post",
+            success: function (data, status, xhr) {
+                cookie[target] = {direction: direction};
+                createCookie('jagdreisencheck_review', JSON.stringify(cookie));
+                btn.parent().find('.thumbs-up').text(data.data['likes']);
+                btn.parent().find('.thumbs-down').text(data.data['dislikes']);
+                renderReviewLikes();
+            },
+            error: function (status, xhr) {
+                console.log(status, xhr);
+            }
+        });
+    }
 });

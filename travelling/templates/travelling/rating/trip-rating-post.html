@@ -19,7 +19,7 @@
           {% if object.nps_indication > 3 %}
             <small class="badge badge-success"><i class="fa fa-plus-circle"></i> {% trans 'Recommends the Trip' %}</small>
           {% elif object.nps_indication <= 3 %}
-            <small class="badge badge-light"><i class="fa fa-minus-circle"></i> {% trans 'Recommends the Trip' %} {{ object.get_nps_indication_display }}</small>
+            <small class="badge badge-light"><i class="fa fa-minus-circle"></i> {% trans 'Does not recommend the Trip' %}</small>
           {% endif %}
         </p>
       </div>
@@ -86,6 +86,12 @@
         {% include 'travelling/rating/reply-to-rating/rating-reply-post.html' %}
       {% endif %}
     </div>
+  {% else %}
+    {% if not object.user == request.user and not profile.admin == request.user %}
+      <div class="card-footer">
+        {% include 'travelling/rating/helpful_comment.html' %}
+      </div>
+    {% endif %}
   {% endif %}
 
 </div>

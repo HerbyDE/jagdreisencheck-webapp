@@ -53,7 +53,12 @@ class TripInquiry(models.Model):
         return super(TripInquiry, self).save(force_insert, force_insert, using, update_fields)
 
     def __str__(self):
-        string = "{}".format(self.trip.name)
+        string = ""
+        try:
+            string = "{}".format(self.trip.name)
+        except TypeError or AttributeError or ValueError:
+            pass
+        
         try:
             string = "{} {}".format(string, self.user.user.email)
         except AttributeError or ValueError:
@@ -79,6 +84,6 @@ class HunterData(models.Model):
     name = models.CharField(verbose_name=_('Name'), max_length=75, null=True, blank=True)
 
     def __str__(self):
-        return u'%s' % self.inquiry.user.user.get_full_name
+        return u'%s' % self.inquiry.user.get_full_name
 
 

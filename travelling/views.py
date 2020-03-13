@@ -6,6 +6,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict, modelformset_factory
 from django.db.models import Q, Avg, Count, Case, When
 from django.db import IntegrityError
@@ -699,6 +700,40 @@ def align_headline_image(request):
             return JsonResponse(data={'error': _('Error moving the image. Please try again later.')}, status=500)
 
         return JsonResponse(data={'success': _('Position changed successfully.'), 'value': position}, status=200)
+
+@csrf_exempt
+def rate_review(request):
+    """
+    This function allows users to rate their peers' trip reviews by either liking or disliking them. For each vote a +1
+    is either given to the like or dislike bracket.
+    :param request: Accepts a HTTP request.
+    :return: Returns a JSON object containing a status and the number of dis-/likes.
+    """
+    if request.method == "POST" and request.is_ajax():
+        
+        review = get_object_or_404(Rating, pk=request.POST.get("target"))
+        score = request.POST.get("direction")  # Is either up or down, adding +1 or -1 score.
+        
+        if review:
+            if score == "up":
+                review.likes += 1
+                review.save()
+    
+            elif score == "down":
+                review.dislikes += 1
+                review.save()
+            
+            return JsonResponse(data={
+                    'status': {'success': _('Thank you for your feedback!')},
+                    'data': {'likes': review.likes, 'dislikes': review.dislikes}
+                }
+            )
+        
+        else:
+            return JsonResponse(data={
+                    'status': {'error': _('Invalid Request. No rating found!')}
+                }
+            )
 
 
 ################################################################################################
